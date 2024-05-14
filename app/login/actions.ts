@@ -1,20 +1,21 @@
 'use server'
 
 import { jwtDecode } from 'jwt-decode'
-import { z } from 'zod'
-import { ApiErrorStatus, apiClient } from '../api/client'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { z } from 'zod'
+import { apiClient } from '../api/client'
 
 const ReqSchema = z.object({
   account: z.string(),
   password: z.string(),
 })
 
-type ApiError = ApiErrorStatus<{
-  code: '1002'
-  message: 'account or password incorrect'
-}>
+type ErrorCode =
+  // AccountOrPasswordIncorrect
+  | '1002'
+  // ConsignorNotExist
+  | '1602'
 
 interface ApiData {
   token: string
@@ -25,31 +26,30 @@ export async function login(formData: FormData) {
   const parsed = ReqSchema.safeParse(Object.fromEntries(formData))
   if (parsed.error) {
     const err = parsed.error.flatten()
-    return { data: null, error: err } as const
+    return { data: null, error: err }
   }
 
-  const data = await apiClient<ApiData, ApiError>('/session', {
+  const data = await apiClient<ApiData, ErrorCode>('/session', {
     method: 'POST',
     body: formData,
   })
 
   if (data.error) {
-    if (data.error.code === '1002') {
+    if (data.error.code === '1002' || data.error.code === '1602') {
       return {
         data: null,
         error: new z.ZodError([
           {
             code: 'custom',
             path: [],
-            message: 'account or password incorrect',
+            message: 'Account or password incorrect',
           },
         ]).flatten(),
-      } as const
+      }
     }
 
-    throw new Error(
-      process.env.NODE_ENV === 'development' ? data.error.message : data.error.code,
-    )
+    data.error satisfies never
+    throw new Error('Unhandled error', { cause: data.error })
   }
 
   const jwt = jwtDecode<{

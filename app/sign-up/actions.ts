@@ -1,7 +1,7 @@
 'use server'
 
 import { z } from 'zod'
-import { ApiErrorStatus, apiClient } from '../api/client'
+import { apiClient } from '../api/client'
 
 const ReqSchema = z
   .object({
@@ -15,7 +15,9 @@ const ReqSchema = z
     path: ['conformPassword'],
   })
 
-type ApiError = ApiErrorStatus<{ code: '21'; message: 'create consignor error' }>
+type ErrorCode =
+  // ConsignorExisted
+  '1601'
 
 export async function signUp(formData: FormData) {
   const parsed = ReqSchema.safeParse(Object.fromEntries(formData))
@@ -24,10 +26,28 @@ export async function signUp(formData: FormData) {
     return { data: null, error: err } as const
   }
 
-  const data = await apiClient<'Success', ApiError>('/consignor', {
+  const data = await apiClient<'Success', ErrorCode>('/consignor', {
     method: 'POST',
     body: formData,
   })
+
+  if (data.error) {
+    if (data.error.code === '1601') {
+      return {
+        data: null,
+        error: new z.ZodError([
+          {
+            code: 'custom',
+            path: ['account'],
+            message: 'Account already exists',
+          },
+        ]).flatten(),
+      }
+    }
+
+    data.error.code satisfies never
+    throw new Error('Unhandled error', { cause: data.error })
+  }
 
   return { data: data.data, error: null }
 }
