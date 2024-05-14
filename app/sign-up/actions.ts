@@ -1,38 +1,17 @@
 'use server'
 
 import { z } from 'zod'
-import { apiClient } from '../api/client'
-
-const ReqSchema = z
-  .object({
-    account: z.string(),
-    password: z.string(),
-    conformPassword: z.string(),
-    nickname: z.string(),
-  })
-  .refine((data) => data.password === data.conformPassword, {
-    message: 'Passwords do not match',
-    path: ['conformPassword'],
-  })
-
-type ErrorCode =
-  // ConsignorExisted
-  '1601'
+import { consignor } from '../api/consignor'
 
 export async function signUp(formData: FormData) {
-  const parsed = ReqSchema.safeParse(Object.fromEntries(formData))
-  if (parsed.error) {
-    const err = parsed.error.flatten()
-    return { data: null, error: err } as const
+  const res = await consignor(formData)
+
+  if (res.parseError) {
+    return { data: null, error: res.parseError } as const
   }
 
-  const data = await apiClient<'Success', ErrorCode>('/consignor', {
-    method: 'POST',
-    body: formData,
-  })
-
-  if (data.error) {
-    if (data.error.code === '1601') {
+  if (res.error) {
+    if (res.error.code === '1601') {
       return {
         data: null,
         error: new z.ZodError([
@@ -45,9 +24,11 @@ export async function signUp(formData: FormData) {
       }
     }
 
-    data.error.code satisfies never
-    throw new Error('Unhandled error', { cause: data.error })
+    res.error.code satisfies never
+    throw new Error('Unhandled error', { cause: res.error })
   }
 
-  return { data: data.data, error: null }
+  !res.data satisfies false
+
+  return { data: res.data, error: null }
 }

@@ -5,7 +5,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { logout } from './actions'
+import { logout } from '../api/logout'
 
 export const navigation = [
   { name: 'Product', href: '/products' },

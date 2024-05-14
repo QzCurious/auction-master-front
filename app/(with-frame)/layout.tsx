@@ -1,8 +1,8 @@
 import { cookies } from 'next/headers'
 import Link from 'next/link'
 import React from 'react'
+import { logout } from '../api/logout'
 import { MobileMenu, MobileMenuProvider, MobileMenuToggle } from './components'
-import { logout } from './actions'
 
 const navigation = [
   { name: 'Product', href: '/products' },
