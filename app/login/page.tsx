@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { LoginForm } from './LoginForm'
 
-export default function Example() {
+export default function Page() {
   return (
     <>
       <div className='flex min-h-screen flex-1'>

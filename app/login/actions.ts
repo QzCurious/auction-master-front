@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { apiClient } from '../api/client'
+import { apiClient } from '@/app/api/client'
 
 const ReqSchema = z.object({
   account: z.string(),

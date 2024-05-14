@@ -8,13 +8,13 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { logout } from './actions'
 
 export const navigation = [
-  { name: 'Product', href: '#' },
+  { name: 'Product', href: '/products' },
   { name: 'Features', href: '#' },
   { name: 'Marketplace', href: '#' },
   { name: 'Company', href: '#' },
 ]
 
-export const MobileMenuContext = createContext<[boolean, (open: boolean) => void]>([
+const MobileMenuContext = createContext<[boolean, (open: boolean) => void]>([
   false,
   () => {},
 ])
@@ -75,13 +75,13 @@ export function MobileMenu({ account }: { account?: string }) {
             <div className='space-y-2 py-6'>
               {!!account &&
                 navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
             </div>
             <div className='py-6'>
