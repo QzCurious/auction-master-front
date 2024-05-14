@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { LoginForm } from './LoginForm'
 
 export default function Example() {
@@ -12,12 +13,12 @@ export default function Example() {
               </h2>
               <p className='mt-2 text-sm leading-6 text-gray-500'>
                 Not a member?{' '}
-                <a
-                  href='#'
+                <Link
+                  href='/sign-up'
                   className='font-semibold text-indigo-600 hover:text-indigo-500'
                 >
-                  Start a 14 day free trial
-                </a>
+                  Sign up now
+                </Link>
               </p>
             </div>
 
