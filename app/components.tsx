@@ -3,9 +3,9 @@
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { logout } from './actions'
-import { usePathname, useRouter } from 'next/navigation'
 
 export const navigation = [
   { name: 'Product', href: '#' },
@@ -73,15 +73,16 @@ export function MobileMenu({ account }: { account?: string }) {
         <div className='mt-6 flow-root'>
           <div className='-my-6 divide-y divide-gray-500/10'>
             <div className='space-y-2 py-6'>
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
-                >
-                  {item.name}
-                </a>
-              ))}
+              {!!account &&
+                navigation.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
+                  >
+                    {item.name}
+                  </a>
+                ))}
             </div>
             <div className='py-6'>
               {account ? (
