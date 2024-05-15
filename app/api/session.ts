@@ -26,13 +26,13 @@ export async function session(formData: FormData) {
     return { data: null, error: null, parseError: err }
   }
 
-  const data = await apiClient<ApiData, ErrorCode>('/session', {
+  const res = await apiClient<ApiData, ErrorCode>('/session', {
     method: 'POST',
     body: formData,
   })
 
-  if (data.error) {
-    return { data: null, error: data.error, parseError: null }
+  if (res.error) {
+    return { data: null, error: res.error, parseError: null }
   }
 
   const jwt = jwtDecode<{
@@ -42,15 +42,15 @@ export async function session(formData: FormData) {
     exp: number
     iat: number
     nbf: number
-  }>(data.data.token)
+  }>(res.data.token)
 
-  cookies().set('token', data.data.token, {
+  cookies().set('token', res.data.token, {
     expires: new Date(jwt.exp * 1000),
     httpOnly: true,
     sameSite: 'strict',
     secure: process.env.NODE_ENV === 'production',
   })
-  cookies().set('refreshToken', data.data.refreshToken, {
+  cookies().set('refreshToken', res.data.refreshToken, {
     expires: new Date(jwt.exp * 1000),
     httpOnly: true,
     sameSite: 'strict',
@@ -61,5 +61,5 @@ export async function session(formData: FormData) {
     sameSite: 'strict',
   })
 
-  return { data: data.data, error: null, parseError: null }
+  return { data: res.data, error: null, parseError: null }
 }
