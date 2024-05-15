@@ -7,11 +7,13 @@ export async function apiClient<Data, ErrorCode extends string | null = null>(
       error: null
       status: ApiStatus<ErrorCode>
     }
-  | {
-      data: null
-      error: Exclude<ApiStatus<ErrorCode>, { code: '0' }>
-      status: ApiStatus<ErrorCode>
-    }
+  | (ErrorCode extends string
+      ? {
+          data: null
+          error: Exclude<ApiStatus<ErrorCode>, { code: '0' }>
+          status: ApiStatus<ErrorCode>
+        }
+      : never)
 > {
   const url = process.env.API_BASE_URL + input
   const res = await fetch(url, {
@@ -31,9 +33,9 @@ export async function apiClient<Data, ErrorCode extends string | null = null>(
     if (j.status.code !== '0') {
       return {
         data: null,
-        error: j.status as any,
+        error: j.status,
         status: j.status,
-      }
+      } as any
     }
 
     return { data: j.data!, error: null, status: j.status }
