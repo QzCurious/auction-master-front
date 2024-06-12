@@ -14,10 +14,10 @@ export default function Page() {
               <p className='mt-2 text-sm leading-6 text-gray-500'>
                 Not a member?{' '}
                 <Link
-                  href='/login'
+                  href='/sign-in'
                   className='font-semibold text-indigo-600 hover:text-indigo-500'
                 >
-                  login in now
+                  Sign in now
                 </Link>
               </p>
             </div>

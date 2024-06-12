@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LoginForm } from './LoginForm'
+import { SignInForm } from './SignInForm'
 
 export default function Page() {
   return (
@@ -24,7 +24,7 @@ export default function Page() {
 
             <div className='mt-10'>
               <div>
-                <LoginForm />
+                <SignInForm />
               </div>
             </div>
           </div>

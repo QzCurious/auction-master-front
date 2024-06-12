@@ -1,6 +1,8 @@
-import { cookies } from 'next/headers'
+'use client'
+
 import Link from 'next/link'
-import React from 'react'
+import React, { useContext } from 'react'
+import { UserContext } from '../UserContext'
 import { logout } from '../api/logout'
 import { MobileMenu, MobileMenuProvider, MobileMenuToggle } from './components'
 
@@ -39,7 +41,7 @@ const footerNavigation = {
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const account = cookies().get('account')?.value
+  const user = useContext(UserContext)
   return (
     <MobileMenuProvider>
       {/* Header */}
@@ -62,7 +64,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <MobileMenuToggle />
           </div>
           <div className='hidden lg:flex lg:gap-x-12'>
-            {!!account &&
+            {user &&
               navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -74,9 +76,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               ))}
           </div>
           <div className='hidden lg:flex lg:flex-1 lg:justify-end'>
-            {account ? (
+            {user ? (
               <>
-                <p className='inline'>Welcome, {account}</p>
+                <p className='inline'>Welcome, {user.account}</p>
                 <form action={logout} className='ml-4 inline'>
                   <button className='text-sm font-semibold leading-6 text-red-700 underline'>
                     Log out
@@ -85,15 +87,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </>
             ) : (
               <Link
-                href='/login'
+                href='/sign-in'
                 className='text-sm font-semibold leading-6 text-gray-900'
               >
-                Log in <span aria-hidden='true'>&rarr;</span>
+                Sign in <span aria-hidden='true'>&rarr;</span>
               </Link>
             )}
           </div>
         </nav>
-        <MobileMenu account={account} />
+        <MobileMenu />
       </header>
       {children}
 

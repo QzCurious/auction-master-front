@@ -1,12 +1,19 @@
-import { apiClient } from '@/app/api/client'
-import { jwtDecode } from 'jwt-decode'
+'use server'
+
+import { apiClient } from '@/app/api/apiClient'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
+import { throwIfInvalid } from './helpers/throwIfInvalid'
 
 const ReqSchema = z.object({
-  account: z.string(),
-  password: z.string(),
+  account: z.string().min(1, 'Account is required'),
+  password: z.string().min(1, 'Password is required'),
 })
+
+interface Data {
+  token: string
+  refreshToken: string
+}
 
 type ErrorCode =
   // PasswordIncorrect
@@ -14,52 +21,34 @@ type ErrorCode =
   // ConsignorNotExist
   | '1602'
 
-interface ApiData {
-  token: string
-  refreshToken: string
-}
+export async function session(payload: z.input<typeof ReqSchema>) {
+  throwIfInvalid(payload, ReqSchema)
 
-export async function session(formData: FormData) {
-  const parsed = ReqSchema.safeParse(Object.fromEntries(formData))
-  if (parsed.error) {
-    const err = parsed.error.flatten()
-    return { data: null, error: null, parseError: err }
-  }
+  const formData = new FormData()
+  formData.append('account', payload.account)
+  formData.append('password', payload.password)
 
-  const res = await apiClient<ApiData, ErrorCode>('/session', {
+  const res = await apiClient<Data, ErrorCode>('/session', {
     method: 'POST',
     body: formData,
   })
 
   if (res.error) {
-    return { data: null, error: res.error, parseError: null }
+    return { data: null, error: res.error }
   }
 
-  const jwt = jwtDecode<{
-    id: number
-    account: string
-    status: 11
-    exp: number
-    iat: number
-    nbf: number
-  }>(res.data.token)
-
   cookies().set('token', res.data.token, {
-    expires: new Date(jwt.exp * 1000),
+    expires: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days
     httpOnly: true,
     sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
+    // secure: process.env.NODE_ENV === 'production',
   })
   cookies().set('refreshToken', res.data.refreshToken, {
-    expires: new Date(jwt.exp * 1000),
+    expires: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days
     httpOnly: true,
     sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
-  })
-  cookies().set('account', jwt.account, {
-    expires: new Date(jwt.exp * 1000),
-    sameSite: 'strict',
+    // secure: process.env.NODE_ENV === 'production',
   })
 
-  return { data: res.data, error: null, parseError: null }
+  return { data: res.data, error: null }
 }
