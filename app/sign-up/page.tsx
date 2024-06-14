@@ -9,15 +9,15 @@ export default function Page() {
           <div className='mx-auto w-full max-w-sm lg:w-96'>
             <div>
               <h2 className='mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900'>
-                Create account
+                加入會員
               </h2>
               <p className='mt-2 text-sm leading-6 text-gray-500'>
-                Not a member?{' '}
+                還不是會員?{' '}
                 <Link
                   href='/sign-in'
                   className='font-semibold text-indigo-600 hover:text-indigo-500'
                 >
-                  Sign in now
+                  馬上註冊
                 </Link>
               </p>
             </div>

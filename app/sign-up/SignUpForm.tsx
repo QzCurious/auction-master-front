@@ -56,7 +56,7 @@ export function SignUpForm() {
               htmlFor='nickname'
               className='block text-sm font-medium leading-6 text-gray-900'
             >
-              Nickname
+              暱稱
             </label>
             <div className='mt-2'>
               <input
@@ -80,7 +80,7 @@ export function SignUpForm() {
               htmlFor='account'
               className='block text-sm font-medium leading-6 text-gray-900'
             >
-              Account
+              帳號
             </label>
             <div className='mt-2'>
               <input
@@ -104,7 +104,7 @@ export function SignUpForm() {
               htmlFor='password'
               className='block text-sm font-medium leading-6 text-gray-900'
             >
-              Password
+              密碼
             </label>
             <div className='mt-2'>
               <input
@@ -129,7 +129,7 @@ export function SignUpForm() {
               htmlFor='conformPassword'
               className='block text-sm font-medium leading-6 text-gray-900'
             >
-              Conform password
+              確認密碼
             </label>
             <div className='mt-2'>
               <input
@@ -173,7 +173,7 @@ export function SignUpForm() {
           {isSubmitting && (
             <span className='mr-2 size-3 animate-spin self-center rounded-full border-2 border-l-0 border-indigo-200'></span>
           )}
-          Sign up
+          註冊
         </button>
       </div>
     </form>

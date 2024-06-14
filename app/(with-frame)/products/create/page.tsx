@@ -12,11 +12,11 @@ async function Page() {
         href='/products'
       >
         <ArrowLeftIcon className='size-4 stroke-2' />
-        Back to products
+        回到商品列表
       </Link>
 
       <h1 className='mb-4 text-2xl font-bold tracking-tight text-gray-900'>
-        Create product
+        新增商品
       </h1>
 
       <Form />

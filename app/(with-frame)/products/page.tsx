@@ -26,13 +26,13 @@ export default async function Page({ searchParams }: PageProps) {
       <div className='mx-auto max-w-7xl overflow-hidden px-4 py-16 sm:px-6 sm:py-24 lg:px-8'>
         <div className='md:flex md:items-center md:justify-between'>
           <h2 className='text-2xl font-bold tracking-tight text-gray-900'>
-            My Items
+            我的商品
           </h2>
           <Link
             href='/products/create'
             className='hidden text-sm font-medium text-indigo-600 hover:text-indigo-500 md:block'
           >
-            Create Item
+            新增商品
             <span aria-hidden='true'> &rarr;</span>
           </Link>
         </div>

@@ -66,7 +66,7 @@ export function SignInForm() {
                 htmlFor='account'
                 className='block text-sm font-medium leading-6 text-gray-900'
               >
-                Account
+                帳號
               </label>
               <div className='mt-2'>
                 <input
@@ -90,7 +90,7 @@ export function SignInForm() {
                 htmlFor='password'
                 className='block text-sm font-medium leading-6 text-gray-900'
               >
-                Password
+                密碼
               </label>
               <div className='mt-2'>
                 <input
@@ -134,7 +134,7 @@ export function SignInForm() {
             {isSubmitting && (
               <span className='mr-2 size-3 animate-spin self-center rounded-full border-2 border-l-0 border-indigo-200'></span>
             )}
-            Sign up
+            登入
           </button>
         </div>
       </form>

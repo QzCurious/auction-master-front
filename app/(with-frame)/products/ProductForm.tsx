@@ -9,7 +9,6 @@ import { ArrowPathIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
@@ -128,7 +127,7 @@ export default function ProductForm({ item }: ProductFormProps) {
                   htmlFor='username'
                   className='block text-sm font-medium leading-6 text-gray-900'
                 >
-                  Name
+                  商品名稱
                 </label>
                 <div className='mt-2'>
                   <input
@@ -154,8 +153,9 @@ export default function ProductForm({ item }: ProductFormProps) {
                 <label
                   htmlFor='reservePrice'
                   className='block text-sm font-medium leading-6 text-gray-900'
+                  title='reservePrice'
                 >
-                  Reserve Price
+                  底價
                 </label>
                 <div className='mt-2'>
                   <input
@@ -190,12 +190,7 @@ export default function ProductForm({ item }: ProductFormProps) {
               Log values
             </button>
           )}
-          <Link
-            href='/products'
-            className='text-sm font-semibold leading-6 text-gray-900'
-          >
-            Cancel
-          </Link>
+
           <button
             type='submit'
             className={clsx(
@@ -206,7 +201,7 @@ export default function ProductForm({ item }: ProductFormProps) {
             {isSubmitting && (
               <span className='mr-2 size-3 animate-spin self-center rounded-full border-2 border-l-0 border-indigo-200'></span>
             )}
-            Save
+            送出
           </button>
         </div>
       </form>
@@ -227,7 +222,7 @@ function UploadImage({ control }: { control: Control<z.input<typeof Schema>> }) 
   return (
     <div className='col-span-full'>
       <label htmlFor='file-upload' className='inline-flex items-center gap-x-2'>
-        <span className='text-sm font-medium leading-6 text-gray-900'>Photo</span>
+        <span className='text-sm font-medium leading-6 text-gray-900'>商品圖片</span>
         <PlusIcon className='h-5 w-5 rounded bg-indigo-500 p-0.5 text-white hover:bg-indigo-400' />
         <input
           id='file-upload'
@@ -252,7 +247,7 @@ function UploadImage({ control }: { control: Control<z.input<typeof Schema>> }) 
               aria-hidden='true'
             />
             <p className='mt-2 text-xs leading-5 text-gray-600'>
-              Support PNG, JPG, JPEG
+              支援 PNG, JPG, JPEG
             </p>
           </div>
         </div>

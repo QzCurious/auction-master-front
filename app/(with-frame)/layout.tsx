@@ -7,7 +7,7 @@ import { logout } from '../api/logout'
 import { MobileMenu, MobileMenuProvider, MobileMenuToggle } from './components'
 
 const navigation = [
-  { name: 'Product', href: '/products' },
+  { name: '我的商品', href: '/products' },
   { name: 'Features', href: '#' },
   { name: 'Marketplace', href: '#' },
   { name: 'Company', href: '#' },
@@ -78,10 +78,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className='hidden lg:flex lg:flex-1 lg:justify-end'>
             {user ? (
               <>
-                <p className='inline'>Welcome, {user.account}</p>
+                <p className='inline'>歡迎, {user.account}</p>
                 <form action={logout} className='ml-4 inline'>
                   <button className='text-sm font-semibold leading-6 text-red-700 underline'>
-                    Log out
+                    登出
                   </button>
                 </form>
               </>
@@ -90,7 +90,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 href='/sign-in'
                 className='text-sm font-semibold leading-6 text-gray-900'
               >
-                Sign in <span aria-hidden='true'>&rarr;</span>
+                登入 <span aria-hidden='true'>&rarr;</span>
               </Link>
             )}
           </div>
