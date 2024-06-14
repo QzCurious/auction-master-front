@@ -37,6 +37,10 @@ export default async function Page({ searchParams }: PageProps) {
           </Link>
         </div>
 
+        {itemsRes.data.items.length === 0 && (
+          <p className='mt-6 text-base leading-6 text-gray-500'>沒有商品</p>
+        )}
+
         <div className='mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8'>
           {itemsRes.data.items.map((item) => (
             <div key={item.id} className='relative'>
