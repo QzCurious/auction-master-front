@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^3.6.0",
     "clsx": "^2.1.1",
     "copy-to-clipboard": "^3.3.3",
+    "embla-carousel-react": "^8.1.5",
     "jwt-decode": "^4.0.0",
     "next": "14.2.3",
     "react": "^18",
