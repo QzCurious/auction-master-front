@@ -1,9 +1,10 @@
 import { z } from 'zod'
 import { apiClient } from '../apiClient'
+import { throwIfInvalid } from '../helpers/throwIfInvalid'
 import { withAuth } from '../withAuth'
+import { configs } from './configs'
 
 export const ReqSchema = z.object({
-  status: z.coerce.number().optional(),
   sort: z.string().optional(),
   order: z.enum(['asc', 'desc']).optional(),
   limit: z.coerce.number().default(10),
@@ -37,10 +38,22 @@ type ErrorCode = never
 
 export async function items(payload: z.input<typeof ReqSchema>) {
   'use server'
-  const parsed = ReqSchema.parse(payload)
+  const parsed = throwIfInvalid(payload, ReqSchema)
+
+  const configsRes = await configs()
+
+  if (configsRes.error) {
+    return configsRes
+  }
+
+  const status = configsRes.data.itemStatus.find(({ key }) => key === 'InitStatus')
+
+  if (!status) {
+    throw new Error('Backend bug')
+  }
 
   const query = new URLSearchParams()
-  parsed.status != null && query.append('status', parsed.status.toString())
+  query.append('status', status.value.toString())
   parsed.sort != null && query.append('sort', parsed.sort)
   parsed.order != null && query.append('order', parsed.order)
   parsed.limit != null && query.append('limit', parsed.limit.toString())
