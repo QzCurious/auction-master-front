@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default function NotSignedInError() {
   return (
-    <div className='rounded-md bg-red-50 p-4'>
+    <div className='mx-auto max-w-2xl rounded-md bg-red-50 p-4'>
       <div className='flex'>
         <div className='flex-shrink-0'>
           <XCircleIcon className='h-5 w-5 text-red-400' aria-hidden='true' />
@@ -15,17 +15,11 @@ export default function NotSignedInError() {
           <div className='mt-2 text-sm text-yellow-700'>
             <p>
               Please{' '}
-              <Link
-                href='/sign-in'
-                className='text-indigo-600 hover:text-indigo-500'
-              >
+              <Link href='/sign-in' className='text-indigo-600 hover:text-indigo-500'>
                 sign in
               </Link>{' '}
               or{' '}
-              <Link
-                href='/sign-up'
-                className='text-indigo-600 hover:text-indigo-500'
-              >
+              <Link href='/sign-up' className='text-indigo-600 hover:text-indigo-500'>
                 sign up
               </Link>{' '}
               to view this page.
