@@ -1,8 +1,8 @@
 'use server'
 
 import { revalidateTag } from 'next/cache'
-import { apiClient } from '../apiClient'
-import { withAuth } from '../withAuth'
+import { apiClient } from '../../apiClient'
+import { withAuth } from '../../withAuth'
 
 type Data = 'Success'
 

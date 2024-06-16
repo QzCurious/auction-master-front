@@ -1,11 +1,11 @@
 'use client'
 
-import { changeItemPhotoSort } from '@/app/api/frontend/changeItemPhotoSort'
-import { createItem } from '@/app/api/frontend/createItem'
-import { deleteItemPhoto } from '@/app/api/frontend/deleteItemPhoto'
-import { Item } from '@/app/api/frontend/getItem'
-import { updateItem } from '@/app/api/frontend/updateItem'
-import { uploadItemPhotos } from '@/app/api/frontend/uploadItemPhotos'
+import { changeItemPhotoSort } from '@/app/api/frontend/items/changeItemPhotoSort'
+import { createItem } from '@/app/api/frontend/items/createItem'
+import { deleteItemPhoto } from '@/app/api/frontend/items/deleteItemPhoto'
+import { Item } from '@/app/api/frontend/items/getItem'
+import { updateItem } from '@/app/api/frontend/items/updateItem'
+import { uploadItemPhotos } from '@/app/api/frontend/items/uploadItemPhotos'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
 import {
   ArrowLeftIcon,

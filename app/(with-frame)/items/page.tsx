@@ -1,6 +1,6 @@
 import NotSignedInError from '@/app/NotSignedInError'
 import { configs } from '@/app/api/frontend/configs'
-import { items } from '@/app/api/frontend/items'
+import { items } from '@/app/api/frontend/items/items'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { format } from 'date-fns'
 import Link from 'next/link'

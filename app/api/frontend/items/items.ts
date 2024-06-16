@@ -1,8 +1,8 @@
 import { z } from 'zod'
-import { apiClient } from '../apiClient'
-import { throwIfInvalid } from '../helpers/throwIfInvalid'
-import { withAuth } from '../withAuth'
-import { configs } from './configs'
+import { apiClient } from '../../apiClient'
+import { throwIfInvalid } from '../../helpers/throwIfInvalid'
+import { withAuth } from '../../withAuth'
+import { configs } from '../configs'
 
 export const ReqSchema = z.object({
   sort: z.string().optional(),

@@ -1,8 +1,8 @@
 'use server'
 
 import { z } from 'zod'
-import { apiClient } from '../apiClient'
-import { withAuth } from '../withAuth'
+import { apiClient } from '../../apiClient'
+import { withAuth } from '../../withAuth'
 
 const ReqSchema = z.object({
   status: z.coerce.number().optional(),

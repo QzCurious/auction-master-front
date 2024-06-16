@@ -1,5 +1,5 @@
 import NotSignedInError from '@/app/NotSignedInError'
-import { getItem } from '@/app/api/frontend/getItem'
+import { getItem } from '@/app/api/frontend/items/getItem'
 import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
