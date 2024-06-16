@@ -19,7 +19,7 @@ interface Data {
     name: string
     description: string
     photos: Array<{
-      index: number
+      sorted: number
       photo: string
     }>
     space: number

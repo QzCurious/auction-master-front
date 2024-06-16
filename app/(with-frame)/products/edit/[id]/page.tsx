@@ -47,6 +47,9 @@ async function Form({ params }: PageProps) {
   if (item.error === '1003') {
     return <NotSignedInError />
   }
+  if (item.error === '1801') {
+    notFound()
+  }
 
   return <ProductForm item={item.data} />
 }

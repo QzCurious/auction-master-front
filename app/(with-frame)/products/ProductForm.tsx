@@ -1,11 +1,19 @@
 'use client'
 
+import { changeItemPhotoSort } from '@/app/api/frontend/changeItemPhotoSort'
 import { createItem } from '@/app/api/frontend/createItem'
+import { deleteItemPhoto } from '@/app/api/frontend/deleteItemPhoto'
 import { Item } from '@/app/api/frontend/getItem'
 import { updateItem } from '@/app/api/frontend/updateItem'
-import { updateItemPhoto } from '@/app/api/frontend/updateItemPhoto'
+import { uploadItemPhotos } from '@/app/api/frontend/uploadItemPhotos'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
-import { ArrowPathIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowLeftIcon,
+  ArrowPathIcon,
+  ArrowRightIcon,
+  PlusIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
@@ -26,7 +34,7 @@ const Schema = z.object({
   photos: z
     .array(
       z.union([
-        z.object({ photo: z.string(), index: z.number() }),
+        z.object({ photo: z.string(), sorted: z.number() }),
         z
           .instanceof(File)
           .refine((file) => file.size <= 20 * 1024 * 1024, { message: 'Max 20MB' }),
@@ -78,23 +86,6 @@ export default function ProductForm({ item }: ProductFormProps) {
                     return
                   }
                 }
-                {
-                  const formData = new FormData()
-                  for (let i = 0; i < data.photos.length; i++) {
-                    const f = data.photos[i]
-                    if (f instanceof File) {
-                      formData.append('photo', f)
-                      formData.append('index', i.toString())
-                    }
-                  }
-                  const res = await updateItemPhoto(item.id, formData)
-                  if (res.error) {
-                    setError('root', {
-                      message: `Failed to update item: ${res.error}`,
-                    })
-                    return
-                  }
-                }
                 router.push('/products')
               }
             : async (data) => {
@@ -105,7 +96,7 @@ export default function ProductForm({ item }: ProductFormProps) {
                   const f = data.photos[i]
                   if (f instanceof File) {
                     formData.append('photo', f)
-                    formData.append('index', i.toString())
+                    formData.append('sorted', `${i + 1}`)
                   }
                 }
                 const res = await createItem(formData)
@@ -177,7 +168,7 @@ export default function ProductForm({ item }: ProductFormProps) {
             )}
           />
 
-          <UploadImage control={control} />
+          <UploadImage control={control} item={item} />
         </div>
 
         <div className='mt-6 flex items-center justify-end gap-x-6'>
@@ -209,7 +200,13 @@ export default function ProductForm({ item }: ProductFormProps) {
   )
 }
 
-function UploadImage({ control }: { control: Control<z.input<typeof Schema>> }) {
+function UploadImage({
+  control,
+  item,
+}: {
+  control: Control<z.input<typeof Schema>>
+  item?: Item
+}) {
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
     control,
     name: 'photos',
@@ -218,11 +215,18 @@ function UploadImage({ control }: { control: Control<z.input<typeof Schema>> }) 
     control,
     name: 'photos',
   })
+  const [isLoading, setIsLoading] = useState(false)
 
   return (
-    <div className='col-span-full'>
+    <div className='relative col-span-full'>
+      {isLoading && (
+        <div className='pointer-events-none absolute inset-0 z-10 animate-pulse rounded bg-black opacity-40' />
+      )}
+
       <label htmlFor='file-upload' className='inline-flex items-center gap-x-2'>
-        <span className='text-sm font-medium leading-6 text-gray-900'>商品圖片</span>
+        <span className='text-sm font-medium leading-6 text-gray-900'>
+          商品圖片 <span className='text-gray-500'>(自動儲存)</span>
+        </span>
         <PlusIcon className='h-5 w-5 rounded bg-indigo-500 p-0.5 text-white hover:bg-indigo-400' />
         <input
           id='file-upload'
@@ -230,13 +234,32 @@ function UploadImage({ control }: { control: Control<z.input<typeof Schema>> }) 
           type='file'
           hidden
           multiple
-          onChange={(e) => {
-            const files = e.target.files
-            if (!files) return
-            for (const f of Array.from(files)) {
-              append(f)
-            }
-          }}
+          onChange={
+            item
+              ? async (e) => {
+                  const files = e.target.files
+                  if (!files) return
+                  setIsLoading(true)
+                  const formData = new FormData()
+                  for (let i = 0; i < files.length; i++) {
+                    formData.append('photo', files[i])
+                    formData.append('sorted', `${i + item.photos.length + 1}`)
+                  }
+                  await uploadItemPhotos(item.id, formData).finally(() => {
+                    setIsLoading(false)
+                  })
+                  for (const f of Array.from(files)) {
+                    append(f)
+                  }
+                }
+              : (e) => {
+                  const files = e.target.files
+                  if (!files) return
+                  for (const f of Array.from(files)) {
+                    append(f)
+                  }
+                }
+          }
         />
       </label>
       {fields.length === 0 ? (
@@ -263,8 +286,45 @@ function UploadImage({ control }: { control: Control<z.input<typeof Schema>> }) 
                     <ImageItem
                       src={field.value}
                       error={fieldState.error?.message}
-                      onChange={(file) => field.onChange(file)}
-                      // onDelete={() => remove(i)}
+                      onDelete={
+                        item
+                          ? async () => {
+                              setIsLoading(true)
+                              await deleteItemPhoto(item.id, i + 1).finally(() => {
+                                setIsLoading(false)
+                              })
+                              remove(i)
+                            }
+                          : () => remove(i)
+                      }
+                      onMoveUp={
+                        item
+                          ? async () => {
+                              setIsLoading(true)
+                              await changeItemPhotoSort(item.id, {
+                                originalSorted: i + 1,
+                                newSorted: i,
+                              }).finally(() => {
+                                setIsLoading(false)
+                              })
+                              move(i, i - 1)
+                            }
+                          : () => move(i, i - 1)
+                      }
+                      onMoveDown={
+                        item
+                          ? async () => {
+                              setIsLoading(true)
+                              await changeItemPhotoSort(item.id, {
+                                originalSorted: i + 1,
+                                newSorted: i + 2,
+                              }).finally(() => {
+                                setIsLoading(false)
+                              })
+                              move(i, i + 1)
+                            }
+                          : () => move(i, i + 1)
+                      }
                     />
                   )}
                 />
@@ -284,11 +344,15 @@ function ImageItem({
   error,
   onChange,
   onDelete,
+  onMoveUp,
+  onMoveDown,
 }: {
   src: z.input<typeof Schema>['photos'][number]
   error?: string
   onChange?: (file: File) => void
   onDelete?: () => void
+  onMoveUp?: () => void
+  onMoveDown?: () => void
 }) {
   const [url, setUrl] = useState(
     'photo' in src ? src.photo : URL.createObjectURL(src),
@@ -333,6 +397,22 @@ function ImageItem({
             <button type='button' className='size-7' onClick={() => onDelete()}>
               <span className='sr-only'>Delete</span>
               <XMarkIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+            </button>
+          )}
+        </div>
+
+        <div className='absolute bottom-0 right-0 top-auto flex h-fit justify-end gap-x-2 pb-1.5 pr-1.5'>
+          {onMoveUp && (
+            <button type='button' className='size-7' onClick={() => onMoveUp()}>
+              <span className='sr-only'>Move up</span>
+              <ArrowLeftIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+            </button>
+          )}
+
+          {onMoveDown && (
+            <button type='button' className='size-7' onClick={() => onMoveDown()}>
+              <span className='sr-only'>Move down</span>
+              <ArrowRightIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
             </button>
           )}
         </div>

@@ -9,8 +9,8 @@ export default function PreviewPhotos({
   photos,
 }: {
   photos: Array<{
+    sorted: number
     photo: string
-    index: number
   }>
 }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ startIndex: 0 })
@@ -28,8 +28,8 @@ export default function PreviewPhotos({
       className='aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75'
     >
       <div className='flex'>
-        {photos.map(({ photo, index }) => (
-          <div key={index} className='min-w-0 shrink-0 basis-full'>
+        {photos.map(({ photo, sorted }) => (
+          <div key={sorted} className='min-w-0 shrink-0 basis-full'>
             <img
               src={photo}
               className='h-full w-full object-cover object-center'

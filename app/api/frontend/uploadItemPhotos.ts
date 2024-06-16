@@ -8,15 +8,7 @@ type Data = 'Success'
 
 type ErrorCode = never
 
-export async function createItem(formData: FormData) {
-  const name = formData.get('name')
-  if (typeof name !== 'string' || name === '') {
-    throw new Error('name is required and should be a string')
-  }
-  const reservePrice = formData.get('reservePrice')
-  if (typeof reservePrice !== 'string' || Number.isNaN(Number(reservePrice))) {
-    throw new Error('reservePrice should be a number')
-  }
+export async function uploadItemPhotos(id: number, formData: FormData) {
   if (formData.getAll('photo').length === 0) {
     throw new Error('photo is required and should be an array of files')
   }
@@ -24,7 +16,7 @@ export async function createItem(formData: FormData) {
     throw new Error('photo and sorted should have the same length')
   }
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>('/frontend/items', {
+  const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}/photos`, {
     method: 'POST',
     body: formData,
   })

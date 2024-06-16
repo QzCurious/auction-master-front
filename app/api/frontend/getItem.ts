@@ -14,19 +14,20 @@ const ReqSchema = z.object({
 
 export interface Item {
   id: number
-  nickname: string
+  consignorID: number
   type: number
   name: string
   description: string
   photos: Array<{
-    index: number
+    sorted: number
     photo: string
   }>
   space: number
   minEstimatedPrice: number
   maxEstimatedPrice: number
+  sellerID: number
   reservePrice: number
-  expireAt: string
+  expireAt: any
   status: number
   createdAt: string
   updatedAt: string
@@ -34,7 +35,10 @@ export interface Item {
 
 interface Data extends Item {}
 
-type ErrorCode = never
+/**
+ * 1801: item not exist
+ */
+type ErrorCode = '1801'
 
 export async function getItem(id: number) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}`, {
