@@ -28,19 +28,19 @@ export default async function Page({ searchParams }: PageProps) {
       <div className='mx-auto max-w-7xl overflow-hidden px-4 py-16 sm:px-6 sm:py-24 lg:px-8'>
         <div className='md:flex md:items-center md:justify-between'>
           <h2 className='text-2xl font-bold tracking-tight text-gray-900'>
-            我的商品
+            我的物品
           </h2>
           <Link
-            href='/products/create'
+            href='/items/create'
             className='hidden text-sm font-medium text-indigo-600 hover:text-indigo-500 md:block'
           >
-            新增商品
+            新增物品
             <span aria-hidden='true'> &rarr;</span>
           </Link>
         </div>
 
         {itemsRes.data.items.length === 0 && (
-          <p className='mt-6 text-base leading-6 text-gray-500'>沒有商品</p>
+          <p className='mt-6 text-base leading-6 text-gray-500'>沒有物品</p>
         )}
 
         <div className='mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8'>
@@ -51,7 +51,7 @@ export default async function Page({ searchParams }: PageProps) {
             return (
               <div key={item.id} className='relative'>
                 <Link
-                  href={`/products/edit/${item.id}`}
+                  href={`/items/edit/${item.id}`}
                   className='absolute right-1.5 top-1.5 z-20'
                 >
                   <PencilSquareIcon

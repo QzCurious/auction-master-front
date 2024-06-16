@@ -44,11 +44,11 @@ const Schema = z.object({
     .max(30, { message: 'Max 30 photos' }),
 })
 
-interface ProductFormProps {
+interface ItemFormProps {
   item?: Item
 }
 
-export default function ProductForm({ item }: ProductFormProps) {
+export default function ItemForm({ item }: ItemFormProps) {
   const {
     control,
     handleSubmit,
@@ -86,7 +86,7 @@ export default function ProductForm({ item }: ProductFormProps) {
                     return
                   }
                 }
-                router.push('/products')
+                router.push('/items')
               }
             : async (data) => {
                 const formData = new FormData()
@@ -104,7 +104,7 @@ export default function ProductForm({ item }: ProductFormProps) {
                   setError('root', { message: `Failed to create item: ${res.error}` })
                   return
                 }
-                router.push('/products')
+                router.push('/items')
               },
         )}
       >
@@ -118,7 +118,7 @@ export default function ProductForm({ item }: ProductFormProps) {
                   htmlFor='username'
                   className='block text-sm font-medium leading-6 text-gray-900'
                 >
-                  商品名稱
+                  物品名稱
                 </label>
                 <div className='mt-2'>
                   <input
@@ -225,7 +225,7 @@ function UploadImage({
 
       <label htmlFor='file-upload' className='inline-flex items-center gap-x-2'>
         <span className='text-sm font-medium leading-6 text-gray-900'>
-          商品圖片 <span className='text-gray-500'>(自動儲存)</span>
+          物品圖片 <span className='text-gray-500'>(自動儲存)</span>
         </span>
         <PlusIcon className='h-5 w-5 rounded bg-indigo-500 p-0.5 text-white hover:bg-indigo-400' />
         <input

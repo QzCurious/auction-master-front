@@ -7,7 +7,7 @@ import { logout } from '../api/logout'
 import { MobileMenu, MobileMenuProvider, MobileMenuToggle } from './components'
 
 const navigation = [
-  { name: '我的商品', href: '/products' },
+  { name: '我的物品', href: '/items' },
   { name: 'Features', href: '#' },
   { name: 'Marketplace', href: '#' },
   { name: 'Company', href: '#' },

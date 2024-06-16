@@ -4,7 +4,7 @@ import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import ProductForm from '../../ProductForm'
+import ItemForm from '../../ItemForm'
 
 interface PageProps {
   params: { id: string }
@@ -15,14 +15,14 @@ async function Page(pageProps: PageProps) {
     <div className='mx-auto max-w-3xl px-8'>
       <Link
         className='inline-flex items-center gap-x-1 text-sm text-indigo-600 hover:text-indigo-500'
-        href='/products'
+        href='/items'
       >
         <ArrowLeftIcon className='size-4 stroke-2' />
-        回到商品列表
+        回到物品列表
       </Link>
 
       <h1 className='mb-4 text-2xl font-bold tracking-tight text-gray-900'>
-        编辑商品
+        編輯物品
       </h1>
 
       <Form {...pageProps} />
@@ -51,5 +51,5 @@ async function Form({ params }: PageProps) {
     notFound()
   }
 
-  return <ProductForm item={item.data} />
+  return <ItemForm item={item.data} />
 }
