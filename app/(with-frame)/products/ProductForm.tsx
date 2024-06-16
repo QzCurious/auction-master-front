@@ -298,32 +298,36 @@ function UploadImage({
                           : () => remove(i)
                       }
                       onMoveUp={
-                        item
-                          ? async () => {
-                              setIsLoading(true)
-                              await changeItemPhotoSort(item.id, {
-                                originalSorted: i + 1,
-                                newSorted: i,
-                              }).finally(() => {
-                                setIsLoading(false)
-                              })
-                              move(i, i - 1)
-                            }
-                          : () => move(i, i - 1)
+                        i === 0
+                          ? false
+                          : item
+                            ? async () => {
+                                setIsLoading(true)
+                                await changeItemPhotoSort(item.id, {
+                                  originalSorted: i + 1,
+                                  newSorted: i,
+                                }).finally(() => {
+                                  setIsLoading(false)
+                                })
+                                move(i, i - 1)
+                              }
+                            : () => move(i, i - 1)
                       }
                       onMoveDown={
-                        item
-                          ? async () => {
-                              setIsLoading(true)
-                              await changeItemPhotoSort(item.id, {
-                                originalSorted: i + 1,
-                                newSorted: i + 2,
-                              }).finally(() => {
-                                setIsLoading(false)
-                              })
-                              move(i, i + 1)
-                            }
-                          : () => move(i, i + 1)
+                        i === fields.length - 1
+                          ? false
+                          : item
+                            ? async () => {
+                                setIsLoading(true)
+                                await changeItemPhotoSort(item.id, {
+                                  originalSorted: i + 1,
+                                  newSorted: i + 2,
+                                }).finally(() => {
+                                  setIsLoading(false)
+                                })
+                                move(i, i + 1)
+                              }
+                            : () => move(i, i + 1)
                       }
                     />
                   )}
@@ -351,8 +355,8 @@ function ImageItem({
   error?: string
   onChange?: (file: File) => void
   onDelete?: () => void
-  onMoveUp?: () => void
-  onMoveDown?: () => void
+  onMoveUp?: (() => void) | false
+  onMoveDown?: (() => void) | false
 }) {
   const [url, setUrl] = useState(
     'photo' in src ? src.photo : URL.createObjectURL(src),
@@ -402,19 +406,26 @@ function ImageItem({
         </div>
 
         <div className='absolute bottom-0 right-0 top-auto flex h-fit justify-end gap-x-2 pb-1.5 pr-1.5'>
-          {onMoveUp && (
-            <button type='button' className='size-7' onClick={() => onMoveUp()}>
-              <span className='sr-only'>Move up</span>
-              <ArrowLeftIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
-            </button>
-          )}
+          <button
+            type='button'
+            className={clsx('size-7', !onMoveUp && 'pointer-events-none opacity-50')}
+            onClick={() => onMoveUp && onMoveUp()}
+          >
+            <span className='sr-only'>Move up</span>
+            <ArrowLeftIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+          </button>
 
-          {onMoveDown && (
-            <button type='button' className='size-7' onClick={() => onMoveDown()}>
-              <span className='sr-only'>Move down</span>
-              <ArrowRightIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
-            </button>
-          )}
+          <button
+            type='button'
+            className={clsx(
+              'size-7',
+              !onMoveDown && 'pointer-events-none opacity-50',
+            )}
+            onClick={() => onMoveDown && onMoveDown()}
+          >
+            <span className='sr-only'>Move down</span>
+            <ArrowRightIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+          </button>
         </div>
       </article>
       {error && <p className='text-end text-sm text-red-600'>{error}</p>}
