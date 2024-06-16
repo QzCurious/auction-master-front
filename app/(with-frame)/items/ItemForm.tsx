@@ -4,9 +4,12 @@ import { changeItemPhotoSort } from '@/app/api/frontend/items/changeItemPhotoSor
 import { createItem } from '@/app/api/frontend/items/createItem'
 import { deleteItemPhoto } from '@/app/api/frontend/items/deleteItemPhoto'
 import { Item } from '@/app/api/frontend/items/getItem'
+import { itemAppraisal } from '@/app/api/frontend/items/itemAppraisal'
 import { updateItem } from '@/app/api/frontend/items/updateItem'
 import { uploadItemPhotos } from '@/app/api/frontend/items/uploadItemPhotos'
+import ItemStatusBadge from '@/app/components/ItemStatusBadge'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
+import { itemStatusTextMap } from '@/app/static'
 import {
   ArrowLeftIcon,
   ArrowPathIcon,
@@ -27,6 +30,7 @@ import {
   useForm,
 } from 'react-hook-form'
 import { z } from 'zod'
+import { useItemStatusMap } from '../ConfigContext'
 
 const Schema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -64,6 +68,7 @@ export default function ItemForm({ item }: ItemFormProps) {
     resolver: zodResolver(Schema),
   })
   const router = useRouter()
+  const itemStatusMap = useItemStatusMap()
 
   return (
     <div>
@@ -171,7 +176,14 @@ export default function ItemForm({ item }: ItemFormProps) {
           <UploadImage control={control} item={item} />
         </div>
 
-        <div className='mt-6 flex items-center justify-end gap-x-6'>
+        <div className='mt-6 flex items-center gap-x-6'>
+          {item?.status &&
+            Object.keys(itemStatusTextMap).includes(item.status.toString()) && (
+              <ItemStatusBadge status={item.status} />
+            )}
+
+          <div className='mx-auto'></div>
+
           {process.env.NODE_ENV === 'development' && (
             <button
               type='button'
@@ -180,6 +192,10 @@ export default function ItemForm({ item }: ItemFormProps) {
             >
               Log values
             </button>
+          )}
+
+          {item && item.status === itemStatusMap?.['InitStatus'] && (
+            <AppraisalButton item={item} />
           )}
 
           <button
@@ -197,6 +213,26 @@ export default function ItemForm({ item }: ItemFormProps) {
         </div>
       </form>
     </div>
+  )
+}
+
+function AppraisalButton({ item }: { item: Item }) {
+  const [isLoading, setIsLoading] = useState(false)
+
+  return (
+    <button
+      type='button'
+      className='rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
+      onClick={async () => {
+        setIsLoading(true)
+        await itemAppraisal(item.id).finally(() => setIsLoading(false))
+      }}
+    >
+      {isLoading && (
+        <span className='mr-2 inline-block size-3 animate-spin self-center rounded-full border-2 border-l-0 border-gray-300'></span>
+      )}
+      申請估價
+    </button>
   )
 }
 

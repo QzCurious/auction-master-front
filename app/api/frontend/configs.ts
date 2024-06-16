@@ -3,7 +3,7 @@
 import { apiClient } from '../apiClient'
 import { withAuth } from '../withAuth'
 
-export interface Config {
+export interface Configs {
   yahooAuctionFeeRate: number
   commissionRate: number
   commissionBonusRate: number
@@ -33,7 +33,7 @@ export interface Config {
   shippingInfo: string
 }
 
-interface Data extends Config {}
+interface Data extends Configs {}
 
 type ErrorCode = never
 
