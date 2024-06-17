@@ -256,7 +256,7 @@ function UploadImage({
 
       <label htmlFor='file-upload' className='inline-flex items-center gap-x-2'>
         <span className='text-sm font-medium leading-6 text-gray-900'>
-          物品圖片 <span className='text-gray-500'>(自動儲存)</span>
+          物品圖片 {item && <span className='text-gray-500'>(自動儲存)</span>}
         </span>
         <PlusIcon className='h-5 w-5 rounded bg-indigo-500 p-0.5 text-white hover:bg-indigo-400' />
         <input
