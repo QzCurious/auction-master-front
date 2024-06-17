@@ -226,7 +226,7 @@ function AppraisalButton({ item }: { item: Item }) {
       {isLoading && (
         <span className='mr-2 inline-block size-3 animate-spin self-center rounded-full border-2 border-l-0 border-gray-300'></span>
       )}
-      申請估價
+      提交審核
     </button>
   )
 }
