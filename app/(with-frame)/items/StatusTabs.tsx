@@ -22,7 +22,7 @@ export default function StatusTabs({ status }: StatusTabsProps) {
   const router = useRouter()
 
   return (
-    <div>
+    <div className='mt-2 sm:mt-4'>
       <div className='sm:hidden'>
         <label htmlFor='tabs' className='sr-only'>
           選擇狀態
@@ -32,10 +32,14 @@ export default function StatusTabs({ status }: StatusTabsProps) {
           name='tabs'
           className='block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm'
           value={status}
-          onChange={(event) => router.replace(event.target.value)}
+          onChange={(event) =>
+            router.replace(
+              tabs.find((tab) => tab.status === event.target.value)!.href,
+            )
+          }
         >
           {tabs.map((tab) => (
-            <option key={tab.name} value={tab.href}>
+            <option key={tab.name} value={tab.status}>
               {tab.name}
             </option>
           ))}

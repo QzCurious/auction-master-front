@@ -39,6 +39,8 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <div className='bg-white'>
       <div className='mx-auto max-w-7xl overflow-hidden px-4 pb-16 sm:px-6 lg:px-8'>
+        <h1 className='text-2xl font-bold tracking-tight text-gray-900'>我的物品</h1>
+
         <StatusTabs status={STATUS} />
 
         <div className='mt-6 flex items-center justify-end'>
