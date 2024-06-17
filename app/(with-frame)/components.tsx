@@ -9,7 +9,7 @@ import { UserContext } from '../UserContext'
 import { logout } from '../api/logout'
 
 export const navigation = [
-  { name: 'Items', href: '/items' },
+  { name: '我的物品', href: '/items/draft' },
   { name: 'Features', href: '#' },
   { name: 'Marketplace', href: '#' },
   { name: 'Company', href: '#' },

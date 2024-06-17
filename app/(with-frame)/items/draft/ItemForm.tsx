@@ -30,7 +30,7 @@ import {
   useForm,
 } from 'react-hook-form'
 import { z } from 'zod'
-import { useItemStatusMap } from '../ConfigContext'
+import { useItemStatusMap } from '../../ConfigContext'
 
 const Schema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -91,7 +91,7 @@ export default function ItemForm({ item }: ItemFormProps) {
                     return
                   }
                 }
-                router.push('/items')
+                router.push('/items/draft')
               }
             : async (data) => {
                 const formData = new FormData()
@@ -109,7 +109,7 @@ export default function ItemForm({ item }: ItemFormProps) {
                   setError('root', { message: `Failed to create item: ${res.error}` })
                   return
                 }
-                router.push('/items')
+                router.push('/items/draft')
               },
         )}
       >
@@ -177,11 +177,6 @@ export default function ItemForm({ item }: ItemFormProps) {
         </div>
 
         <div className='mt-6 flex items-center gap-x-6'>
-          {item?.status &&
-            Object.keys(itemStatusTextMap).includes(item.status.toString()) && (
-              <ItemStatusBadge status={item.status} />
-            )}
-
           <div className='mx-auto'></div>
 
           {process.env.NODE_ENV === 'development' && (
