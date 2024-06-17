@@ -9,7 +9,11 @@ export function withAuth(_apiClient: typeof apiClient) {
     const refresh = await getToken()
 
     if (refresh.token === null) {
-      console.log('Auth: failed to refresh token')
+      if (refresh.res) {
+        return refresh.res
+      }
+
+      console.log('Auth: No token')
       return (
         refresh.res ?? {
           data: null,
@@ -27,10 +31,14 @@ export function withAuth(_apiClient: typeof apiClient) {
     const res = await _apiClient<Data, ErrorCode>(input, {
       ...init,
       headers: {
-        Authorization: refresh.token ? `Bearer ${refresh.token}` : '',
+        Authorization: `Bearer ${refresh.token}`,
         ...init?.headers,
       },
     })
+
+    if (res.error === '1003') {
+      console.log('1003 bug token might not yet expired', refresh.token)
+    }
 
     return res
   }
