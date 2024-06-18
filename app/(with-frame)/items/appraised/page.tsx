@@ -65,7 +65,7 @@ export default async function Page({ searchParams }: PageProps) {
                 
                   <h3 className='font-medium text-gray-900'>{item.name}</h3>
                 <p className='font-medium text-gray-900'>
-                  期望價格: ${item.reservePrice}
+                  期望價格: {item.reservePrice}
                 </p>
                 {!!item.expireAt && (
                   <p className='italic text-gray-500'>
