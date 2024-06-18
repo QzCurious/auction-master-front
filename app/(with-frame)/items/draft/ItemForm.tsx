@@ -149,7 +149,7 @@ export default function ItemForm({ item }: ItemFormProps) {
                   className='block text-sm font-medium leading-6 text-gray-900'
                   title='reservePrice'
                 >
-                  底價
+                  期望價格
                 </label>
                 <div className='mt-2'>
                   <input
