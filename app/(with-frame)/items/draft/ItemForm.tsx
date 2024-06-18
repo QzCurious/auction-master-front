@@ -7,9 +7,7 @@ import { Item } from '@/app/api/frontend/items/getItem'
 import { itemAppraisal } from '@/app/api/frontend/items/itemAppraisal'
 import { updateItem } from '@/app/api/frontend/items/updateItem'
 import { uploadItemPhotos } from '@/app/api/frontend/items/uploadItemPhotos'
-import ItemStatusBadge from '@/app/components/ItemStatusBadge'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
-import { itemStatusTextMap } from '@/app/static'
 import {
   ArrowLeftIcon,
   ArrowPathIcon,
@@ -408,10 +406,10 @@ function ImageItem({
 
   return (
     <div>
-      <article className='aspect-h-7 aspect-w-10 relative block w-60 overflow-hidden rounded-lg'>
+      <article className='aspect-h-7 aspect-w-10 relative block w-60 overflow-hidden rounded-lg bg-gray-100'>
         <img
           src={'photo' in src ? src.photo + '?edit' : url}
-          className='pointer-events-none object-cover'
+          className='pointer-events-none object-contain'
           alt=''
         />
 

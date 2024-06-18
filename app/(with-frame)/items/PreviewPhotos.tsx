@@ -32,7 +32,7 @@ export default function PreviewPhotos({
           <div key={sorted} className='min-w-0 shrink-0 basis-full'>
             <img
               src={photo}
-              className='h-full w-full object-cover object-center'
+              className='h-full w-full object-contain object-center'
               alt=''
             />
           </div>
