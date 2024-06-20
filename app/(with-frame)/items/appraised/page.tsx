@@ -1,9 +1,7 @@
 import NotSignedInError from '@/app/NotSignedInError'
-import { configs } from '@/app/api/frontend/configs'
+import { ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
 import { items } from '@/app/api/frontend/items/items'
-import ItemStatusBadge from '@/app/components/ItemStatusBadge'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
-import { format } from 'date-fns'
 import Link from 'next/link'
 import PreviewPhotos from '../PreviewPhotos'
 import StatusTabs from '../StatusTabs'
@@ -20,18 +18,10 @@ interface PageProps {
 const STATUS = 'AppraisedStatus'
 
 export default async function Page({ searchParams }: PageProps) {
-  const configsRes = await configs()
-  if (configsRes.error === '1003') {
-    return <NotSignedInError />
-  }
-  const status = configsRes.data.itemStatus.find(
-    (status) => status.key === STATUS,
-  )?.value
-  if (!status) {
-    throw new Error('Backend bug')
-  }
-
-  const itemsRes = await items({ ...(searchParams as any), status })
+  const itemsRes = await items({
+    ...(searchParams as any),
+    status: ITEM_STATUS_MAP[STATUS],
+  })
 
   if (itemsRes.error === '1003') {
     return <NotSignedInError />

@@ -1,5 +1,6 @@
 'use client'
 
+import { ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
 import { changeItemPhotoSort } from '@/app/api/frontend/items/changeItemPhotoSort'
 import { createItem } from '@/app/api/frontend/items/createItem'
 import { deleteItemPhoto } from '@/app/api/frontend/items/deleteItemPhoto'
@@ -28,7 +29,6 @@ import {
   useForm,
 } from 'react-hook-form'
 import { z } from 'zod'
-import { useItemStatusMap } from '../../ConfigContext'
 
 const Schema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -66,7 +66,6 @@ export default function ItemForm({ item }: ItemFormProps) {
     resolver: zodResolver(Schema),
   })
   const router = useRouter()
-  const itemStatusMap = useItemStatusMap()
 
   return (
     <div>
@@ -187,7 +186,7 @@ export default function ItemForm({ item }: ItemFormProps) {
             </button>
           )}
 
-          {item && item.status === itemStatusMap?.['InitStatus'] && (
+          {item && item.status === ITEM_STATUS_MAP['InitStatus'] && (
             <AppraisalButton item={item} />
           )}
 

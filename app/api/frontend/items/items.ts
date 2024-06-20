@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
-import { configs } from '../configs'
 
 export const ReqSchema = z.object({
   status: z.coerce.number().optional(),
@@ -40,18 +39,6 @@ type ErrorCode = never
 export async function items(payload: z.input<typeof ReqSchema>) {
   'use server'
   const parsed = throwIfInvalid(payload, ReqSchema)
-
-  const configsRes = await configs()
-
-  if (configsRes.error) {
-    return configsRes
-  }
-
-  const status = configsRes.data.itemStatus.find(({ key }) => key === 'InitStatus')
-
-  if (!status) {
-    throw new Error('Backend bug')
-  }
 
   const query = new URLSearchParams()
   parsed.status != null && query.append('status', parsed.status.toString())
