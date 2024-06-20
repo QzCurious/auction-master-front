@@ -40,7 +40,18 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <div className='bg-white'>
       <div className='mx-auto max-w-7xl overflow-hidden px-4 pb-16 sm:px-6 lg:px-8'>
-        <h1 className='text-2xl font-bold tracking-tight text-gray-900'>我的物品</h1>
+        <div className='flex justify-between gap-x-4'>
+          <h1 className='text-2xl font-bold tracking-tight text-gray-900'>
+            我的物品
+          </h1>
+          <Link
+            href='/items/draft/create'
+            className='block text-sm font-medium text-indigo-600 hover:text-indigo-500'
+          >
+            新增物品
+            <span aria-hidden='true'> &rarr;</span>
+          </Link>
+        </div>
 
         <StatusTabs status={STATUS} />
 
@@ -64,14 +75,6 @@ export default async function Page({ searchParams }: PageProps) {
                 <PreviewPhotos photos={item.photos} />
 
                 <h3 className='font-medium text-gray-900'>{item.name}</h3>
-                <p className='font-medium text-gray-900'>
-                  期望價格: {item.reservePrice}
-                </p>
-                {!!item.expireAt && (
-                  <p className='italic text-gray-500'>
-                    時效: {format(item.expireAt, 'yyyy-MM-dd HH:mm:ss')}
-                  </p>
-                )}
               </div>
             )
           })}

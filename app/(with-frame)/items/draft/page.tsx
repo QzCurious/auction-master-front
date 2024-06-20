@@ -2,7 +2,6 @@ import NotSignedInError from '@/app/NotSignedInError'
 import { configs } from '@/app/api/frontend/configs'
 import { items } from '@/app/api/frontend/items/items'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
-import { format } from 'date-fns'
 import Link from 'next/link'
 import PreviewPhotos from '../PreviewPhotos'
 import StatusTabs from '../StatusTabs'
@@ -39,11 +38,10 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <div className='bg-white'>
       <div className='mx-auto max-w-7xl overflow-hidden px-4 pb-16 sm:px-6 lg:px-8'>
-        <h1 className='text-2xl font-bold tracking-tight text-gray-900'>我的物品</h1>
-
-        <StatusTabs status={STATUS} />
-
-        <div className='mt-6 flex items-center justify-end'>
+        <div className='flex justify-between gap-x-4'>
+          <h1 className='text-2xl font-bold tracking-tight text-gray-900'>
+            我的物品
+          </h1>
           <Link
             href='/items/draft/create'
             className='block text-sm font-medium text-indigo-600 hover:text-indigo-500'
@@ -52,6 +50,8 @@ export default async function Page({ searchParams }: PageProps) {
             <span aria-hidden='true'> &rarr;</span>
           </Link>
         </div>
+
+        <StatusTabs status={STATUS} />
 
         {itemsRes.data.items.length === 0 && (
           <p className='mt-6 text-base leading-6 text-gray-500'>沒有物品</p>
@@ -73,14 +73,6 @@ export default async function Page({ searchParams }: PageProps) {
                 <PreviewPhotos photos={item.photos} />
 
                 <h3 className='font-medium text-gray-900'>{item.name}</h3>
-                <p className='font-medium text-gray-900'>
-                  期望價格: {item.reservePrice}
-                </p>
-                {!!item.expireAt && (
-                  <p className='italic text-gray-500'>
-                    時效: {format(item.expireAt, 'yyyy-MM-dd HH:mm:ss')}
-                  </p>
-                )}
               </article>
             )
           })}
