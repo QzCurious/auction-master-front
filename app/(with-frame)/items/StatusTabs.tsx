@@ -2,12 +2,14 @@
 
 import { Configs } from '@/app/api/frontend/configs'
 import clsx from 'clsx'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const tabs = [
   { name: '未審核', href: '/items/draft', status: 'InitStatus' },
   { name: '已提交審核', href: '/items/appraising', status: 'SubmitAppraisalStatus' },
   { name: '審核通過', href: '/items/appraised', status: 'AppraisedStatus' },
+  { name: '估價失敗', href: '/items/rejected', status: 'AppraisalFailureStatus' },
 ] satisfies Array<{
   name: string
   href: string
@@ -49,7 +51,7 @@ export default function StatusTabs({ status }: StatusTabsProps) {
         <div className='border-b border-gray-200'>
           <nav className='-mb-px flex gap-x-2' aria-label='Tabs'>
             {tabs.map((tab) => (
-              <a
+              <Link
                 key={tab.status}
                 href={tab.href}
                 className={clsx(
@@ -61,7 +63,7 @@ export default function StatusTabs({ status }: StatusTabsProps) {
                 aria-current={status === tab.status ? 'page' : undefined}
               >
                 {tab.name}
-              </a>
+              </Link>
             ))}
           </nav>
         </div>
