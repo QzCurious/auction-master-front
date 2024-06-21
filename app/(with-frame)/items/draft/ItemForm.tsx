@@ -20,7 +20,7 @@ import { PhotoIcon } from '@heroicons/react/24/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, useTransition } from 'react'
+import { useEffect, useMemo, useState, useTransition } from 'react'
 import {
   Control,
   Controller,
@@ -28,6 +28,7 @@ import {
   useFieldArray,
   useForm,
 } from 'react-hook-form'
+import { toast } from 'react-hot-toast'
 import { z } from 'zod'
 
 const Schema = z.object({
@@ -51,21 +52,30 @@ interface ItemFormProps {
 }
 
 export default function ItemForm({ item }: ItemFormProps) {
+  const defaultValues = useMemo(
+    () => ({
+      name: item?.name ?? '',
+      reservePrice: item?.reservePrice ?? ('' as any),
+      photos: item?.photos ?? [],
+    }),
+    [item?.name, item?.photos, item?.reservePrice],
+  )
   const {
     control,
     handleSubmit,
     getValues,
     setError,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting, errors, isDirty },
+    reset,
   } = useForm<z.input<typeof Schema>>({
-    defaultValues: {
-      name: item?.name ?? '',
-      reservePrice: item?.reservePrice ?? ('' as any),
-      photos: item?.photos ?? [],
-    },
+    defaultValues,
     resolver: zodResolver(Schema),
   })
   const router = useRouter()
+
+  useEffect(() => {
+    reset(defaultValues)
+  }, [defaultValues, reset])
 
   return (
     <div>
@@ -88,7 +98,7 @@ export default function ItemForm({ item }: ItemFormProps) {
                     return
                   }
                 }
-                router.push('/items/draft')
+                toast.success('更新成功')
               }
             : async (data) => {
                 const formData = new FormData()
@@ -106,6 +116,7 @@ export default function ItemForm({ item }: ItemFormProps) {
                   setError('root', { message: `Failed to create item: ${res.error}` })
                   return
                 }
+                toast.success('新增成功')
                 router.push('/items/draft')
               },
         )}
@@ -173,7 +184,7 @@ export default function ItemForm({ item }: ItemFormProps) {
           <UploadImage control={control} item={item} />
         </div>
 
-        <div className='mt-6 flex items-center gap-x-6'>
+        <div className='mt-6 flex items-center gap-x-4'>
           <div className='mx-auto'></div>
 
           {process.env.NODE_ENV === 'development' && (
@@ -186,8 +197,18 @@ export default function ItemForm({ item }: ItemFormProps) {
             </button>
           )}
 
-          {item && item.status === ITEM_STATUS_MAP['InitStatus'] && (
+          {!isDirty && item && item.status === ITEM_STATUS_MAP['InitStatus'] && (
             <AppraisalButton item={item} />
+          )}
+
+          {isDirty && (
+            <button
+              type='button'
+              className='rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
+              onClick={() => reset()}
+            >
+              重設
+            </button>
           )}
 
           <button
@@ -209,18 +230,22 @@ export default function ItemForm({ item }: ItemFormProps) {
 }
 
 function AppraisalButton({ item }: { item: Item }) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
   return (
     <button
       type='button'
       className='rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
-      onClick={async () => {
-        setIsLoading(true)
-        await itemAppraisal(item.id).finally(() => setIsLoading(false))
+      onClick={() => {
+        startTransition(async () => {
+          await itemAppraisal(item.id)
+          toast.success('審核已提交')
+          router.push('/items/appraising')
+        })
       }}
     >
-      {isLoading && (
+      {isPending && (
         <span className='mr-2 inline-block size-3 animate-spin self-center rounded-full border-2 border-l-0 border-gray-300'></span>
       )}
       提交審核
