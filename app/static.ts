@@ -1,4 +1,5 @@
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
+import { z } from 'zod'
 
 export const itemStatusTextMap = {
   2: '已提交估價',
@@ -25,9 +26,11 @@ export const cookieConfigs = {
   },
 } satisfies Record<string, { name: string; opts: Partial<ResponseCookie> }>
 
-const formatCurrency = (num: number) => {
-  return num.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  })
-}
+export const ROWS_PER_PAGE = 'rowsPerPage'
+export const PAGE = 'page'
+export const PaginationSchema = z.object({
+  [ROWS_PER_PAGE]: z.coerce.number().min(1).default(10).catch(10),
+  [PAGE]: z.coerce.number().min(0).default(0).catch(0),
+})
+export type PaginationSearchParams = z.output<typeof PaginationSchema>
+export const defaultPagination = PaginationSchema.parse({})
