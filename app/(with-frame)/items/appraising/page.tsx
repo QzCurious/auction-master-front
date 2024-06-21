@@ -1,26 +1,24 @@
 import NotSignedInError from '@/app/NotSignedInError'
 import { ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
 import { items } from '@/app/api/frontend/items/items'
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import { EyeIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import PreviewPhotos from '../PreviewPhotos'
 import StatusTabs from '../StatusTabs'
 
 interface PageProps {
   searchParams: {
-    sort: string
-    order: string
     limit: string
     offset: string
   }
 }
 
-const STATUS = 'SubmitAppraisalStatus'
-
 export default async function Page({ searchParams }: PageProps) {
   const itemsRes = await items({
     ...(searchParams as any),
-    status: ITEM_STATUS_MAP[STATUS],
+    status: [ITEM_STATUS_MAP.SubmitAppraisalStatus, ITEM_STATUS_MAP.AppraisedStatus],
+    sort: 'status',
+    order: 'desc',
   })
 
   if (itemsRes.error === '1003') {
@@ -43,7 +41,7 @@ export default async function Page({ searchParams }: PageProps) {
           </Link>
         </div>
 
-        <StatusTabs status={STATUS} />
+        <StatusTabs active='已提交審核' />
 
         {itemsRes.data.items.length === 0 && (
           <p className='mt-6 text-base leading-6 text-gray-500'>沒有物品</p>
@@ -54,17 +52,30 @@ export default async function Page({ searchParams }: PageProps) {
             return (
               <div key={item.id} className='relative'>
                 <Link
-                  href={`/items/edit/${item.id}`}
+                  href={`/items/appraising/${item.id}`}
                   className='absolute right-1.5 top-1.5 z-20'
                 >
-                  <PencilSquareIcon
+                  <EyeIcon
                     className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600'
                     aria-hidden='true'
                   />
                 </Link>
                 <PreviewPhotos photos={item.photos} />
 
-                <h3 className='font-medium text-gray-900'>{item.name}</h3>
+                <h3 className='mt-1 text-xl font-medium text-gray-900'>
+                  {item.name}
+                </h3>
+
+                {item.status === ITEM_STATUS_MAP['SubmitAppraisalStatus'] && (
+                  <p className='inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600'>
+                    審核中
+                  </p>
+                )}
+                {item.status === ITEM_STATUS_MAP['AppraisedStatus'] && (
+                  <p className='inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700'>
+                    審核通過
+                  </p>
+                )}
               </div>
             )
           })}

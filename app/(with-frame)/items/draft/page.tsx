@@ -8,19 +8,15 @@ import StatusTabs from '../StatusTabs'
 
 interface PageProps {
   searchParams: {
-    sort: string
-    order: string
     limit: string
     offset: string
   }
 }
 
-const STATUS = 'InitStatus'
-
 export default async function Page({ searchParams }: PageProps) {
   const itemsRes = await items({
     ...(searchParams as any),
-    status: ITEM_STATUS_MAP[STATUS],
+    status: [ITEM_STATUS_MAP.InitStatus],
   })
 
   if (itemsRes.error === '1003') {
@@ -43,7 +39,7 @@ export default async function Page({ searchParams }: PageProps) {
           </Link>
         </div>
 
-        <StatusTabs status={STATUS} />
+        <StatusTabs active='未審核' />
 
         {itemsRes.data.items.length === 0 && (
           <p className='mt-6 text-base leading-6 text-gray-500'>沒有物品</p>
@@ -64,7 +60,9 @@ export default async function Page({ searchParams }: PageProps) {
                 </Link>
                 <PreviewPhotos photos={item.photos} />
 
-                <h3 className='font-medium text-gray-900'>{item.name}</h3>
+                <h3 className='mt-1 text-xl font-medium text-gray-900'>
+                  {item.name}
+                </h3>
               </article>
             )
           })}

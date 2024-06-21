@@ -24,3 +24,10 @@ export const cookieConfigs = {
     },
   },
 } satisfies Record<string, { name: string; opts: Partial<ResponseCookie> }>
+
+const formatCurrency = (num: number) => {
+  return num.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  })
+}
