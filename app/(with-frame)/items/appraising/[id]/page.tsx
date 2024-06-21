@@ -53,7 +53,7 @@ async function Content({ params }: PageProps) {
     <>
       <div className='flex flex-col gap-x-10 gap-y-8 sm:flex-row'>
         <div className='min-w-0 flex-1'>
-          <div className='flex justify-between gap-x-6 sm:justify-start'>
+          <div className='flex items-center justify-between gap-x-6 sm:justify-start'>
             <h1 className='text-2xl font-bold text-gray-900'>{item.data.name}</h1>
 
             {item.data.status === ITEM_STATUS_MAP['SubmitAppraisalStatus'] && (
@@ -89,7 +89,11 @@ async function Content({ params }: PageProps) {
 
           <section className='mt-8 text-gray-700'>
             <h2 className='text-xl font-bold text-gray-900'>描述</h2>
-            <div className='mt-2'>{item.data.description}</div>
+            {item.data.description ? (
+              <div className='mt-2'>{item.data.description}</div>
+            ) : (
+              <div className='mt-2'>暫無描述</div>
+            )}
           </section>
         </div>
 
