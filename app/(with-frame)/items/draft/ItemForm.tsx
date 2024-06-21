@@ -20,7 +20,7 @@ import { PhotoIcon } from '@heroicons/react/24/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import {
   Control,
   Controller,
@@ -243,11 +243,11 @@ function UploadImage({
     control,
     name: 'photos',
   })
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   return (
     <div className='relative col-span-full'>
-      {isLoading && (
+      {isPending && (
         <div className='pointer-events-none absolute inset-0 z-10 animate-pulse rounded bg-black opacity-40' />
       )}
 
@@ -267,18 +267,17 @@ function UploadImage({
               ? async (e) => {
                   const files = e.target.files
                   if (!files) return
-                  setIsLoading(true)
                   const formData = new FormData()
                   for (let i = 0; i < files.length; i++) {
                     formData.append('photo', files[i])
                     formData.append('sorted', `${i + item.photos.length + 1}`)
                   }
-                  await uploadItemPhotos(item.id, formData).finally(() => {
-                    setIsLoading(false)
+                  startTransition(async () => {
+                    await uploadItemPhotos(item.id, formData)
+                    for (const f of Array.from(files)) {
+                      append(f)
+                    }
                   })
-                  for (const f of Array.from(files)) {
-                    append(f)
-                  }
                 }
               : (e) => {
                   const files = e.target.files
@@ -317,11 +316,10 @@ function UploadImage({
                       onDelete={
                         item
                           ? async () => {
-                              setIsLoading(true)
-                              await deleteItemPhoto(item.id, i + 1).finally(() => {
-                                setIsLoading(false)
+                              startTransition(async () => {
+                                await deleteItemPhoto(item.id, i + 1)
+                                remove(i)
                               })
-                              remove(i)
                             }
                           : () => remove(i)
                       }
@@ -330,14 +328,13 @@ function UploadImage({
                           ? false
                           : item
                             ? async () => {
-                                setIsLoading(true)
-                                await changeItemPhotoSort(item.id, {
-                                  originalSorted: i + 1,
-                                  newSorted: i,
-                                }).finally(() => {
-                                  setIsLoading(false)
+                                startTransition(async () => {
+                                  await changeItemPhotoSort(item.id, {
+                                    originalSorted: i + 1,
+                                    newSorted: i,
+                                  })
+                                  move(i, i - 1)
                                 })
-                                move(i, i - 1)
                               }
                             : () => move(i, i - 1)
                       }
@@ -346,14 +343,13 @@ function UploadImage({
                           ? false
                           : item
                             ? async () => {
-                                setIsLoading(true)
-                                await changeItemPhotoSort(item.id, {
-                                  originalSorted: i + 1,
-                                  newSorted: i + 2,
-                                }).finally(() => {
-                                  setIsLoading(false)
+                                startTransition(async () => {
+                                  await changeItemPhotoSort(item.id, {
+                                    originalSorted: i + 1,
+                                    newSorted: i + 2,
+                                  })
+                                  move(i, i + 1)
                                 })
-                                move(i, i + 1)
                               }
                             : () => move(i, i + 1)
                       }
