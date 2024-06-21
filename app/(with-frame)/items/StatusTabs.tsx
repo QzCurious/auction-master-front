@@ -1,6 +1,7 @@
 'use client'
 
 import { Configs } from '@/app/api/frontend/configs'
+import { ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -63,6 +64,8 @@ export default function StatusTabs({ status }: StatusTabsProps) {
                 aria-current={status === tab.status ? 'page' : undefined}
               >
                 {tab.name}
+                {process.env.NODE_ENV === 'development' &&
+                  ` (${tab.status}=${ITEM_STATUS_MAP[tab.status]})`}
               </Link>
             ))}
           </nav>
