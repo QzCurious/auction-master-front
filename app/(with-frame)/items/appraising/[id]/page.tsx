@@ -1,5 +1,5 @@
 import NotSignedInError from '@/app/NotSignedInError'
-import { ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
+import { ITEM_STATUS_MAP, ITEM_TYPE_MAP } from '@/app/api/frontend/configs.data'
 import { getItem } from '@/app/api/frontend/items/getItem'
 import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
@@ -77,7 +77,7 @@ async function Content({ params }: PageProps) {
                     className='aspect-h-7 aspect-w-10 relative block w-60 overflow-hidden rounded-lg bg-gray-100'
                   >
                     <img
-                      className='rounded-lg object-cover'
+                      className='rounded-lg object-contain object-center'
                       src={photo.photo}
                       alt=''
                     />
@@ -110,28 +110,36 @@ async function Content({ params }: PageProps) {
                   {item.data.reservePrice.toLocaleString()}
                 </dd>
               </div>
-              <div className='py-3'>
-                <dt className='text-sm font-medium leading-6 text-gray-900'>
-                  最低估值
-                </dt>
-                <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                  {item.data.minEstimatedPrice.toLocaleString()}
-                </dd>
-              </div>
-              <div className='py-3'>
-                <dt className='text-sm font-medium leading-6 text-gray-900'>
-                  最高估值
-                </dt>
-                <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                  {item.data.maxEstimatedPrice.toLocaleString()}
-                </dd>
-              </div>
+              {item.data.type === ITEM_TYPE_MAP['AppraisableAuctionItemType'] && (
+                <>
+                  <div className='py-3'>
+                    <dt className='text-sm font-medium leading-6 text-gray-900'>
+                      最低估值
+                    </dt>
+                    <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                      {item.data.minEstimatedPrice.toLocaleString()}
+                    </dd>
+                  </div>
+                  <div className='py-3'>
+                    <dt className='text-sm font-medium leading-6 text-gray-900'>
+                      最高估值
+                    </dt>
+                    <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                      {item.data.maxEstimatedPrice.toLocaleString()}
+                    </dd>
+                  </div>
+                </>
+              )}
             </dl>
           </section>
 
           {item.data.status === ITEM_STATUS_MAP['AppraisedStatus'] && (
-            <div className='mt-4'>
-              <button className='w-full rounded-md bg-indigo-600 px-4 py-2 text-sm text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>
+            <div className='mt-4 flex flex-col gap-y-4'>
+              <button className='rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'>
+                取消託售
+              </button>
+
+              <button className='rounded-md bg-indigo-600 px-4 py-2 text-sm text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>
                 託售
               </button>
             </div>
