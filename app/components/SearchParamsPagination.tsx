@@ -38,7 +38,7 @@ export function SearchParamsPagination({ count }: { count: number }) {
             router.replace(`${pathname}?${newSearchParams.toString()}`)
           }}
         >
-          {unique([pagination[ROWS_PER_PAGE], 5, 10, 20, 30]).map((item) => (
+          {unique([pagination[ROWS_PER_PAGE], 5, 10, 20, 30]).sort((a, b) => a - b).map((item) => (
             <option value={item} key={item}>
               {item}
             </option>
