@@ -4,6 +4,7 @@ export const CONFIGS_DATA = {
   yahooAuctionFeeRate: 0.1,
   commissionRate: 0.2,
   commissionBonusRate: 0.05,
+  lineURL: 'https://lin.ee/YgTRcyc',
   itemType: [
     {
       key: 'AppraisableAuctionItemType',
@@ -127,28 +128,34 @@ export const CONFIGS_DATA = {
   ],
   consignorStatus: [
     {
+      key: 'EnabledStatus',
       message: '啟用',
       value: 1,
     },
     {
+      key: 'AwaitingVerificationCompletionStatus',
       message: '身份尚未驗證',
       value: 11,
     },
     {
+      key: 'DisabledStatus',
       message: '禁用',
       value: 99,
     },
   ],
   consignorVerificationStatus: [
     {
+      key: 'AwaitingVerificationCompletionStatus',
       message: '尚未審核',
       value: 11,
     },
     {
+      key: 'VerificationSuccessfulStatus',
       message: '驗證成功',
       value: 12,
     },
     {
+      key: 'VerificationFailedStatus',
       message: '驗證失敗',
       value: 13,
     },
