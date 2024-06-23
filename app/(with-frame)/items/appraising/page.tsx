@@ -32,7 +32,7 @@ export default async function Page({ searchParams }: PageProps) {
   }
 
   return (
-    <div className='mx-auto max-w-7xl overflow-hidden px-4 pb-16 sm:px-6 lg:px-8'>
+    <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
       <div className='flex justify-between gap-x-4'>
         <h1 className='text-2xl font-bold tracking-tight text-gray-900'>我的物品</h1>
         <Link
