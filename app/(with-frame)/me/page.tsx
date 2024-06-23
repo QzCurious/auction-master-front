@@ -1,14 +1,14 @@
 import NotSignedInError from '@/app/NotSignedInError'
-import { getUser } from '@/app/api/helpers/getUser'
+import { getConsignor } from '@/app/api/frontend/consignor/getConsignor'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
 import DeleteAccountForm from './DeleteAccountForm'
 import IdentityForm from './IdentityForm'
 
 export default async function Example() {
-  const user = await getUser()
+  const consignorRes = await getConsignor()
 
-  if (!user) {
+  if (consignorRes.error === '1003') {
     return <NotSignedInError />
   }
 
@@ -19,7 +19,7 @@ export default async function Example() {
 
         <main className='px-4 sm:px-6 lg:flex-auto lg:px-0'>
           <div className='flex flex-col gap-y-12 px-4 sm:px-6 lg:px-8'>
-            <AccountInfoForm user={user} />
+            <AccountInfoForm consignor={consignorRes.data} />
             <div className='h-px bg-gray-200'></div>
 
             <ChangePasswordForm />
