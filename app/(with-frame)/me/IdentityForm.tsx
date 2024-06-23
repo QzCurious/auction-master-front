@@ -1,6 +1,9 @@
 export default function IdentityForm() {
   return (
-    <div className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3'>
+    <div
+      id='identity-form'
+      className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3'
+    >
       <div>
         <h2 className='text-base font-medium leading-6 text-gray-900'>身份認證</h2>
         <p className='mt-1 text-sm leading-6 text-gray-400'>

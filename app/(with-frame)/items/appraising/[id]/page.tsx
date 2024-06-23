@@ -149,7 +149,7 @@ async function Content({ params }: PageProps) {
                   aria-disabled={user.status === 11}
                   className={clsx(
                     'w-full rounded-md bg-indigo-600 px-4 py-2 text-sm text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
-                    user.status === 11 && 'cursor-not-allowed opacity-50'
+                    user.status === 11 && 'cursor-not-allowed opacity-50',
                   )}
                 >
                   託售
@@ -157,7 +157,10 @@ async function Content({ params }: PageProps) {
                 {user.status === 11 && (
                   <p className='text-end text-sm text-gray-500'>
                     完成
-                    <Link href='/me' className='text-indigo-600 underline'>
+                    <Link
+                      href='/me#identity-form'
+                      className='text-indigo-600 underline'
+                    >
                       身份認證
                     </Link>
                     後即可託售
