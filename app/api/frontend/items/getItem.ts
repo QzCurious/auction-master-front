@@ -1,16 +1,8 @@
 'use server'
 
-import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-
-const ReqSchema = z.object({
-  status: z.coerce.number().optional(),
-  sort: z.string().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
-  limit: z.coerce.number().default(10),
-  offset: z.coerce.number().default(0),
-})
+import { ITEM_STATUS_DATA } from '../configs.data'
 
 export interface Item {
   id: number
@@ -28,7 +20,7 @@ export interface Item {
   sellerID: number
   reservePrice: number
   expireAt: any
-  status: number
+  status: (typeof ITEM_STATUS_DATA)[number]['value']
   createdAt: string
   updatedAt: string
 }

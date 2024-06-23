@@ -10,6 +10,7 @@ export async function getUser() {
     ? {
         id: jwt.id,
         account: jwt.account,
+        status: jwt.status,
       }
     : null
 }

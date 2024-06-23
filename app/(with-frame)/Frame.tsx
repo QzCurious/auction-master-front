@@ -78,7 +78,12 @@ export default function Frame({ children }: { children: React.ReactNode }) {
           <div className='hidden lg:flex lg:flex-1 lg:justify-end'>
             {user ? (
               <>
-                <p className='inline'>歡迎, {user.account}</p>
+                <p className='inline'>
+                  歡迎,{' '}
+                  <Link href='/me' className='hover:underline'>
+                    {user.account}
+                  </Link>
+                </p>
                 <form action={logout} className='ml-4 inline'>
                   <button className='text-sm font-semibold leading-6 text-red-700 underline'>
                     登出
