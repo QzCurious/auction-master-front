@@ -3,6 +3,7 @@
 import { revalidateTag } from 'next/cache'
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
+import { ITEM_TYPE_DATA } from '../configs.data'
 
 type Data = 'Success'
 
@@ -13,8 +14,15 @@ export async function createItem(formData: FormData) {
   if (typeof name !== 'string' || name === '') {
     throw new Error('name is required and should be a string')
   }
+  const type = formData.get('type')
+  if (typeof type !== 'string' || Number.isNaN(parseInt(type))) {
+    throw new Error('type should be a number')
+  }
+  if (type !== '0' && !ITEM_TYPE_DATA.find(({ value }) => value === parseInt(type))) {
+    throw new Error('type is invalid')
+  }
   const reservePrice = formData.get('reservePrice')
-  if (typeof reservePrice !== 'string' || Number.isNaN(Number(reservePrice))) {
+  if (typeof reservePrice !== 'string' || Number.isNaN(parseInt(reservePrice))) {
     throw new Error('reservePrice should be a number')
   }
   if (formData.getAll('photo').length === 0) {

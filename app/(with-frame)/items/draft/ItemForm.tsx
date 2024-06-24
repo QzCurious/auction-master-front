@@ -1,6 +1,6 @@
 'use client'
 
-import { ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
+import { ITEM_STATUS_MAP, ITEM_TYPE_MAP } from '@/app/api/frontend/configs.data'
 import { changeItemPhotoSort } from '@/app/api/frontend/items/changeItemPhotoSort'
 import { createItem } from '@/app/api/frontend/items/createItem'
 import { deleteItemPhoto } from '@/app/api/frontend/items/deleteItemPhoto'
@@ -28,6 +28,7 @@ import ImageItem from '../ImageItem'
 
 const Schema = z.object({
   name: z.string().min(1, { message: '必填' }),
+  type: z.number(),
   reservePrice: z.number({ message: '必填' }),
   photos: z
     .array(
@@ -50,10 +51,11 @@ export default function ItemForm({ item }: ItemFormProps) {
   const defaultValues = useMemo(
     () => ({
       name: item?.name ?? '',
+      type: item?.type ?? 0,
       reservePrice: item?.reservePrice ?? ('' as any),
       photos: item?.photos ?? [],
     }),
-    [item?.name, item?.photos, item?.reservePrice],
+    [item?.name, item?.photos, item?.reservePrice, item?.type],
   )
   const {
     control,
@@ -83,6 +85,7 @@ export default function ItemForm({ item }: ItemFormProps) {
                 {
                   const res = await updateItem(item.id, {
                     name: data.name,
+                    type: data.type,
                     reservePrice: data.reservePrice,
                     description: '',
                   })
@@ -98,6 +101,7 @@ export default function ItemForm({ item }: ItemFormProps) {
             : async (data) => {
                 const formData = new FormData()
                 formData.append('name', data.name)
+                formData.append('type', data.type.toString())
                 formData.append('reservePrice', data.reservePrice.toString())
                 for (let i = 0; i < data.photos.length; i++) {
                   const f = data.photos[i]
@@ -117,6 +121,32 @@ export default function ItemForm({ item }: ItemFormProps) {
         )}
       >
         <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
+          <Controller
+            name='type'
+            control={control}
+            render={({ field }) => (
+              <div className='col-span-full'>
+                <div className='flex items-center gap-x-2'>
+                  <input
+                    id='type'
+                    type='checkbox'
+                    className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600'
+                    {...field}
+                    checked={field.value === ITEM_TYPE_MAP.FixedPriceItemType}
+                    onChange={(e) => {
+                      field.onChange(
+                        e.target.checked ? ITEM_TYPE_MAP.FixedPriceItemType : 0,
+                      )
+                    }}
+                  />
+                  <label htmlFor='type' className='text-gray-900'>
+                    是否為定價物品
+                  </label>
+                </div>
+              </div>
+            )}
+          />
+
           <Controller
             name='name'
             control={control}
@@ -180,7 +210,9 @@ export default function ItemForm({ item }: ItemFormProps) {
             )}
           />
 
-          <UploadImage control={control} item={item} />
+          <div className='col-span-full'>
+            <UploadImage control={control} item={item} />
+          </div>
         </div>
 
         <div className='mt-6 flex items-center gap-x-4'>
@@ -270,7 +302,7 @@ function UploadImage({
   const [isPending, startTransition] = useTransition()
 
   return (
-    <div className='relative col-span-full'>
+    <div className='relative'>
       {isPending && (
         <div className='pointer-events-none absolute inset-0 z-10 animate-pulse rounded bg-black opacity-40' />
       )}
