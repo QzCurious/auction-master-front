@@ -176,7 +176,13 @@ export const ITEM_STATUS_MAP = mapToObj(ITEM_STATUS_DATA, ({ key, value }) => [
 ])
 
 export const AUCTION_ITEM_STATUS_DATA = CONFIGS_DATA.auctionItemStatus
+
 export const CONSIGNOR_STATUS_DATA = CONFIGS_DATA.consignorStatus
+export const CONSIGNOR_STATUS_MAP = mapToObj(
+  CONSIGNOR_STATUS_DATA,
+  ({ key, value }) => [key, value],
+)
+
 export const CONSIGNOR_VERIFICATION_STATUS_DATA =
   CONFIGS_DATA.consignorVerificationStatus
 export const SHIPPING_INFO = CONFIGS_DATA.shippingInfo

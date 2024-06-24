@@ -1,5 +1,9 @@
 import NotSignedInError from '@/app/NotSignedInError'
-import { ITEM_STATUS_MAP, ITEM_TYPE_MAP } from '@/app/api/frontend/configs.data'
+import {
+  CONSIGNOR_STATUS_MAP,
+  ITEM_STATUS_MAP,
+  ITEM_TYPE_MAP,
+} from '@/app/api/frontend/configs.data'
 import { getItem } from '@/app/api/frontend/items/getItem'
 import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
@@ -146,15 +150,21 @@ async function Content({ params }: PageProps) {
 
               <div>
                 <button
-                  aria-disabled={user.status === 11}
+                  aria-disabled={
+                    user.status ===
+                    CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus
+                  }
                   className={clsx(
                     'w-full rounded-md bg-indigo-600 px-4 py-2 text-sm text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
-                    user.status === 11 && 'cursor-not-allowed opacity-50',
+                    user.status ===
+                      CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus &&
+                      'cursor-not-allowed opacity-50',
                   )}
                 >
                   託售
                 </button>
-                {user.status === 11 && (
+                {user.status ===
+                  CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus && (
                   <p className='text-end text-sm text-gray-500'>
                     完成
                     <Link
