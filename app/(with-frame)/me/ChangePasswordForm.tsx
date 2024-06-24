@@ -2,6 +2,7 @@
 
 import { changePassword } from '@/app/api/frontend/consignor/changePassword'
 import { zodResolver } from '@hookform/resolvers/zod'
+import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -157,8 +158,14 @@ export default function ChangePasswordForm() {
         <div className='mt-8 flex'>
           <button
             type='submit'
-            className='rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'
+            className={clsx(
+              'rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500',
+              isSubmitting && 'pointer-events-none opacity-50',
+            )}
           >
+            {isSubmitting && (
+              <span className='mr-2 inline-block size-3 animate-spin self-center rounded-full border-2 border-l-0 border-indigo-200'></span>
+            )}
             送出
           </button>
         </div>
