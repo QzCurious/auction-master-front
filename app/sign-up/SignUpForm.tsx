@@ -66,7 +66,9 @@ export function SignUpForm() {
                 {...field}
               />
             </div>
-            <p className='text-sm text-red-500'>{fieldState.error?.message}</p>
+            {fieldState.error && (
+              <p className='mt-1 text-sm text-red-600'>{fieldState.error.message}</p>
+            )}
           </div>
         )}
       />
@@ -90,7 +92,9 @@ export function SignUpForm() {
                 {...field}
               />
             </div>
-            <p className='text-sm text-red-500'>{fieldState.error?.message}</p>
+            {fieldState.error && (
+              <p className='mt-1 text-sm text-red-600'>{fieldState.error.message}</p>
+            )}
           </div>
         )}
       />
@@ -115,7 +119,9 @@ export function SignUpForm() {
                 {...field}
               />
             </div>
-            <p className='text-sm text-red-500'>{fieldState.error?.message}</p>
+            {fieldState.error && (
+              <p className='mt-1 text-sm text-red-600'>{fieldState.error.message}</p>
+            )}
           </div>
         )}
       />
@@ -140,7 +146,9 @@ export function SignUpForm() {
                 {...field}
               />
             </div>
-            <p className='text-sm text-red-500'>{fieldState.error?.message}</p>
+            {fieldState.error && (
+              <p className='mt-1 text-sm text-red-600'>{fieldState.error.message}</p>
+            )}
           </div>
         )}
       />

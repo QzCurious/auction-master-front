@@ -22,15 +22,20 @@ export default function ErrorPage({
           <h3 className='text-sm font-medium text-red-800'>Error</h3>
           <div className='mt-2 text-sm text-red-700'>
             <p>
-              Some error occurred, please{' '}
+              發生錯誤，請
               <button
                 type='button'
                 className='font-medium text-indigo-600 underline hover:text-indigo-500'
                 onClick={reset}
               >
-                try again
-              </button>{' '}
-              or report it to engineers with digest code: <code>{error.digest}</code>.
+                再試一次
+              </button>
+              {error.digest && (
+                <>
+                  {' '}
+                  或將錯誤訊回報給我們: <code>{error.digest}</code>.
+                </>
+              )}
             </p>
           </div>
         </div>

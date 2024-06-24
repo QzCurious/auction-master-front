@@ -59,7 +59,7 @@ export default function ChangePasswordForm() {
             return
           }
           if (res.error === '1003') {
-            toast.error('起重新登入')
+            toast.error('請重新登入')
             router.push('/auth/sign-in')
             return
           }
@@ -93,9 +93,11 @@ export default function ChangePasswordForm() {
                     {...field}
                   />
                 </div>
-                <p className='mt-2 text-sm text-red-600'>
-                  {fieldState.error?.message}
-                </p>
+                {fieldState.error && (
+                  <p className='mt-1 text-sm text-red-600'>
+                    {fieldState.error.message}
+                  </p>
+                )}
               </div>
             )}
           />
@@ -120,9 +122,11 @@ export default function ChangePasswordForm() {
                     {...field}
                   />
                 </div>
-                <p className='mt-2 text-sm text-red-600'>
-                  {fieldState.error?.message}
-                </p>
+                {fieldState.error && (
+                  <p className='mt-1 text-sm text-red-600'>
+                    {fieldState.error.message}
+                  </p>
+                )}
               </div>
             )}
           />
@@ -147,9 +151,11 @@ export default function ChangePasswordForm() {
                     {...field}
                   />
                 </div>
-                <p className='mt-2 text-sm text-red-600'>
-                  {fieldState.error?.message}
-                </p>
+                {fieldState.error && (
+                  <p className='mt-1 text-sm text-red-600'>
+                    {fieldState.error.message}
+                  </p>
+                )}
               </div>
             )}
           />

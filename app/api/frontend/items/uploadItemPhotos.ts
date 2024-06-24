@@ -16,10 +16,13 @@ export async function uploadItemPhotos(id: number, formData: FormData) {
     throw new Error('photo and sorted should have the same length')
   }
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}/photos`, {
-    method: 'POST',
-    body: formData,
-  })
+  const res = await withAuth(apiClient)<Data, ErrorCode>(
+    `/frontend/items/${id}/photos`,
+    {
+      method: 'POST',
+      body: formData,
+    },
+  )
 
   revalidateTag('items')
 

@@ -23,10 +23,13 @@ export async function updateItemPhoto(id: number, formData: FormData) {
     throw new Error('photo and index should have the same length')
   }
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}/photo`, {
-    method: 'PATCH',
-    body: formData,
-  })
+  const res = await withAuth(apiClient)<Data, ErrorCode>(
+    `/frontend/items/${id}/photo`,
+    {
+      method: 'PATCH',
+      body: formData,
+    },
+  )
 
   revalidateTag('items')
 

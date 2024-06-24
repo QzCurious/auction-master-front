@@ -12,12 +12,12 @@ export default function Page() {
                 加入會員
               </h2>
               <p className='mt-2 text-sm leading-6 text-gray-500'>
-                還不是會員?{' '}
+                已經是會員?{' '}
                 <Link
                   href='/sign-in'
                   className='font-semibold text-indigo-600 hover:text-indigo-500'
                 >
-                  馬上註冊
+                  立即登入
                 </Link>
               </p>
             </div>

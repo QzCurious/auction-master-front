@@ -142,9 +142,11 @@ export default function ItemForm({ item }: ItemFormProps) {
                     {...field}
                   />
                 </div>
-                <p className='mt-2 text-sm text-red-600'>
-                  {fieldState.error?.message}
-                </p>
+                {fieldState.error && (
+                  <p className='mt-1 text-sm text-red-600'>
+                    {fieldState.error.message}
+                  </p>
+                )}
               </div>
             )}
           />
@@ -174,9 +176,11 @@ export default function ItemForm({ item }: ItemFormProps) {
                     }}
                   />
                 </div>
-                <p className='mt-2 text-sm text-red-600'>
-                  {fieldState.error?.message}
-                </p>
+                {fieldState.error && (
+                  <p className='mt-1 text-sm text-red-600'>
+                    {fieldState.error.message}
+                  </p>
+                )}
               </div>
             )}
           />
@@ -387,7 +391,7 @@ function UploadImage({
         </div>
       )}
 
-      <p className='mt-2 text-sm text-red-600'>{formState.errors.photos?.message}</p>
+      <p className='mt-1 text-sm text-red-600'>{formState.errors.photos?.message}</p>
     </div>
   )
 }
