@@ -9,12 +9,11 @@ export interface Consignor {
   account: string
   password: string
   nickname: string
-  name: string
-  identification: string
   phone: string
   bankCode: string
   bankAccount: string
   status: (typeof CONSIGNOR_STATUS_DATA)[number]['value']
+  askingVerification: boolean
   createdAt: string
   updatedAt: string
 }
