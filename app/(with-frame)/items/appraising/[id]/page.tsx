@@ -2,6 +2,7 @@ import NotSignedInError from '@/app/NotSignedInError'
 import {
   CONSIGNOR_STATUS_MAP,
   ITEM_STATUS_MAP,
+  ITEM_TYPE_DATA,
   ITEM_TYPE_MAP,
 } from '@/app/api/frontend/configs.data'
 import { getItem } from '@/app/api/frontend/items/getItem'
@@ -10,6 +11,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import ImageList from './ImageList'
 
 interface PageProps {
   params: { id: string }
@@ -73,23 +75,20 @@ async function Content({ params }: PageProps) {
             )}
           </div>
 
-          <div className='mt-4 overflow-x-auto'>
-            <section className='flex gap-x-4'>
-              {item.data.photos.map((photo) => (
-                <div key={photo.sorted}>
-                  <div
-                    key={photo.sorted}
-                    className='aspect-h-7 aspect-w-10 relative block w-60 overflow-hidden rounded-lg bg-gray-100'
-                  >
-                    <img
-                      className='rounded-lg object-contain object-center'
-                      src={photo.photo}
-                      alt=''
-                    />
-                  </div>
-                </div>
-              ))}
-            </section>
+          <div className='mt-4'>
+            <ImageList
+              itemId={item.data.id}
+              photos={item.data.photos}
+              enabled={[
+                ITEM_STATUS_MAP.WarehouseArrivalStatus,
+                ITEM_STATUS_MAP.InitStatus,
+                ITEM_STATUS_MAP.SubmitAppraisalStatus,
+                ITEM_STATUS_MAP.AppraisalFailureStatus,
+                ITEM_STATUS_MAP.AppraisedStatus,
+                ITEM_STATUS_MAP.ConsignmentApprovedStatus,
+                ITEM_STATUS_MAP.WarehouseArrivalStatus,
+              ].includes(item.data.status)}
+            />
           </div>
 
           <section className='mt-8 text-gray-700'>
@@ -105,6 +104,15 @@ async function Content({ params }: PageProps) {
         <div className='min-w-40'>
           <section>
             <dl className='divide-y divide-gray-100'>
+              <div className='py-3'>
+                <dt className='text-sm font-medium leading-6 text-gray-900'>類別</dt>
+                <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                  {
+                    ITEM_TYPE_DATA.find(({ value }) => value === item.data.type)
+                      ?.message
+                  }
+                </dd>
+              </div>
               <div className='py-3'>
                 <dt className='text-sm font-medium leading-6 text-gray-900'>空間</dt>
                 <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>

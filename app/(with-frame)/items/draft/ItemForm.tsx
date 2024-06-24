@@ -9,18 +9,12 @@ import { itemAppraisal } from '@/app/api/frontend/items/itemAppraisal'
 import { updateItem } from '@/app/api/frontend/items/updateItem'
 import { uploadItemPhotos } from '@/app/api/frontend/items/uploadItemPhotos'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
-import {
-  ArrowLeftIcon,
-  ArrowPathIcon,
-  ArrowRightIcon,
-  PlusIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline'
+import { PlusIcon } from '@heroicons/react/24/outline'
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState, useTransition } from 'react'
+import { useEffect, useMemo, useTransition } from 'react'
 import {
   Control,
   Controller,
@@ -30,21 +24,22 @@ import {
 } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { z } from 'zod'
+import ImageItem from '../ImageItem'
 
 const Schema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-  reservePrice: z.number({ message: 'Reserve Price is required' }),
+  name: z.string().min(1, { message: '必填' }),
+  reservePrice: z.number({ message: '必填' }),
   photos: z
     .array(
       z.union([
         z.object({ photo: z.string(), sorted: z.number() }),
         z
           .instanceof(File)
-          .refine((file) => file.size <= 20 * 1024 * 1024, { message: 'Max 20MB' }),
+          .refine((file) => file.size <= 20 * 1024 * 1024, { message: '上限 20MB' }),
       ]),
     )
-    .min(1, { message: 'Photos is required' })
-    .max(30, { message: 'Max 30 photos' }),
+    .min(1, { message: '必填' })
+    .max(30, { message: '上限 30 張' }),
 })
 
 interface ItemFormProps {
@@ -340,7 +335,7 @@ function UploadImage({
                   name={`photos.${i}`}
                   render={({ field, fieldState }) => (
                     <ImageItem
-                      src={field.value}
+                      src={'photo' in field.value ? field.value.photo : field.value}
                       error={fieldState.error?.message}
                       onDelete={
                         item
@@ -392,96 +387,6 @@ function UploadImage({
       )}
 
       <p className='mt-1 text-sm text-red-600'>{formState.errors.photos?.message}</p>
-    </div>
-  )
-}
-
-function ImageItem({
-  src,
-  error,
-  onChange,
-  onDelete,
-  onMoveUp,
-  onMoveDown,
-}: {
-  src: z.input<typeof Schema>['photos'][number]
-  error?: string
-  onChange?: (file: File) => void
-  onDelete?: () => void
-  onMoveUp?: (() => void) | false
-  onMoveDown?: (() => void) | false
-}) {
-  const [url, setUrl] = useState(
-    'photo' in src ? src.photo : URL.createObjectURL(src),
-  )
-
-  useEffect(() => {
-    if ('photo' in src) {
-      setUrl(src.photo)
-      return
-    }
-
-    const url = URL.createObjectURL(src)
-    setUrl(url)
-    return () => {
-      URL.revokeObjectURL(url)
-    }
-  }, [src])
-
-  return (
-    <div>
-      <article className='aspect-h-7 aspect-w-10 relative block w-60 overflow-hidden rounded-lg bg-gray-100'>
-        <img
-          src={'photo' in src ? src.photo + '?edit' : url}
-          className='pointer-events-none object-contain'
-          alt=''
-        />
-
-        <div className='absolute right-0 top-0 flex h-fit justify-end gap-x-2 pr-1.5 pt-1.5'>
-          {onChange && (
-            <label className='size-7 cursor-pointer'>
-              <span className='sr-only'>Change</span>
-              <ArrowPathIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
-              <input
-                type='file'
-                className='sr-only'
-                onChange={(e) => e.target.files?.[0] && onChange(e.target.files?.[0])}
-              />
-            </label>
-          )}
-
-          {onDelete && (
-            <button type='button' className='size-7' onClick={() => onDelete()}>
-              <span className='sr-only'>Delete</span>
-              <XMarkIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
-            </button>
-          )}
-        </div>
-
-        <div className='absolute bottom-0 right-0 top-auto flex h-fit justify-end gap-x-2 pb-1.5 pr-1.5'>
-          <button
-            type='button'
-            className={clsx('size-7', !onMoveUp && 'pointer-events-none opacity-50')}
-            onClick={() => onMoveUp && onMoveUp()}
-          >
-            <span className='sr-only'>Move up</span>
-            <ArrowLeftIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
-          </button>
-
-          <button
-            type='button'
-            className={clsx(
-              'size-7',
-              !onMoveDown && 'pointer-events-none opacity-50',
-            )}
-            onClick={() => onMoveDown && onMoveDown()}
-          >
-            <span className='sr-only'>Move down</span>
-            <ArrowRightIcon className='rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
-          </button>
-        </div>
-      </article>
-      {error && <p className='text-end text-sm text-red-600'>{error}</p>}
     </div>
   )
 }
