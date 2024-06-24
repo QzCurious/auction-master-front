@@ -11,7 +11,9 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import CancelConsignmentBtn from './CancelConsignmentBtn'
 import ImageList from './ImageList'
+import ApproveConsignmentBtn from './ApproveConsignmentBtn'
 
 interface PageProps {
   params: { id: string }
@@ -152,25 +154,16 @@ async function Content({ params }: PageProps) {
 
           {item.data.status === ITEM_STATUS_MAP['AppraisedStatus'] && (
             <div className='mt-4 flex flex-col gap-y-4'>
-              <button className='rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'>
-                取消託售
-              </button>
+              <CancelConsignmentBtn itemId={item.data.id} />
 
               <div>
-                <button
-                  aria-disabled={
+                <ApproveConsignmentBtn
+                  itemId={item.data.id}
+                  disabled={
                     user.status ===
                     CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus
                   }
-                  className={clsx(
-                    'w-full rounded-md bg-indigo-600 px-4 py-2 text-sm text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
-                    user.status ===
-                      CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus &&
-                      'cursor-not-allowed opacity-50',
-                  )}
-                >
-                  託售
-                </button>
+                />
                 {user.status ===
                   CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus && (
                   <p className='text-end text-sm text-gray-500'>
