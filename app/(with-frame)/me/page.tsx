@@ -25,7 +25,7 @@ export default async function Example() {
             <ChangePasswordForm />
             <div className='h-px bg-gray-200'></div>
 
-            <IdentityForm />
+            <IdentityForm consignor={consignorRes.data} />
             <div className='h-px bg-gray-200'></div>
 
             <DeleteAccountForm />

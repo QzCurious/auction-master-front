@@ -1,11 +1,23 @@
-export default function IdentityForm() {
+import { CONSIGNOR_STATUS_MAP } from '@/app/api/frontend/configs.data'
+import { Consignor } from '@/app/api/frontend/consignor/getConsignor'
+import { CheckCircleIcon } from '@heroicons/react/20/solid'
+
+export default function IdentityForm({ consignor }: { consignor: Consignor }) {
   return (
     <div
       id='identity-form'
       className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3'
     >
       <div>
-        <h2 className='text-base font-medium leading-6 text-gray-900'>身份認證</h2>
+        <h2 className='text-base font-medium leading-6 text-gray-900'>
+          身份認證
+          {consignor.status === CONSIGNOR_STATUS_MAP.EnabledStatus && (
+            <span>
+              已完成
+              <CheckCircleIcon className='ml-1 inline-block size-5 text-green-500' />
+            </span>
+          )}
+        </h2>
         <p className='mt-1 text-sm leading-6 text-gray-400'>
           完成身份認證即可開始托售物品
         </p>
@@ -107,12 +119,15 @@ export default function IdentityForm() {
         </div>
 
         <div className='mt-8 flex'>
-          <button
-            type='submit'
-            className='rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'
-          >
-            送出
-          </button>
+          {consignor.status ===
+            CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus && (
+            <button
+              type='submit'
+              className='rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'
+            >
+              送出
+            </button>
+          )}
         </div>
       </form>
     </div>
