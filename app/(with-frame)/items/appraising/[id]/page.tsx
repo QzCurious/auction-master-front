@@ -116,10 +116,8 @@ async function Content({ params }: PageProps) {
               <div className='py-3'>
                 <dt className='text-sm font-medium leading-6 text-gray-900'>類別</dt>
                 <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                  {
-                    ITEM_TYPE_DATA.find(({ value }) => value === item.data.type)
-                      ?.message
-                  }
+                  {ITEM_TYPE_DATA.find(({ value }) => value === item.data.type)
+                    ?.message ?? '(待定)'}
                 </dd>
               </div>
               <div className='py-3'>
