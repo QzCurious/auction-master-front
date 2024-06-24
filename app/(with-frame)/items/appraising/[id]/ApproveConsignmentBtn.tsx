@@ -23,6 +23,7 @@ export default function ApproveConsignmentBtn({
         (isPending || disabled) && 'cursor-not-allowed opacity-50',
       )}
       onClick={() => {
+        if (isPending || disabled) return
         startTransition(async () => {
           const res = await consignment(itemId, { action: 'approve' })
           if (res.error) {
