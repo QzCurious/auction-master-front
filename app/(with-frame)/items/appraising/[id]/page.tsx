@@ -8,12 +8,11 @@ import {
 import { getItem } from '@/app/api/frontend/items/getItem'
 import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
-import clsx from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import ApproveConsignmentBtn from './ApproveConsignmentBtn'
 import CancelConsignmentBtn from './CancelConsignmentBtn'
 import ImageList from './ImageList'
-import ApproveConsignmentBtn from './ApproveConsignmentBtn'
 
 interface PageProps {
   params: { id: string }
@@ -55,6 +54,14 @@ async function Content({ params }: PageProps) {
     return <NotSignedInError />
   }
   if (item.error === '1801') {
+    notFound()
+  }
+  if (
+    ![
+      ITEM_STATUS_MAP.SubmitAppraisalStatus,
+      ITEM_STATUS_MAP.AppraisedStatus,
+    ].includes(item.data.status)
+  ) {
     notFound()
   }
 
