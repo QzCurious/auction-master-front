@@ -1,5 +1,5 @@
 import NotSignedInError from '@/app/NotSignedInError'
-import { ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
+import { ITEM_STATUS_DATA, ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
 import { items } from '@/app/api/frontend/items/items'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
 import {
@@ -13,6 +13,9 @@ import Link from 'next/link'
 import PreviewPhotos from '../PreviewPhotos'
 import StatusTabs from '../StatusTabs'
 
+const STATUS =
+  'SubmitAppraisalStatus' satisfies (typeof ITEM_STATUS_DATA)[number]['key']
+
 interface PageProps {
   searchParams: PaginationSearchParams
 }
@@ -22,7 +25,7 @@ export default async function Page({ searchParams }: PageProps) {
   const itemsRes = await items({
     limit: pagination[ROWS_PER_PAGE],
     offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
-    status: [ITEM_STATUS_MAP.SubmitAppraisalStatus, ITEM_STATUS_MAP.AppraisedStatus],
+    status: ITEM_STATUS_MAP[STATUS],
     sort: 'status',
     order: 'desc',
   })
@@ -36,7 +39,7 @@ export default async function Page({ searchParams }: PageProps) {
       <div className='flex justify-between gap-x-4'>
         <h1 className='text-2xl font-bold tracking-tight text-gray-900'>我的物品</h1>
         <Link
-          href='/items/draft/create'
+          href='/items/init-status/create'
           className='block text-sm font-medium text-indigo-600 hover:text-indigo-500'
         >
           新增物品
@@ -44,7 +47,7 @@ export default async function Page({ searchParams }: PageProps) {
         </Link>
       </div>
 
-      <StatusTabs active='SubmitAppraisalStatus'/>
+      <StatusTabs active={STATUS} />
 
       {itemsRes.data.items.length === 0 && (
         <p className='mt-6 text-base leading-6 text-gray-500'>沒有物品</p>
@@ -55,7 +58,7 @@ export default async function Page({ searchParams }: PageProps) {
           return (
             <div key={item.id} className='relative'>
               <Link
-                href={`/items/appraising/${item.id}`}
+                href={`/items/submit-appraisal-status/${item.id}`}
                 className='absolute right-1.5 top-1.5 z-20'
               >
                 <EyeIcon
@@ -66,17 +69,6 @@ export default async function Page({ searchParams }: PageProps) {
               <PreviewPhotos photos={item.photos} />
 
               <h3 className='mt-1 text-xl font-medium text-gray-900'>{item.name}</h3>
-
-              {item.status === ITEM_STATUS_MAP['SubmitAppraisalStatus'] && (
-                <p className='inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600'>
-                  審核中
-                </p>
-              )}
-              {item.status === ITEM_STATUS_MAP['AppraisedStatus'] && (
-                <p className='inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700'>
-                  審核通過
-                </p>
-              )}
             </div>
           )
         })}

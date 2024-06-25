@@ -4,7 +4,7 @@ import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
 
 export const ReqSchema = z.object({
-  status: z.array(z.coerce.number()).optional(),
+  status: z.coerce.number().optional(),
   sort: z.string().optional(),
   order: z.enum(['asc', 'desc']).optional(),
   limit: z.coerce.number().default(10),
@@ -41,7 +41,7 @@ export async function items(payload: z.input<typeof ReqSchema>) {
   const parsed = throwIfInvalid(payload, ReqSchema)
 
   const query = new URLSearchParams()
-  parsed.status?.map((status) => query.append('status', status.toString()))
+  parsed.status != null && query.append('status', parsed.status.toString())
   parsed.sort != null && query.append('sort', parsed.sort)
   parsed.order != null && query.append('order', parsed.order)
   parsed.limit != null && query.append('limit', parsed.limit.toString())

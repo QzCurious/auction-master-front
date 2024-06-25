@@ -6,9 +6,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const tabs = [
-  { status: 'InitStatus', href: '/items/draft' },
-  { status: 'SubmitAppraisalStatus', href: '/items/appraising' },
-  { status: 'AppraisalFailureStatus', href: '/items/rejected' },
+  { status: 'InitStatus', href: '/items/init-status' },
+  { status: 'SubmitAppraisalStatus', href: '/items/submit-appraisal-status' },
+  { status: 'AppraisedStatus', href: '/items/appraised-status' },
+  { status: 'AppraisalFailureStatus', href: '/items/appraisal-failure-status' },
 ] as const satisfies Array<{
   status: (typeof ITEM_STATUS_DATA)[number]['key']
   href: string

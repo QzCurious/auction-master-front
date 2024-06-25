@@ -116,7 +116,7 @@ export default function ItemForm({ item }: ItemFormProps) {
                   return
                 }
                 toast.success('新增成功')
-                router.push('/items/draft')
+                router.push('/items/init-status')
               },
         )}
       >
@@ -273,7 +273,7 @@ function AppraisalButton({ item }: { item: Item }) {
         startTransition(async () => {
           await itemAppraisal(item.id)
           toast.success('審核已提交')
-          router.push('/items/appraising')
+          router.push('/items/submit-appraisal-status')
         })
       }}
     >

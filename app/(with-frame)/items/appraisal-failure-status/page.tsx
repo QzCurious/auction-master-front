@@ -1,5 +1,5 @@
 import NotSignedInError from '@/app/NotSignedInError'
-import { ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
+import { ITEM_STATUS_DATA, ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
 import { items } from '@/app/api/frontend/items/items'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
 import {
@@ -17,14 +17,15 @@ interface PageProps {
   searchParams: PaginationSearchParams
 }
 
-const STATUS = 'AppraisalFailureStatus'
+const STATUS =
+  'AppraisalFailureStatus' satisfies (typeof ITEM_STATUS_DATA)[number]['key']
 
 export default async function Page({ searchParams }: PageProps) {
   const pagination = PaginationSchema.parse(searchParams)
   const itemsRes = await items({
     limit: pagination[ROWS_PER_PAGE],
     offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
-    status: [ITEM_STATUS_MAP[STATUS]],
+    status: ITEM_STATUS_MAP[STATUS],
   })
 
   if (itemsRes.error === '1003') {
@@ -36,7 +37,7 @@ export default async function Page({ searchParams }: PageProps) {
       <div className='flex justify-between gap-x-4'>
         <h1 className='text-2xl font-bold tracking-tight text-gray-900'>我的物品</h1>
         <Link
-          href='/items/draft/create'
+          href='/items/init-status/create'
           className='block text-sm font-medium text-indigo-600 hover:text-indigo-500'
         >
           新增物品
@@ -44,7 +45,7 @@ export default async function Page({ searchParams }: PageProps) {
         </Link>
       </div>
 
-      <StatusTabs active='AppraisalFailureStatus' />
+      <StatusTabs active={STATUS} />
 
       {itemsRes.data.items.length === 0 && (
         <p className='mt-6 text-base leading-6 text-gray-500'>沒有物品</p>

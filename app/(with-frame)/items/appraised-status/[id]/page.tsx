@@ -23,7 +23,7 @@ async function Page(pageProps: PageProps) {
     <div className='mx-auto max-w-4xl px-8'>
       <Link
         className='inline-flex items-center gap-x-1 text-sm text-indigo-600 hover:text-indigo-500'
-        href='/items/appraising'
+        href='/items/submit-appraisal-status'
       >
         <ArrowLeftIcon className='size-4 stroke-2' />
         回到物品列表
