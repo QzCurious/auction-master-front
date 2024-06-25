@@ -27,9 +27,11 @@ export default function IdentityForm({ consignor }: { consignor: Consignor }) {
             </span>
           )}
         </h2>
-        <p className='mt-1 text-sm leading-6 text-gray-400'>
-          完成身份認證即可開始托售物品
-        </p>
+        {consignor.status !== CONSIGNOR_STATUS_MAP.EnabledStatus && (
+          <p className='mt-1 text-sm leading-6 text-gray-400'>
+            完成身份認證即可開始托售物品
+          </p>
+        )}
       </div>
 
       <div className='md:col-span-2'>
