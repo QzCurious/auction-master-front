@@ -194,7 +194,7 @@ function Form({ consignor }: { consignor: Consignor }) {
                 htmlFor='bankCode'
                 className='block text-sm font-medium leading-6 text-gray-900'
               >
-                銀行代號
+                銀行代碼
               </label>
               <div className='mt-2'>
                 <input
