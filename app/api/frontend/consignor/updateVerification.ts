@@ -16,9 +16,10 @@ const ReqSchema = z.object({
 
 type Data = 'Success'
 
-type ErrorCode = never
+// 1005: name incorrect, 1006: identification incorrect
+type ErrorCode = '1005' | '1006'
 
-export async function verifications(formData: FormData) {
+export async function updateVerification(formData: FormData) {
   const payload = {
     name: formData.get('name'),
     identification: formData.get('identification'),
@@ -28,14 +29,10 @@ export async function verifications(formData: FormData) {
   }
   throwIfInvalid(payload as any, ReqSchema)
 
-  if (!formData.has('identificationPhoto')) {
-    throw new Error('identificationPhoto is required')
-  }
-
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     '/frontend/consignor/verifications',
     {
-      method: 'POST',
+      method: 'PATCH',
       body: formData,
     },
   )
