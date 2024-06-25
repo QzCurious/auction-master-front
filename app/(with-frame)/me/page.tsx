@@ -1,4 +1,4 @@
-import NotSignedInError from '@/app/NotSignedInError'
+import RedirectToHome from '@/app/RedirectToHome'
 import { getConsignor } from '@/app/api/frontend/consignor/getConsignor'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
@@ -9,7 +9,7 @@ export default async function Example() {
   const consignorRes = await getConsignor()
 
   if (consignorRes.error === '1003') {
-    return <NotSignedInError />
+    return <RedirectToHome />
   }
 
   return (

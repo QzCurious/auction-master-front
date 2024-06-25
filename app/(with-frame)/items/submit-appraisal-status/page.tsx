@@ -1,4 +1,4 @@
-import NotSignedInError from '@/app/NotSignedInError'
+import RedirectToHome from '@/app/RedirectToHome'
 import { ITEM_STATUS_DATA, ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
 import { items } from '@/app/api/frontend/items/items'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
@@ -31,7 +31,7 @@ export default async function Page({ searchParams }: PageProps) {
   })
 
   if (itemsRes.error === '1003') {
-    return <NotSignedInError />
+    return <RedirectToHome />
   }
 
   return (

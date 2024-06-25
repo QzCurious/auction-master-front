@@ -1,4 +1,4 @@
-import NotSignedInError from '@/app/NotSignedInError'
+import RedirectToHome from '@/app/RedirectToHome'
 import {
   CONSIGNOR_STATUS_MAP,
   ITEM_STATUS_MAP,
@@ -41,7 +41,7 @@ export default Page
 async function Content({ params }: PageProps) {
   const user = await getUser()
   if (!user) {
-    return <NotSignedInError />
+    return <RedirectToHome />
   }
 
   const id = Number(params.id)
@@ -51,7 +51,7 @@ async function Content({ params }: PageProps) {
 
   const item = await getItem(id)
   if (item.error === '1003') {
-    return <NotSignedInError />
+    return <RedirectToHome />
   }
   if (item.error === '1801') {
     notFound()

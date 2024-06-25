@@ -1,4 +1,4 @@
-import NotSignedInError from '@/app/NotSignedInError'
+import RedirectToHome from '@/app/RedirectToHome'
 import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -30,7 +30,7 @@ async function Form() {
   const user = await getUser()
 
   if (!user) {
-    return <NotSignedInError />
+    return <RedirectToHome />
   }
 
   return <ItemForm />
