@@ -50,7 +50,7 @@ export function SearchParamsPagination({ count }: { count: number }) {
         <div>
           <p className='text-sm text-gray-700'>
             <span className='font-medium'>
-              {pagination.page * pagination.rowsPerPage + 1} ~
+              {count === 0 ? 0 : pagination.page * pagination.rowsPerPage + 1} ~
             </span>{' '}
             <span className='font-medium'>
               {Math.min((pagination.page + 1) * pagination.rowsPerPage, count)}
@@ -71,12 +71,14 @@ export function SearchParamsPagination({ count }: { count: number }) {
           </Link>
           <Link
             aria-disabled={
+              count === 0 ||
               pagination.page === Math.ceil(count / pagination.rowsPerPage) - 1
             }
             href={pageLink(pagination.page + 1)}
             className={clsx(
               'relative ml-3 inline-flex size-7 items-center rounded-md bg-white p-1 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus-visible:outline-offset-0',
-              pagination.page === Math.ceil(count / pagination.rowsPerPage) - 1 &&
+              (count === 0 ||
+                pagination.page === Math.ceil(count / pagination.rowsPerPage) - 1) &&
                 'pointer-events-none opacity-40',
             )}
           >
