@@ -3,6 +3,7 @@
 import { consignment } from '@/app/api/frontend/items/consignment'
 import { Item } from '@/app/api/frontend/items/getItem'
 import clsx from 'clsx'
+import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import toast from 'react-hot-toast'
 
@@ -14,6 +15,7 @@ export default function ApproveConsignmentBtn({
   disabled: boolean
 }) {
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
   return (
     <button
@@ -31,6 +33,7 @@ export default function ApproveConsignmentBtn({
             return
           }
           toast.success('已申請託售')
+          router.push('/items/appraising')
         })
       }}
     >
