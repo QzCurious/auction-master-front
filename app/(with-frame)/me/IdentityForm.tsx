@@ -7,6 +7,7 @@ import { updateVerification } from '@/app/api/frontend/consignor/updateVerificat
 import { InformationCircleIcon, PhotoIcon } from '@heroicons/react/20/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
+import { useEffect, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
@@ -67,23 +68,32 @@ const Schema = z.object({
 })
 
 function Form({ consignor }: { consignor: Consignor }) {
+  const defaultValues = useMemo(
+    () => ({
+      ...consignor,
+      name: '',
+      identification: '',
+    }),
+    [consignor],
+  )
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
     setError,
+    reset,
   } = useForm<z.infer<typeof Schema>>({
-    defaultValues: {
-      ...consignor,
-      name: '',
-      identification: '',
-    },
+    defaultValues,
     resolver: zodResolver(Schema),
   })
 
+  useEffect(() => {
+    reset(defaultValues)
+  }, [defaultValues, reset])
+
   return (
     <form
-      onSubmit={handleSubmit(async (data, e) => {
+      onSubmit={handleSubmit(async (_, e) => {
         const formData = new FormData(e?.target)
         if (consignor.status === CONSIGNOR_STATUS_MAP.EnabledStatus) {
           const res = await updateVerification(formData)
