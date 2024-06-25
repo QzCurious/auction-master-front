@@ -44,7 +44,7 @@ export default async function Page({ searchParams }: PageProps) {
         </Link>
       </div>
 
-      <StatusTabs active='已提交審核' />
+      <StatusTabs active='SubmitAppraisalStatus'/>
 
       {itemsRes.data.items.length === 0 && (
         <p className='mt-6 text-base leading-6 text-gray-500'>沒有物品</p>

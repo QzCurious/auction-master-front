@@ -1,20 +1,21 @@
 'use client'
 
+import { ITEM_STATUS_DATA } from '@/app/api/frontend/configs.data'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const tabs = [
-  { name: '未審核', href: '/items/draft' },
-  { name: '已提交審核', href: '/items/appraising' },
-  { name: '估價失敗', href: '/items/rejected' },
+  { status: 'InitStatus', href: '/items/draft' },
+  { status: 'SubmitAppraisalStatus', href: '/items/appraising' },
+  { status: 'AppraisalFailureStatus', href: '/items/rejected' },
 ] as const satisfies Array<{
-  name: string
+  status: (typeof ITEM_STATUS_DATA)[number]['key']
   href: string
 }>
 
 interface StatusTabsProps {
-  active: (typeof tabs)[number]['name']
+  active: (typeof ITEM_STATUS_DATA)[number]['key']
 }
 
 export default function StatusTabs({ active: status }: StatusTabsProps) {
@@ -32,12 +33,14 @@ export default function StatusTabs({ active: status }: StatusTabsProps) {
           className='block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm'
           value={status}
           onChange={(event) =>
-            router.replace(tabs.find((tab) => tab.name === event.target.value)!.href)
+            router.replace(
+              tabs.find((tab) => tab.status.toString() === event.target.value)!.href,
+            )
           }
         >
           {tabs.map((tab) => (
-            <option key={tab.name} value={tab.name}>
-              {tab.name}
+            <option key={tab.status} value={tab.status}>
+              {ITEM_STATUS_DATA.find(({ key }) => key === tab.status)?.message}
             </option>
           ))}
         </select>
@@ -47,17 +50,17 @@ export default function StatusTabs({ active: status }: StatusTabsProps) {
           <nav className='-mb-px flex gap-x-2' aria-label='Tabs'>
             {tabs.map((tab) => (
               <Link
-                key={tab.name}
+                key={tab.status}
                 href={tab.href}
                 className={clsx(
-                  status === tab.name
+                  status === tab.status
                     ? 'border-indigo-500 text-indigo-600'
                     : 'border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700',
                   'flex whitespace-nowrap border-b-2 px-4 py-2 text-sm font-medium',
                 )}
-                aria-current={status === tab.name ? 'page' : undefined}
+                aria-current={status === tab.status ? 'page' : undefined}
               >
-                {tab.name}
+                {ITEM_STATUS_DATA.find(({ key }) => key === tab.status)?.message}
               </Link>
             ))}
           </nav>

@@ -153,7 +153,7 @@ export default function ItemForm({ item }: ItemFormProps) {
             render={({ field, fieldState }) => (
               <div className='sm:col-span-3'>
                 <label
-                  htmlFor='username'
+                  htmlFor='name'
                   className='block text-sm font-medium leading-6 text-gray-900'
                 >
                   物品名稱
@@ -161,8 +161,8 @@ export default function ItemForm({ item }: ItemFormProps) {
                 <div className='mt-2'>
                   <input
                     type='text'
-                    id='username'
-                    autoComplete='username'
+                    id='name'
+                    autoComplete='off'
                     className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
                     {...field}
                   />
@@ -199,6 +199,7 @@ export default function ItemForm({ item }: ItemFormProps) {
                         e.target.value === '' ? '' : parseFloat(e.target.value),
                       )
                     }}
+                    autoComplete='off'
                   />
                 </div>
                 {fieldState.error && (
@@ -279,7 +280,7 @@ function AppraisalButton({ item }: { item: Item }) {
       {isPending && (
         <span className='mr-2 inline-block size-3 animate-spin self-center rounded-full border-2 border-l-0 border-gray-300'></span>
       )}
-      提交審核
+      提交估價
     </button>
   )
 }
