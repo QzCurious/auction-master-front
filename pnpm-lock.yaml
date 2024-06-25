@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@fontsource-variable/noto-sans-tc':
+    specifier: ^5.0.6
+    version: 5.0.6
   '@headlessui/react':
     specifier: ^2.1.0
     version: 2.1.0(react-dom@18.3.1)(react@18.3.1)
@@ -175,6 +178,10 @@ packages:
 
   /@floating-ui/utils@0.2.2:
     resolution: {integrity: sha512-J4yDIIthosAsRZ5CPYP/jQvUAQtlZTTD/4suA08/FEnlxqW3sKS9iAhgsa9VYLZ6vDHn/ixJgIqRQPotoBjxIw==}
+    dev: false
+
+  /@fontsource-variable/noto-sans-tc@5.0.6:
+    resolution: {integrity: sha512-cxHuZya6xDeLCIEyhF88PtJA7t5MySMnvKvF/AYnXKW2IqadYjD1mcShku6nqLX/xiSvOMGS8HuYYzvnwKHyGg==}
     dev: false
 
   /@headlessui/react@2.1.0(react-dom@18.3.1)(react@18.3.1):
