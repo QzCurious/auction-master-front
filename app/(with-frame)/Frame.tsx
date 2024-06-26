@@ -1,17 +1,16 @@
 'use client'
 
+import {
+  ArrowRightEndOnRectangleIcon,
+  ArrowRightStartOnRectangleIcon,
+} from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import React, { useContext } from 'react'
 import { UserContext } from '../UserContext'
 import { logout } from '../api/logout'
 import { MobileMenu, MobileMenuProvider, MobileMenuToggle } from './components'
 
-const navigation = [
-  { name: '我的物品', href: '/items' },
-  { name: 'Features', href: '#' },
-  { name: 'Marketplace', href: '#' },
-  { name: 'Company', href: '#' },
-]
+const navigation = [{ name: '我的物品', href: '/items/init-status' }]
 
 const footerNavigation = {
   solutions: [
@@ -63,7 +62,7 @@ export default function Frame({ children }: { children: React.ReactNode }) {
           <div className='flex lg:hidden'>
             <MobileMenuToggle />
           </div>
-          <div className='hidden lg:flex lg:gap-x-12'>
+          <div className='hidden pr-80 lg:flex lg:gap-x-12'>
             {user &&
               navigation.map((item) => (
                 <Link
@@ -85,17 +84,19 @@ export default function Frame({ children }: { children: React.ReactNode }) {
                   </Link>
                 </p>
                 <form action={logout} className='ml-4 inline'>
-                  <button className='text-sm font-semibold leading-6 text-red-700 underline'>
-                    登出
+                  <button className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-red-700 underline'>
+                    <span>登出</span>
+                    <ArrowRightStartOnRectangleIcon className='size-5' />
                   </button>
                 </form>
               </>
             ) : (
               <Link
                 href='/sign-in'
-                className='text-sm font-semibold leading-6 text-gray-900'
+                className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900'
               >
-                登入 <span aria-hidden='true'>&rarr;</span>
+                登入
+                <ArrowRightEndOnRectangleIcon className='size-5' />
               </Link>
             )}
           </div>

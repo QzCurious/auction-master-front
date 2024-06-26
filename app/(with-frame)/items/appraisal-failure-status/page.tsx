@@ -8,10 +8,11 @@ import {
   PaginationSearchParams,
   ROWS_PER_PAGE,
 } from '@/app/static'
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import { PencilSquareIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import PreviewPhotos from '../PreviewPhotos'
 import StatusTabs from '../StatusTabs'
+import CreateItemLink from '../CreateItemLink'
 
 interface PageProps {
   searchParams: PaginationSearchParams
@@ -36,13 +37,7 @@ export default async function Page({ searchParams }: PageProps) {
     <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
       <div className='flex justify-between gap-x-4'>
         <h1 className='text-2xl font-bold tracking-tight text-gray-900'>我的物品</h1>
-        <Link
-          href='/items/init-status/create'
-          className='block text-sm font-medium text-indigo-600 hover:text-indigo-500'
-        >
-          新增物品
-          <span aria-hidden='true'> &rarr;</span>
-        </Link>
+        <CreateItemLink />
       </div>
 
       <StatusTabs active={STATUS} />

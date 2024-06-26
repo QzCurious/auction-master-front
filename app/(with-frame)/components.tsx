@@ -1,19 +1,19 @@
 'use client'
 
 import { Dialog, DialogPanel } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowRightEndOnRectangleIcon,
+  ArrowRightStartOnRectangleIcon,
+  Bars3Icon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { UserContext } from '../UserContext'
 import { logout } from '../api/logout'
 
-export const navigation = [
-  { name: '我的物品', href: '/items/init-status' },
-  { name: 'Features', href: '#' },
-  { name: 'Marketplace', href: '#' },
-  { name: 'Company', href: '#' },
-]
+export const navigation = [{ name: '我的物品', href: '/items/init-status' }]
 
 const MobileMenuContext = createContext<[boolean, (open: boolean) => void]>([
   false,
@@ -96,18 +96,20 @@ export function MobileMenu() {
                       {user.account}
                     </Link>
                   </p>
-                  <form action={logout}>
-                    <button className='text-sm font-semibold leading-6 text-red-700 underline'>
-                      登出
+                  <form action={logout} className='mt-1'>
+                    <button className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-red-700 underline'>
+                      <span>登出</span>
+                      <ArrowRightStartOnRectangleIcon className='size-5' />
                     </button>
                   </form>
                 </>
               ) : (
                 <Link
                   href='/sign-in'
-                  className='-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
+                  className='-mx-3 flex items-center gap-x-1 rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
                 >
-                  登入
+                  <span>登入</span>
+                  <ArrowRightEndOnRectangleIcon className='size-5' />
                 </Link>
               )}
             </div>
