@@ -17,7 +17,7 @@ type ErrorCode = never
 
 export async function updateConsignorAvatar(formData: FormData) {
   const avatarPhoto = formData.get('avatarPhoto')
-  if (!(avatarPhoto instanceof File) || avatarPhoto.size === 0) {
+  if (!avatarPhoto) {
     throw new Error('avatarPhoto is required')
   }
 
