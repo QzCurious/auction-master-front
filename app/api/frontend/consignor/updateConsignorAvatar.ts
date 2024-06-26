@@ -16,9 +16,8 @@ type Data = 'Success'
 type ErrorCode = never
 
 export async function updateConsignorAvatar(formData: FormData) {
-  const avatarPhoto = formData.get('avatarPhoto')
-  if (!avatarPhoto) {
-    throw new Error('avatarPhoto is required')
+  if (!formData.has('avatarPhoto')) {
+    throw new Error('field avatarPhoto is required')
   }
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(

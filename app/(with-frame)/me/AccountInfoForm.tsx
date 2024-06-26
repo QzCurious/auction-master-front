@@ -4,10 +4,11 @@ import { User } from '@/app/UserContext'
 import { Consignor } from '@/app/api/frontend/consignor/getConsignor'
 import { updateConsignor } from '@/app/api/frontend/consignor/updateConsignor'
 import { updateConsignorAvatar } from '@/app/api/frontend/consignor/updateConsignorAvatar'
+import { XMarkIcon } from '@heroicons/react/20/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
 import Image from 'next/image'
-import { useRef, useState, useTransition } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
@@ -15,6 +16,7 @@ import { forceRefreshTokenAction } from './actions'
 
 const Schema = z.object({
   nickname: z.string().min(1),
+  avatarPhoto: z.union([z.string(), z.instanceof(File)]).nullable(),
 })
 
 export default function AccountInfoForm({
@@ -24,16 +26,26 @@ export default function AccountInfoForm({
   user: User
   consignor: Consignor
 }) {
+  const defaultValues = useMemo(
+    () => ({
+      nickname: consignor.nickname,
+      avatarPhoto: user.avatar || null,
+    }),
+    [consignor.nickname, user.avatar],
+  )
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
+    reset,
   } = useForm<z.infer<typeof Schema>>({
-    defaultValues: {
-      nickname: consignor.nickname,
-    },
+    defaultValues,
     resolver: zodResolver(Schema),
   })
+
+  useEffect(() => {
+    reset(defaultValues)
+  }, [defaultValues, reset])
 
   return (
     <div className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3'>
@@ -45,20 +57,103 @@ export default function AccountInfoForm({
       </div>
 
       <div className='md:col-span-2'>
-        <Avatar user={user} />
-
         <form
           onSubmit={handleSubmit(async (data) => {
-            const res = await updateConsignor(data)
+            if (typeof data.avatarPhoto !== 'string') {
+              const formData = new FormData()
+              formData.append('avatarPhoto', data.avatarPhoto ?? '')
+              const res = await updateConsignorAvatar(formData)
+              if (res.error) {
+                toast.error(`頭像更新失敗: ${res.error}`)
+                return
+              }
+            }
+
+            const res = await updateConsignor({ nickname: data.nickname })
             if (res.error) {
               toast.error(`操作錯誤: ${res.error}`)
               return
             }
+
             await forceRefreshTokenAction()
             toast.success('更新成功')
           })}
         >
-          <div className='mt-6 grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
+          <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
+            <Controller
+              name='avatarPhoto'
+              control={control}
+              render={({ field }) => (
+                <div className='flex items-center gap-x-8 sm:col-span-full'>
+                  {field.value ? (
+                    <div className='group relative size-24 flex-none'>
+                      <label htmlFor='avatarPhoto'>
+                        <Image
+                          src={
+                            field.value instanceof File
+                              ? URL.createObjectURL(field.value)
+                              : field.value
+                          }
+                          className='size-full rounded-lg bg-gray-800 object-cover object-center'
+                          priority
+                          width={96}
+                          height={96}
+                          alt=''
+                        />
+                      </label>
+                      <button
+                        type='button'
+                        className='absolute -right-1.5 -top-1.5 bottom-auto left-auto hidden size-6 cursor-pointer rounded-full bg-red-500 p-0.5 text-white hover:bg-red-400 group-hover:block'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          field.onChange(null)
+                        }}
+                      >
+                        <XMarkIcon />
+                      </button>
+                    </div>
+                  ) : (
+                    <label
+                      htmlFor='avatarPhoto'
+                      className='size-24 flex-none overflow-hidden rounded-lg border'
+                    >
+                      <svg
+                        className='size-full text-gray-300'
+                        fill='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
+                      </svg>
+                    </label>
+                  )}
+                  <input
+                    type='file'
+                    className='sr-only'
+                    id='avatarPhoto'
+                    name='avatarPhoto'
+                    accept='image/*'
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      field.onChange(file)
+                    }}
+                  />
+
+                  <div>
+                    <label
+                      htmlFor='avatarPhoto'
+                      className='rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
+                    >
+                      {user.avatar ? <>更換頭像</> : <>上傳頭像</>}
+                    </label>
+                    <p className='mt-2 text-xs leading-5 text-gray-400'>
+                      支援 PNG, JPG, JPEG
+                    </p>
+                  </div>
+                </div>
+              )}
+            />
+
             <div className='sm:col-span-full'>
               <p className='block text-sm font-medium leading-6 text-gray-900'>
                 帳號
@@ -119,90 +214,5 @@ export default function AccountInfoForm({
         </form>
       </div>
     </div>
-  )
-}
-
-function Avatar({ user }: { user: User }) {
-  const [isPending, startTransition] = useTransition()
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [url, setUrl] = useState(user.avatar || null)
-
-  return (
-    <form
-      className='col-span-full flex items-center gap-x-8'
-      onSubmit={(e) => {
-        e.preventDefault()
-        startTransition(async () => {
-          const avatarPhoto = inputRef.current?.files?.[0]
-          if (!avatarPhoto || avatarPhoto.size === 0) return
-
-          const res = await updateConsignorAvatar(new FormData(e.currentTarget))
-          if (res.error) {
-            toast.error(`操作錯誤: ${res.error}`)
-            return
-          }
-
-          toast.success('頭像更新成功')
-        })
-      }}
-    >
-      <label className='block size-24 flex-none'>
-        <span className='sr-only'>上傳頭像</span>
-        {url ? (
-          <Image
-            src={url}
-            className='size-full rounded-lg bg-gray-800 object-cover object-center'
-            width={96}
-            height={96}
-            alt=''
-          />
-        ) : (
-          <div className='size-full overflow-hidden rounded-lg border'>
-            <svg
-              className='size-full text-gray-300'
-              fill='currentColor'
-              viewBox='0 0 24 24'
-            >
-              <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
-            </svg>
-          </div>
-        )}
-        <input
-          ref={inputRef}
-          hidden
-          type='file'
-          name='avatarPhoto'
-          accept='image/*'
-          onChange={(e) => {
-            const file = e.target.files?.[0]
-            if (!file) return
-            url && URL.revokeObjectURL(url)
-            setUrl(URL.createObjectURL(file))
-          }}
-        />
-      </label>
-      <div>
-        <button
-          type='submit'
-          className={clsx(
-            'rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50',
-            isPending && 'pointer-events-none opacity-50',
-          )}
-          onClick={(e) => {
-            if (!inputRef.current) return
-            if (inputRef.current.files?.length === 0) {
-              e.preventDefault()
-              inputRef.current?.click()
-            }
-          }}
-        >
-          {isPending && (
-            <span className='mr-2 inline-block size-3 animate-spin self-center rounded-full border-2 border-l-0 border-indigo-200'></span>
-          )}
-          {user.avatar ? <>更換頭像</> : <>上傳頭像</>}
-        </button>
-        <p className='mt-2 text-xs leading-5 text-gray-400'>支援 PNG, JPG, JPEG</p>
-      </div>
-    </form>
   )
 }
