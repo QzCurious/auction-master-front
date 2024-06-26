@@ -1,6 +1,7 @@
 import RedirectToHome from '@/app/RedirectToHome'
 import {
   CONSIGNOR_STATUS_MAP,
+  ITEM_STATUS_DATA,
   ITEM_STATUS_MAP,
   ITEM_TYPE_DATA,
   ITEM_TYPE_MAP,
@@ -56,12 +57,7 @@ async function Content({ params }: PageProps) {
   if (item.error === '1801') {
     notFound()
   }
-  if (
-    ![
-      ITEM_STATUS_MAP.SubmitAppraisalStatus,
-      ITEM_STATUS_MAP.AppraisedStatus,
-    ].includes(item.data.status)
-  ) {
+  if (item.data.status !== ITEM_STATUS_MAP.AppraisedStatus) {
     notFound()
   }
 
@@ -71,17 +67,12 @@ async function Content({ params }: PageProps) {
         <div className='min-w-0 flex-1'>
           <div className='flex items-center justify-between gap-x-6 sm:justify-start'>
             <h1 className='text-2xl font-bold text-gray-900'>{item.data.name}</h1>
-
-            {item.data.status === ITEM_STATUS_MAP['SubmitAppraisalStatus'] && (
-              <p className='inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-sm font-medium text-gray-600'>
-                審核中
-              </p>
-            )}
-            {item.data.status === ITEM_STATUS_MAP['AppraisedStatus'] && (
-              <p className='inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-700'>
-                審核通過
-              </p>
-            )}
+            <p className='inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-700'>
+              {
+                ITEM_STATUS_DATA.find(({ value }) => value === item.data.status)
+                  ?.message
+              }
+            </p>
           </div>
 
           <div className='mt-4'>

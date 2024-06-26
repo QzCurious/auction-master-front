@@ -8,18 +8,18 @@ import {
   PaginationSearchParams,
   ROWS_PER_PAGE,
 } from '@/app/static'
-import { PencilSquareIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
+import { EyeIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import CreateItemLink from '../CreateItemLink'
 import PreviewPhotos from '../PreviewPhotos'
 import StatusTabs from '../StatusTabs'
-import CreateItemLink from '../CreateItemLink'
+
+const STATUS =
+  'ConsignmentApprovedStatus' satisfies (typeof ITEM_STATUS_DATA)[number]['key']
 
 interface PageProps {
   searchParams: PaginationSearchParams
 }
-
-const STATUS =
-  'AppraisalFailureStatus' satisfies (typeof ITEM_STATUS_DATA)[number]['key']
 
 export default async function Page({ searchParams }: PageProps) {
   const pagination = PaginationSchema.parse(searchParams)
@@ -27,6 +27,8 @@ export default async function Page({ searchParams }: PageProps) {
     limit: pagination[ROWS_PER_PAGE],
     offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
     status: ITEM_STATUS_MAP[STATUS],
+    sort: 'status',
+    order: 'desc',
   })
 
   if (itemsRes.error === '1003') {
@@ -50,6 +52,15 @@ export default async function Page({ searchParams }: PageProps) {
         {itemsRes.data.items.map((item) => {
           return (
             <div key={item.id} className='relative'>
+              <Link
+                href={`/items/consignment-approved-status/${item.id}`}
+                className='absolute right-1.5 top-1.5 z-20'
+              >
+                <EyeIcon
+                  className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600'
+                  aria-hidden='true'
+                />
+              </Link>
               <PreviewPhotos photos={item.photos} />
 
               <h3 className='mt-1 text-xl font-medium text-gray-900'>{item.name}</h3>

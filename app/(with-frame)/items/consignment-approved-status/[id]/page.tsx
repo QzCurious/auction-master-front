@@ -1,6 +1,5 @@
 import RedirectToHome from '@/app/RedirectToHome'
 import {
-  CONSIGNOR_STATUS_MAP,
   ITEM_STATUS_DATA,
   ITEM_STATUS_MAP,
   ITEM_TYPE_DATA,
@@ -11,8 +10,6 @@ import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import ApproveConsignmentBtn from './ApproveConsignmentBtn'
-import CancelConsignmentBtn from './CancelConsignmentBtn'
 import ImageList from './ImageList'
 
 interface PageProps {
@@ -24,7 +21,7 @@ async function Page(pageProps: PageProps) {
     <div className='mx-auto max-w-4xl px-8'>
       <Link
         className='inline-flex items-center gap-x-1 text-sm text-indigo-600 hover:text-indigo-500'
-        href='/items/submit-appraisal-status'
+        href='/items/consignment-approved-status'
       >
         <ArrowLeftIcon className='size-4 stroke-2' />
         回到物品列表
@@ -57,7 +54,7 @@ async function Content({ params }: PageProps) {
   if (item.error === '1801') {
     notFound()
   }
-  if (item.data.status !== ITEM_STATUS_MAP.SubmitAppraisalStatus) {
+  if (item.data.status !== ITEM_STATUS_MAP['ConsignmentApprovedStatus']) {
     notFound()
   }
 
@@ -67,8 +64,7 @@ async function Content({ params }: PageProps) {
         <div className='min-w-0 flex-1'>
           <div className='flex items-center justify-between gap-x-6 sm:justify-start'>
             <h1 className='text-2xl font-bold text-gray-900'>{item.data.name}</h1>
-
-            <p className='inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-sm font-medium text-gray-600'>
+            <p className='inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-700'>
               {
                 ITEM_STATUS_DATA.find(({ value }) => value === item.data.status)
                   ?.message
@@ -148,35 +144,6 @@ async function Content({ params }: PageProps) {
               )}
             </dl>
           </section>
-
-          {item.data.status === ITEM_STATUS_MAP['AppraisedStatus'] && (
-            <div className='mt-4 flex flex-col gap-y-4'>
-              <CancelConsignmentBtn itemId={item.data.id} />
-
-              <div>
-                <ApproveConsignmentBtn
-                  itemId={item.data.id}
-                  disabled={
-                    user.status ===
-                    CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus
-                  }
-                />
-                {user.status ===
-                  CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus && (
-                  <p className='text-end text-sm text-gray-500'>
-                    完成
-                    <Link
-                      href='/me#identity-form'
-                      className='text-indigo-600 underline'
-                    >
-                      身份認證
-                    </Link>
-                    後即可託售
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </>

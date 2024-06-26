@@ -8,18 +8,18 @@ import {
   PaginationSearchParams,
   ROWS_PER_PAGE,
 } from '@/app/static'
-import { PencilSquareIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import CreateItemLink from '../CreateItemLink'
 import PreviewPhotos from '../PreviewPhotos'
 import StatusTabs from '../StatusTabs'
-import CreateItemLink from '../CreateItemLink'
 
 interface PageProps {
   searchParams: PaginationSearchParams
 }
 
 const STATUS =
-  'AppraisalFailureStatus' satisfies (typeof ITEM_STATUS_DATA)[number]['key']
+  'ConsignmentCanceledStatus' satisfies (typeof ITEM_STATUS_DATA)[number]['key']
 
 export default async function Page({ searchParams }: PageProps) {
   const pagination = PaginationSchema.parse(searchParams)

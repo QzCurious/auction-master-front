@@ -3,10 +3,12 @@
 import { consignment } from '@/app/api/frontend/items/consignment'
 import { Item } from '@/app/api/frontend/items/getItem'
 import clsx from 'clsx'
+import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import toast from 'react-hot-toast'
 
 export default function CancelConsignmentBtn({ itemId }: { itemId: Item['id'] }) {
+  const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
   return (
@@ -24,6 +26,7 @@ export default function CancelConsignmentBtn({ itemId }: { itemId: Item['id'] })
             return
           }
           toast.success('託售已取消')
+          router.push('/items/consignment-canceled-status')
         })
       }}
     >

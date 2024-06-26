@@ -9,14 +9,16 @@ const tabs = [
   { status: 'InitStatus', href: '/items/init-status' },
   { status: 'SubmitAppraisalStatus', href: '/items/submit-appraisal-status' },
   { status: 'AppraisedStatus', href: '/items/appraised-status' },
+  { status: 'ConsignmentApprovedStatus', href: '/items/consignment-approved-status' },
   { status: 'AppraisalFailureStatus', href: '/items/appraisal-failure-status' },
+  { status: 'ConsignmentCanceledStatus', href: '/items/consignment-canceled-status' },
 ] as const satisfies Array<{
   status: (typeof ITEM_STATUS_DATA)[number]['key']
   href: string
 }>
 
 interface StatusTabsProps {
-  active: (typeof ITEM_STATUS_DATA)[number]['key']
+  active: (typeof tabs)[number]['status']
 }
 
 export default function StatusTabs({ active: status }: StatusTabsProps) {
