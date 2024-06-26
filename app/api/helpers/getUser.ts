@@ -9,6 +9,7 @@ export async function getUser() {
   return jwt
     ? {
         id: jwt.id,
+        avatar: jwt.avatar,
         account: jwt.account,
         nickname: jwt.nickname,
         status: jwt.status,

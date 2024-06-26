@@ -1,14 +1,15 @@
 import RedirectToHome from '@/app/RedirectToHome'
 import { getConsignor } from '@/app/api/frontend/consignor/getConsignor'
+import { getUser } from '@/app/api/helpers/getUser'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
 import DeleteAccountForm from './DeleteAccountForm'
 import IdentityForm from './IdentityForm'
 
 export default async function Example() {
-  const consignorRes = await getConsignor()
+  const [user, consignorRes] = await Promise.all([getUser(), getConsignor()])
 
-  if (consignorRes.error === '1003') {
+  if (!user || consignorRes.error === '1003') {
     return <RedirectToHome />
   }
 
@@ -19,7 +20,7 @@ export default async function Example() {
 
         <main className='px-4 sm:px-6 lg:flex-auto lg:px-0'>
           <div className='flex flex-col gap-y-12 px-4 sm:px-6 lg:px-8'>
-            <AccountInfoForm consignor={consignorRes.data} />
+            <AccountInfoForm user={user} consignor={consignorRes.data} />
             <div className='h-px bg-gray-200'></div>
 
             <ChangePasswordForm />

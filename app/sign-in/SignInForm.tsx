@@ -140,7 +140,7 @@ export function SignInForm() {
             )}
           >
             {isSubmitting && (
-              <span className='mr-2 size-3 animate-spin self-center rounded-full border-2 border-l-0 border-indigo-200'></span>
+              <span className='mr-2 inline-block size-3 animate-spin self-center rounded-full border-2 border-l-0 border-indigo-200'></span>
             )}
             登入
           </button>

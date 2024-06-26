@@ -4,7 +4,8 @@ import { type JwtPayload } from '@/app/api/JwtPayload'
 import type React from 'react'
 import { createContext, useContext } from 'react'
 
-export interface User extends Pick<JwtPayload, 'id' | 'account' | 'nickname'> {}
+export interface User
+  extends Pick<JwtPayload, 'id' | 'avatar' | 'account' | 'nickname'> {}
 
 export const UserContext = createContext<User | null>(null)
 

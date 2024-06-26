@@ -3,12 +3,9 @@ const nextConfig = {
   output: 'standalone',
   images: {
     remotePatterns: [
-      {
-        hostname: 'tailwindui.com',
-      },
-      {
-        hostname: 'images.unsplash.com',
-      },
+      { hostname: 'tailwindui.com' },
+      { hostname: 'images.unsplash.com' },
+      { hostname: 'auction-master.jp-osa-1.linodeobjects.com' },
     ],
   },
 }
