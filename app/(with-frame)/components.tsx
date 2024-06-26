@@ -93,7 +93,7 @@ export function MobileMenu() {
                   <p>
                     歡迎,{' '}
                     <Link href='/me' className='hover:underline'>
-                      {user.account}
+                      {user.nickname}
                     </Link>
                   </p>
                   <form action={logout} className='mt-1'>

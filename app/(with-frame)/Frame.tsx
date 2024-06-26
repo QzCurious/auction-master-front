@@ -80,7 +80,7 @@ export default function Frame({ children }: { children: React.ReactNode }) {
                 <p className='inline'>
                   歡迎,{' '}
                   <Link href='/me' className='hover:underline'>
-                    {user.account}
+                    {user.nickname}
                   </Link>
                 </p>
                 <form action={logout} className='ml-4 inline'>
