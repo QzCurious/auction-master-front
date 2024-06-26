@@ -47,10 +47,10 @@ export default function Frame({ children }: { children: React.ReactNode }) {
       {/* Header */}
       <header className='relative z-30'>
         <nav
-          className='flex min-h-20 items-center justify-between px-6 lg:px-8'
+          className='flex min-h-20 items-center justify-between gap-x-8 px-6 lg:px-8'
           aria-label='Global'
         >
-          <div className='flex lg:flex-1'>
+          <div className='flex'>
             <Link href='/' className='-m-1.5 p-1.5'>
               <span className='sr-only'>Auction Master</span>
               <img
@@ -63,7 +63,7 @@ export default function Frame({ children }: { children: React.ReactNode }) {
           <div className='flex lg:hidden'>
             <MobileMenuToggle />
           </div>
-          <div className='hidden pr-80 lg:flex lg:gap-x-12'>
+          <div className='hidden grow justify-end lg:flex lg:gap-x-12'>
             {user &&
               navigation.map((item) => (
                 <Link
@@ -75,7 +75,7 @@ export default function Frame({ children }: { children: React.ReactNode }) {
                 </Link>
               ))}
           </div>
-          <div className='hidden items-center lg:flex lg:flex-1 lg:justify-end'>
+          <div className='hidden items-center lg:flex lg:justify-end'>
             {user ? (
               <>
                 <Link href='/me' className='hover:underline'>
