@@ -110,7 +110,7 @@ export default function Page() {
           <div className='pb-24 pt-8 sm:py-32 sm:pt-16'>
             <div className='mx-auto max-w-7xl px-6 lg:px-8'>
               <div className='mx-auto text-center'>
-                <p className='text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl'>
+                <p className='text-balance text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl'>
                   看看我們在日拍的競標高價記錄
                 </p>
                 <p className='mt-6 text-lg leading-8 text-gray-600'>
