@@ -33,7 +33,7 @@ export default function ApproveConsignmentBtn({
             return
           }
           toast.success('已申請託售')
-          router.push('/items/appraised-status')
+          router.push('/items/consignment-approved-status')
         })
       }}
     >
