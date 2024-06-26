@@ -52,7 +52,7 @@ export default async function Page({ searchParams }: PageProps) {
           return (
             <div key={item.id} className='relative'>
               <Link
-                href={`/items/submit-appraisal-status/${item.id}`}
+                href={`/items/appraised-status/${item.id}`}
                 className='absolute right-1.5 top-1.5 z-20'
               >
                 <EyeIcon
