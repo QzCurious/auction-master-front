@@ -7,6 +7,7 @@ import {
   Bars3Icon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createContext, useContext, useEffect, useState } from 'react'
@@ -90,13 +91,20 @@ export function MobileMenu() {
             <div className='py-6'>
               {user ? (
                 <>
-                  <p>
-                    歡迎,{' '}
-                    <Link href='/me' className='hover:underline'>
-                      {user.nickname}
-                    </Link>
-                  </p>
-                  <form action={logout} className='mt-1'>
+                  <Link href='/me' className='hover:underline'>
+                    {user.avatar && (
+                      <Image
+                        src={user.avatar}
+                        className='mr-2 inline-block size-8 rounded-full object-contain object-center ring-1 ring-gray-200'
+                        width={32}
+                        height={32}
+                        alt='avatar'
+                      />
+                    )}
+                    {user.nickname}
+                  </Link>
+
+                  <form action={logout} className='mt-3'>
                     <button className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-red-700 underline'>
                       <span>登出</span>
                       <ArrowRightStartOnRectangleIcon className='size-5' />

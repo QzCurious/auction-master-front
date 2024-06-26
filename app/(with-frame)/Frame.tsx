@@ -4,6 +4,7 @@ import {
   ArrowRightEndOnRectangleIcon,
   ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import Link from 'next/link'
 import React, { useContext } from 'react'
 import { UserContext } from '../UserContext'
@@ -46,7 +47,7 @@ export default function Frame({ children }: { children: React.ReactNode }) {
       {/* Header */}
       <header className='relative z-30'>
         <nav
-          className='flex items-center justify-between p-6 lg:px-8'
+          className='flex min-h-20 items-center justify-between px-6 lg:px-8'
           aria-label='Global'
         >
           <div className='flex lg:flex-1'>
@@ -74,15 +75,22 @@ export default function Frame({ children }: { children: React.ReactNode }) {
                 </Link>
               ))}
           </div>
-          <div className='hidden lg:flex lg:flex-1 lg:justify-end'>
+          <div className='hidden items-center lg:flex lg:flex-1 lg:justify-end'>
             {user ? (
               <>
-                <p className='inline'>
-                  歡迎,{' '}
-                  <Link href='/me' className='hover:underline'>
-                    {user.nickname}
-                  </Link>
-                </p>
+                <Link href='/me' className='hover:underline'>
+                  {user.avatar && (
+                    <Image
+                      src={user.avatar}
+                      className='mr-2 inline-block size-8 rounded-full object-contain object-center ring-1 ring-gray-200'
+                      width={32}
+                      height={32}
+                      alt='avatar'
+                    />
+                  )}
+                  {user.nickname}
+                </Link>
+
                 <form action={logout} className='ml-4 inline'>
                   <button className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-red-700 underline'>
                     <span>登出</span>
