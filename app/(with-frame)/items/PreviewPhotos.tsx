@@ -44,24 +44,24 @@ export default function PreviewPhotos({
           <button
             type='button'
             className={clsx(
-              'h-full w-20 bg-gradient-to-r from-black/60 to-black/0 opacity-50 transition-opacity hover:opacity-100',
+              'h-full w-20 opacity-70 transition-opacity hover:opacity-100',
               i === 0 && 'pointer-events-none !opacity-0',
             )}
             onClick={() => emblaApi?.scrollPrev()}
           >
             <span className='sr-only'>Move to previous</span>
-            <ChevronLeftIcon className='mr-auto size-12 stroke-2 p-1 text-white' />
+            <ChevronLeftIcon className='mr-auto size-14 stroke-2 p-1 text-white' />
           </button>
           <button
             type='button'
             className={clsx(
-              'h-full w-20 bg-gradient-to-l from-black/60 to-black/0 opacity-50 transition-opacity hover:opacity-100',
+              'h-full w-20 opacity-70 transition-opacity hover:opacity-100',
               i === photos.length - 1 && 'pointer-events-none !opacity-0',
             )}
             onClick={() => emblaApi?.scrollNext()}
           >
             <span className='sr-only'>Move to next</span>
-            <ChevronRightIcon className='ml-auto size-12 stroke-2 p-1 text-white' />
+            <ChevronRightIcon className='ml-auto size-14 stroke-2 p-1 text-white' />
           </button>
         </div>
       )}
