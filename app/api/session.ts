@@ -17,6 +17,8 @@ interface Data {
 }
 
 type ErrorCode =
+  // block user
+  | '1002'
   // PasswordIncorrect
   | '1004'
   // ConsignorNotExist

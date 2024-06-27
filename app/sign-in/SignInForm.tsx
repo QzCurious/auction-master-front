@@ -9,8 +9,8 @@ import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const Schema = z.object({
-  account: z.string().min(1, { message: 'Account is required' }),
-  password: z.string().min(1, { message: 'Password is required' }),
+  account: z.string().min(1, { message: '必填' }),
+  password: z.string().min(1, { message: '必填' }),
 })
 
 export function SignInForm() {
@@ -49,8 +49,12 @@ export function SignInForm() {
         className='space-y-6'
         onSubmit={handleSubmit(async (data) => {
           const res = await session(data)
+          if (res.error === '1002') {
+            setError('root', { message: '被封鎖的帳號，請聯繫客服' })
+            return
+          }
           if (res.error === '1004' || res.error === '1602') {
-            setError('root', { message: 'Account or password is incorrect' })
+            setError('root', { message: '帳號或密碼錯誤' })
             return
           }
           const goto = new URLSearchParams(location.search).get('goto')
