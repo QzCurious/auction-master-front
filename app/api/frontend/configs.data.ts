@@ -1,4 +1,4 @@
-import { mapToObj } from 'remeda'
+import { map, mapToObj } from 'remeda'
 
 export const CONFIGS_DATA = {
   yahooAuctionFeeRate: 0.1,
@@ -24,24 +24,19 @@ export const CONFIGS_DATA = {
   ],
   itemStatus: [
     {
-      key: 'InitStatus',
-      message: '初始化',
-      value: 1,
-    },
-    {
       key: 'SubmitAppraisalStatus',
       message: '已提交估價',
-      value: 2,
+      value: 1,
     },
     {
       key: 'AppraisalFailureStatus',
       message: '估價失敗',
-      value: 3,
+      value: 2,
     },
     {
       key: 'AppraisedStatus',
       message: '已估價',
-      value: 4,
+      value: 3,
     },
     {
       key: 'ConsignmentApprovedStatus',
