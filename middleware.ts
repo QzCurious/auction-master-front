@@ -9,6 +9,12 @@ export async function middleware(request: NextRequest) {
   const token = cookies().get(cookieConfigs.token.name)?.value
   const { token: newToken, res } = await getToken()
 
+  if (res?.error === '1003') {
+    response.cookies.delete(cookieConfigs.token.name)
+    response.cookies.delete(cookieConfigs.refreshToken.name)
+    return response
+  }
+
   if (newToken && token !== newToken) {
     console.log('middleware: new token set')
     response.cookies.set(cookieConfigs.token.name, newToken, cookieConfigs.token.opts)
