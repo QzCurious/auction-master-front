@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const tabs = [
-  { status: 'InitStatus', href: '/items/init-status' },
   { status: 'SubmitAppraisalStatus', href: '/items/submit-appraisal-status' },
   { status: 'AppraisedStatus', href: '/items/appraised-status' },
   { status: 'ConsignmentApprovedStatus', href: '/items/consignment-approved-status' },

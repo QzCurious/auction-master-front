@@ -14,7 +14,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { UserContext } from '../UserContext'
 import { logout } from '../api/logout'
 
-export const navigation = [{ name: '我的物品', href: '/items/init-status' }]
+export const navigation = [{ name: '我的物品', href: '/items' }]
 
 const MobileMenuContext = createContext<[boolean, (open: boolean) => void]>([
   false,

@@ -5,6 +5,7 @@ import {
   LockClosedIcon,
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
+import { Button } from '../catalyst-ui/button'
 import bbbb from './bbbb.png'
 import ssss from './ssss.png'
 
@@ -118,6 +119,15 @@ export default function Page() {
                   <br />
                   這也是對於您物品價值的一種肯定
                 </p>
+
+                <div className='mt-10 flex items-center justify-center gap-x-6'>
+                  <Button href='/sign-up' color='indigo'>
+                    立即加入
+                  </Button>
+                  <Button plain>
+                    瞭解更多 <span aria-hidden='true'>→</span>
+                  </Button>
+                </div>
 
                 <div className='mt-10 flex flex-col gap-y-4'>
                   <Image

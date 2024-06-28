@@ -4,14 +4,16 @@ import {
   ArrowRightEndOnRectangleIcon,
   ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import React, { useContext } from 'react'
 import { UserContext } from '../UserContext'
 import { logout } from '../api/logout'
 import { MobileMenu, MobileMenuProvider, MobileMenuToggle } from './components'
 
-const navigation = [{ name: '我的物品', href: '/items/init-status' }]
+const navigation = [{ name: '我的物品', href: '/items' }]
 
 const footerNavigation = {
   solutions: [
@@ -42,12 +44,14 @@ const footerNavigation = {
 
 export default function Frame({ children }: { children: React.ReactNode }) {
   const user = useContext(UserContext)
+  const pathname = usePathname()
+
   return (
     <MobileMenuProvider>
       {/* Header */}
       <header className='relative z-30'>
         <nav
-          className='flex min-h-20 items-center justify-between gap-x-8 px-6 lg:px-8'
+          className='flex min-h-20 items-center justify-between gap-x-36 px-6 lg:px-8'
           aria-label='Global'
         >
           <div className='flex'>
@@ -63,13 +67,16 @@ export default function Frame({ children }: { children: React.ReactNode }) {
           <div className='flex lg:hidden'>
             <MobileMenuToggle />
           </div>
-          <div className='hidden grow justify-end lg:flex lg:gap-x-12'>
+          <div className='hidden grow justify-start lg:flex lg:gap-x-12'>
             {user &&
               navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className='text-sm font-semibold leading-6 text-gray-900'
+                  className={clsx(
+                    'px-2 py-1.5 text-lg font-semibold leading-6 text-gray-900',
+                    pathname.startsWith(item.href) && 'border-b-2 border-indigo-500',
+                  )}
                 >
                   {item.name}
                 </Link>

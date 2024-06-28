@@ -1,6 +1,8 @@
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 import { z } from 'zod'
 
+export const SITE_NAME = '日拍'
+
 export const itemStatusTextMap = {
   2: '已提交估價',
 } as Record<number, string>
