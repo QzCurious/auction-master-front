@@ -8,9 +8,12 @@ import {
 } from '@/app/api/frontend/configs.data'
 import { getItem } from '@/app/api/frontend/items/getItem'
 import { getUser } from '@/app/api/helpers/getUser'
+import ClientOnly from '@/app/components/ClientOnly'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import 'quill/dist/quill.snow.css'
+import QuillTextEditor from '../../../../components/QuillTextEditor/QuillTextEditor'
 import ApproveConsignmentBtn from './ApproveConsignmentBtn'
 import CancelConsignmentBtn from './CancelConsignmentBtn'
 import PhotoListForm from './PhotoListForm'
@@ -79,7 +82,15 @@ async function Content({ params }: PageProps) {
           <section className='mt-8 text-gray-700'>
             <h2 className='text-xl font-bold text-gray-900'>描述</h2>
             {item.data.description ? (
-              <div className='mt-2'>{item.data.description}</div>
+              <div className='mt-2'>
+                <ClientOnly>
+                  <QuillTextEditor
+                    readOnly
+                    hideToolbar
+                    defaultValue={item.data.description}
+                  />
+                </ClientOnly>
+              </div>
             ) : (
               <div className='mt-2'>暫無描述</div>
             )}
