@@ -6,6 +6,8 @@ import { Checkbox, CheckboxField } from '@/app/catalyst-ui/checkbox'
 import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
 import { Input } from '@/app/catalyst-ui/input'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
+import ClientOnly from '@/app/components/ClientOnly'
+import QuillTextEditor from '@/app/components/QuillTextEditor/QuillTextEditor'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -37,6 +39,7 @@ const Schema = z.object({
     )
     .min(1, { message: '必填' })
     .max(30, { message: '上限 30 張' }),
+  description: z.string().default(''),
 })
 
 export default function From() {
@@ -47,12 +50,13 @@ export default function From() {
     setError,
     formState: { isSubmitting, errors, isDirty },
     reset,
-  } = useForm<z.input<typeof Schema>>({
+  } = useForm<z.output<typeof Schema>>({
     defaultValues: {
       name: '',
       type: 0,
       reservePrice: '' as any,
       photos: [],
+      description: '',
     },
     resolver: zodResolver(Schema),
   })
@@ -68,6 +72,7 @@ export default function From() {
           formData.append('name', data.name)
           formData.append('type', data.type.toString())
           formData.append('reservePrice', data.reservePrice.toString())
+          formData.append('description', data.description.toString())
           for (let i = 0; i < data.photos.length; i++) {
             const f = data.photos[i]
             formData.append('photo', f.file)
@@ -140,6 +145,25 @@ export default function From() {
           <div className='col-span-full'>
             <UploadImage control={control} />
           </div>
+
+          <Controller
+            control={control}
+            name='description'
+            render={({ field, fieldState }) => (
+              <Field className='col-span-full'>
+                <Label className='mb-3'>物品描述</Label>
+                <div data-slot='control'>
+                  <ClientOnly>
+                    <QuillTextEditor
+                      onTextChange={(delta, oldDelta) =>
+                        field.onChange(JSON.stringify(oldDelta.compose(delta).ops))
+                      }
+                    />
+                  </ClientOnly>
+                </div>
+              </Field>
+            )}
+          />
         </div>
 
         <div className='mt-6 flex items-center gap-x-4'>
@@ -166,7 +190,7 @@ export default function From() {
   )
 }
 
-function UploadImage({ control }: { control: Control<z.input<typeof Schema>> }) {
+function UploadImage({ control }: { control: Control<z.output<typeof Schema>> }) {
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
     control,
     name: 'photos',

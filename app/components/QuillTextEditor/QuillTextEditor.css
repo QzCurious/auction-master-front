@@ -2,3 +2,15 @@
   min-height: 180px;
   max-height: 400px;
 }
+
+.ql-toolbar {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.ql-container {
+  border-radius: 0.5rem;
+}
+
+.ql-toolbar + .ql-container {
+  border-radius: 0 0 0.5rem 0.5rem;
+}
