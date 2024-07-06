@@ -1,4 +1,4 @@
-import { map, mapToObj } from 'remeda'
+import { mapToObj } from 'remeda'
 
 export const CONFIGS_DATA = {
   yahooAuctionFeeRate: 0.1,
@@ -178,6 +178,14 @@ export const ITEM_STATUS_DATA = CONFIGS_DATA.itemStatus
 export const ITEM_STATUS_MAP = mapToObj(ITEM_STATUS_DATA, ({ key, value }) => [
   key,
   value,
+])
+export const ITEM_STATUS_MESSAGE_MAP = mapToObj(
+  ITEM_STATUS_DATA,
+  ({ key, message }) => [key, message],
+)
+export const ITEM_STATUS_KEY_MAP = mapToObj(ITEM_STATUS_DATA, ({ key, value }) => [
+  value,
+  key,
 ])
 
 export const AUCTION_ITEM_STATUS_DATA = CONFIGS_DATA.auctionItemStatus

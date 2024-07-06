@@ -1,6 +1,7 @@
 'use client'
 
-import { ITEM_STATUS_DATA } from '@/app/api/frontend/configs.data'
+import { ITEM_STATUS_DATA, ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
+import { StatusCounts } from '@/app/api/frontend/items/items'
 import {
   Dialog,
   DialogBackdrop,
@@ -26,7 +27,17 @@ const filters = [
   },
 ]
 
-export function DesktopFilters() {
+interface StatusFilterProps {
+  selected: Array<(typeof ITEM_STATUS_DATA)[number]['value']>
+  statusCount: StatusCounts
+}
+
+const statusForConsignor = [
+  ITEM_STATUS_MAP.AppraisedStatus,
+  ITEM_STATUS_MAP.DetailsFullyCompletedStatus,
+] as const
+
+export function DesktopFilters({ selected, statusCount }: StatusFilterProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -45,9 +56,7 @@ export function DesktopFilters() {
                     id={`${section.field}-${optionIdx}`}
                     name={`${section.field}[]`}
                     defaultValue={option.value}
-                    checked={searchParams
-                      .getAll(section.field)
-                      .includes(option.value.toString())}
+                    checked={selected.includes(option.value)}
                     type='checkbox'
                     className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
                     onChange={(e) => {
@@ -70,9 +79,17 @@ export function DesktopFilters() {
                   />
                   <label
                     htmlFor={`${section.field}-${optionIdx}`}
-                    className='ml-3 text-sm text-gray-600'
+                    className={clsx(
+                      'ml-3 text-sm',
+                      statusForConsignor.includes(option.value)
+                        ? 'text-gray-900'
+                        : 'text-gray-500',
+                    )}
                   >
-                    {option.label}
+                    {option.label}{' '}
+                    {statusForConsignor.includes(option.value) && (
+                      <span>({statusCount[option.value] ?? 0})</span>
+                    )}
                   </label>
                 </div>
               ))}
@@ -84,7 +101,7 @@ export function DesktopFilters() {
   )
 }
 
-export function MobileFilters() {
+export function MobileFilters({ selected, statusCount }: StatusFilterProps) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -97,13 +114,16 @@ export function MobileFilters() {
         onClick={() => setMobileFiltersOpen(true)}
       >
         <FunnelIcon
-          className='h-5 w-5 flex-shrink-0 text-gray-400'
+          className={clsx(
+            'h-5 w-5 flex-shrink-0',
+            selected.length === 0
+              ? 'text-gray-400'
+              : 'fill-indigo-600 text-indigo-600',
+          )}
           aria-hidden='true'
         />
         <span className='text-sm font-medium text-gray-700'>篩選條件</span>
-        {searchParams.getAll('status').length > 0 && (
-          <span className='absolute left-full top-0 size-2 rounded-full bg-indigo-500'></span>
-        )}
+        {/* <span className='absolute left-full top-0 size-2 rounded-full bg-indigo-500'></span> */}
       </button>
 
       <Dialog
@@ -168,9 +188,7 @@ export function MobileFilters() {
                                 id={`${section.field}-${optionIdx}-mobile`}
                                 name={`${section.field}[]`}
                                 defaultValue={option.value}
-                                checked={searchParams
-                                  .getAll(section.field)
-                                  .includes(option.value.toString())}
+                                checked={selected.includes(option.value)}
                                 type='checkbox'
                                 className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
                                 onChange={(e) => {
@@ -198,9 +216,17 @@ export function MobileFilters() {
                               />
                               <label
                                 htmlFor={`${section.field}-${optionIdx}-mobile`}
-                                className='ml-3 text-sm text-gray-500'
+                                className={clsx(
+                                  'ml-3 text-sm',
+                                  statusForConsignor.includes(option.value)
+                                    ? 'text-gray-900'
+                                    : 'text-gray-500',
+                                )}
                               >
-                                {option.label}
+                                {option.label}{' '}
+                                {statusForConsignor.includes(option.value) && (
+                                  <span>({statusCount[option.value] ?? 0})</span>
+                                )}
                               </label>
                             </div>
                           ))}

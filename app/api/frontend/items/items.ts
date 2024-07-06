@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
+import { ITEM_STATUS_KEY_MAP } from '../configs.data'
 
 export const ReqSchema = z.object({
   status: z.coerce.number().array().optional(),
@@ -11,27 +12,34 @@ export const ReqSchema = z.object({
   offset: z.coerce.number().default(0),
 })
 
-interface Data {
-  items: Array<{
-    id: number
-    nickname: string
-    type: number
-    name: string
-    description: string
-    photos: Array<{
-      sorted: number
-      photo: string
-    }>
-    space: number
-    minEstimatedPrice: number
-    maxEstimatedPrice: number
-    reservePrice: number
-    expireAt: string
-    status: number
-    createdAt: string
-    updatedAt: string
+export interface Item {
+  id: number
+  nickname: string
+  type: number
+  name: string
+  description: string
+  photos: Array<{
+    sorted: number
+    photo: string
   }>
+  space: number
+  minEstimatedPrice: number
+  maxEstimatedPrice: number
+  reservePrice: number
+  expireAt: string
+  status: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type StatusCounts = {
+  [k in keyof typeof ITEM_STATUS_KEY_MAP]?: number
+}
+
+interface Data {
+  items: Array<Item>
   count: number
+  statusCounts: StatusCounts
 }
 
 type ErrorCode = never
