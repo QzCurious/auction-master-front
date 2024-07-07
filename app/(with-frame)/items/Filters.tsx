@@ -2,6 +2,7 @@
 
 import { ITEM_STATUS_DATA, ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
 import { StatusCounts } from '@/app/api/frontend/items/items'
+import { StatusFlow } from '@/app/StatusFlow'
 import {
   Dialog,
   DialogBackdrop,
@@ -32,10 +33,9 @@ interface StatusFilterProps {
   statusCount: StatusCounts
 }
 
-const statusForConsignor = [
-  ITEM_STATUS_MAP.AppraisedStatus,
-  ITEM_STATUS_MAP.DetailsFullyCompletedStatus,
-] as const
+const statusForConsignor = Object.values(StatusFlow.flow)
+  .filter((v) => 'adjudicator' in v && v.adjudicator === 'consignor')
+  .map((v) => ITEM_STATUS_MAP[v.status])
 
 export function DesktopFilters({ selected, statusCount }: StatusFilterProps) {
   const router = useRouter()

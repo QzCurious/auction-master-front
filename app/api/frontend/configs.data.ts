@@ -93,6 +93,11 @@ export const CONFIGS_DATA = {
       message: '被公司買回',
       value: 33,
     },
+    {
+      key: 'CompanyReclaimedStatus',
+      message: '被公司收回',
+      value: 34,
+    },
   ],
   auctionItemStatus: [
     {

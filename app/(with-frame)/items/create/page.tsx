@@ -2,7 +2,7 @@ import RedirectToHome from '@/app/RedirectToHome'
 import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import From from './Form'
+import Form from './Form'
 
 async function Page() {
   return (
@@ -19,19 +19,19 @@ async function Page() {
         新增物品
       </h1>
 
-      <Form />
+      <Content />
     </div>
   )
 }
 
 export default Page
 
-async function Form() {
+async function Content() {
   const user = await getUser()
 
   if (!user) {
     return <RedirectToHome />
   }
 
-  return <From />
+  return <Form />
 }

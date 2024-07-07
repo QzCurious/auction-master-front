@@ -1,22 +1,25 @@
 import RedirectToHome from '@/app/RedirectToHome'
 import {
-  CONSIGNOR_STATUS_MAP,
   ITEM_STATUS_DATA,
-  ITEM_STATUS_MAP,
   ITEM_TYPE_DATA,
   ITEM_TYPE_MAP,
 } from '@/app/api/frontend/configs.data'
 import { getItem } from '@/app/api/frontend/items/getItem'
 import { getUser } from '@/app/api/helpers/getUser'
+import {
+  DescriptionDetails,
+  DescriptionList,
+  DescriptionTerm,
+} from '@/app/catalyst-ui/description-list'
+import { Subheading } from '@/app/catalyst-ui/heading'
 import ClientOnly from '@/app/components/ClientOnly'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import 'quill/dist/quill.snow.css'
 import QuillTextEditor from '../../../../components/QuillTextEditor/QuillTextEditor'
-import ApproveConsignmentBtn from './ApproveConsignmentBtn'
-import CancelConsignmentBtn from './CancelConsignmentBtn'
 import PhotoListForm from './PhotoListForm'
+import { StatusFlowUI } from './StatusFlowSection'
 
 interface PageProps {
   params: { id: string }
@@ -80,7 +83,7 @@ async function Content({ params }: PageProps) {
           </div>
 
           <section className='mt-8 text-gray-700'>
-            <h2 className='text-xl font-bold text-gray-900'>描述</h2>
+            <Subheading level={2}>描述</Subheading>
             {item.data.description ? (
               <div className='mt-2'>
                 <ClientOnly>
@@ -99,79 +102,43 @@ async function Content({ params }: PageProps) {
 
         <div className='min-w-40'>
           <section>
-            <dl className='divide-y divide-gray-100'>
-              <div className='py-3'>
-                <dt className='text-sm font-medium leading-6 text-gray-900'>類別</dt>
-                <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                  {ITEM_TYPE_DATA.find(({ value }) => value === item.data.type)
-                    ?.message ?? '(待定)'}
-                </dd>
-              </div>
-              <div className='py-3'>
-                <dt className='text-sm font-medium leading-6 text-gray-900'>空間</dt>
-                <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                  {item.data.space}
-                </dd>
-              </div>
-              <div className='py-3'>
-                <dt className='text-sm font-medium leading-6 text-gray-900'>
-                  期望金額
-                </dt>
-                <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                  {item.data.reservePrice.toLocaleString()}
-                </dd>
-              </div>
+            <DescriptionList className=''>
+              <DescriptionTerm>類別</DescriptionTerm>
+              <DescriptionDetails>
+                {ITEM_TYPE_DATA.find(({ value }) => value === item.data.type)
+                  ?.message ?? '(待定)'}
+              </DescriptionDetails>
+
+              <DescriptionTerm>空間</DescriptionTerm>
+              <DescriptionDetails>{item.data.space}</DescriptionDetails>
+
+              <DescriptionTerm>期望金額</DescriptionTerm>
+              <DescriptionDetails>
+                {item.data.reservePrice.toLocaleString()}
+              </DescriptionDetails>
+
               {item.data.type === ITEM_TYPE_MAP['AppraisableAuctionItemType'] && (
                 <>
-                  <div className='py-3'>
-                    <dt className='text-sm font-medium leading-6 text-gray-900'>
-                      最低估值
-                    </dt>
-                    <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                      {item.data.minEstimatedPrice.toLocaleString()}
-                    </dd>
-                  </div>
-                  <div className='py-3'>
-                    <dt className='text-sm font-medium leading-6 text-gray-900'>
-                      最高估值
-                    </dt>
-                    <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                      {item.data.maxEstimatedPrice.toLocaleString()}
-                    </dd>
-                  </div>
+                  <DescriptionTerm>最低估值</DescriptionTerm>
+                  <DescriptionDetails>
+                    {item.data.minEstimatedPrice.toLocaleString()}
+                  </DescriptionDetails>
+
+                  <DescriptionTerm>最高估值</DescriptionTerm>
+                  <DescriptionDetails>
+                    {item.data.maxEstimatedPrice.toLocaleString()}
+                  </DescriptionDetails>
                 </>
               )}
-            </dl>
+            </DescriptionList>
           </section>
 
-          {item.data.status === ITEM_STATUS_MAP['AppraisedStatus'] && (
-            <div className='mt-4 flex flex-col gap-y-4'>
-              <CancelConsignmentBtn itemId={item.data.id} />
-
-              <div>
-                <ApproveConsignmentBtn
-                  itemId={item.data.id}
-                  disabled={
-                    user.status ===
-                    CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus
-                  }
-                />
-                {user.status ===
-                  CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus && (
-                  <p className='text-end text-sm text-gray-500'>
-                    完成
-                    <Link
-                      href='/me#identity-form'
-                      className='text-indigo-600 underline'
-                    >
-                      身份認證
-                    </Link>
-                    後即可託售
-                  </p>
-                )}
-              </div>
+          <div className='mt-10'>
+            <Subheading level={2}>狀態流程</Subheading>
+            <div className='mt-3'>
+              <StatusFlowUI item={item.data} user={user} />
             </div>
-          )}
+          </div>
         </div>
       </div>
     </>

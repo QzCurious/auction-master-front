@@ -42,7 +42,7 @@ const Schema = z.object({
   description: z.string().default(''),
 })
 
-export default function From() {
+export default function Form() {
   const {
     control,
     handleSubmit,

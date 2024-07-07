@@ -5,7 +5,7 @@ import type React from 'react'
 import { createContext, useContext } from 'react'
 
 export interface User
-  extends Pick<JwtPayload, 'id' | 'avatar' | 'account' | 'nickname'> {}
+  extends Pick<JwtPayload, 'id' | 'avatar' | 'account' | 'nickname' | 'status'> {}
 
 export const UserContext = createContext<User | null>(null)
 
