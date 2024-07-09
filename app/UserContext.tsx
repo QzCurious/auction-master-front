@@ -22,11 +22,11 @@ export function UserContextProvider({
 export function SignInOnly({
   children,
 }: {
-  children: (user: User) => React.ReactNode
+  children: ((user: User) => React.ReactNode) | React.ReactNode
 }) {
   const user = useContext(UserContext)
   if (!user) {
     return null
   }
-  return children(user)
+  return typeof children === 'function' ? children(user) : children
 }
