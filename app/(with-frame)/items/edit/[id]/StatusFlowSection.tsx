@@ -66,7 +66,9 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
         )}
       </div>
     ),
-    DetailsFullyCompletedStatus: (
+    // 確認按鈕顯示在 Alert 上
+    ConsignmentApprovedStatus: null,
+    CustomerServiceConfirmedStatus: (
       <>
         <DoubleCheckPopover
           title='申請物品上架'
@@ -135,11 +137,11 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
   })
 
   // inject fake step --------------
-  const i = result.findIndex(({ key }) => key === 'ConsignmentApprovedStatus')
-  if (i !== -1) {
-    const active = result[i + 2].props.active
-    result.splice(i + 1, 0, <StatusStep key='fake' text='已到貨' active={active} />)
-  }
+  // const i = result.findIndex(({ key }) => key === 'ConsignmentApprovedStatus')
+  // if (i !== -1) {
+  //   const active = result[i + 2].props.active
+  //   result.splice(i + 1, 0, <StatusStep key='fake' text='已到貨' active={active} />)
+  // }
   // -------------------------------
 
   return result

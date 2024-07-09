@@ -40,7 +40,17 @@ export class StatusFlow {
     },
     ConsignmentApprovedStatus: {
       status: 'ConsignmentApprovedStatus',
-      next: ['WarehouseArrivalStatus', 'WarehouseReturnPendingStatus'],
+      next: ['ConsignorShippedItem'],
+      adjudicator: 'consignor',
+    },
+    ConsignorShippedItem: {
+      status: 'ConsignorShippedItem',
+      next: ['WarehouseArrivalStatus'],
+      adjudicator: 'admin',
+    },
+    WarehouseArrivalStatus: {
+      status: 'WarehouseArrivalStatus',
+      next: ['CustomerServiceConfirmedStatus', 'WarehouseReturnPendingStatus'],
       adjudicator: 'admin',
     },
     WarehouseReturnPendingStatus: {
@@ -57,13 +67,8 @@ export class StatusFlow {
       status: 'ReturnedStatus',
       next: [],
     },
-    WarehouseArrivalStatus: {
-      status: 'WarehouseArrivalStatus',
-      next: ['DetailsFullyCompletedStatus', 'WarehouseReturnPendingStatus'],
-      adjudicator: 'admin',
-    },
-    DetailsFullyCompletedStatus: {
-      status: 'DetailsFullyCompletedStatus',
+    CustomerServiceConfirmedStatus: {
+      status: 'CustomerServiceConfirmedStatus',
       next: ['ReadyStatus', 'WarehouseReturnPendingStatus'],
       adjudicator: 'consignor',
     },
@@ -78,7 +83,7 @@ export class StatusFlow {
     },
     BiddingStatus: {
       status: 'BiddingStatus',
-      next: ['SoldStatus', 'CompanyRepurchasedStatus', 'ReadyStatus'],
+      next: ['SoldStatus', 'ReadyStatus', 'CompanyRepurchasedStatus'],
       adjudicator: 'admin',
     },
     CompanyRepurchasedStatus: {
@@ -128,7 +133,8 @@ export class StatusFlow {
 
 const s = StatusFlow.withActions('consignor', {
   AppraisedStatus: 'dd',
-  DetailsFullyCompletedStatus: 'bb',
+  CustomerServiceConfirmedStatus: 'bb',
+  ConsignmentApprovedStatus: 'cc',
 })
 s.SubmitAppraisalStatus
 s.AppraisedStatus
