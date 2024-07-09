@@ -27,7 +27,7 @@ import {
   DoubleCheckPopover,
   DoubleCheckPopoverButton,
 } from '@/app/components/DoubleCheckPopover'
-import { StatusFlow } from '@/app/StatusFlow'
+import { bfs, StatusFlow } from '@/app/StatusFlow'
 import { User } from '@/app/UserContext'
 import Link from 'next/link'
 
@@ -88,7 +88,9 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
   })
 
   if (process.env.NODE_ENV === 'development') {
-    if (Object.keys(statusFlowWithConsignorActions).length !== ITEM_STATUS_DATA.length) {
+    if (
+      Object.keys(statusFlowWithConsignorActions).length !== ITEM_STATUS_DATA.length
+    ) {
       const missing = ITEM_STATUS_DATA.map((s) => s.key).filter(
         (s) => !Object.keys(statusFlowWithConsignorActions).includes(s),
       )
@@ -96,41 +98,29 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
     }
   }
 
-  function getTravelPath(
-    start: keyof typeof statusFlowWithConsignorActions,
-    end: keyof typeof statusFlowWithConsignorActions,
-    visited = new Set<keyof typeof statusFlowWithConsignorActions>(),
-  ): Array<keyof typeof statusFlowWithConsignorActions> {
-    if (visited.has(start)) return []
-    visited.add(start)
-
-    const step = statusFlowWithConsignorActions[start]
-    if (!('next' in step)) return []
-    if (start === end) return [start]
-    if (step.next.includes(end as never)) return [start, end]
-    for (const each of step.next) {
-      const path = getTravelPath(each, end, visited)
-      if (path.length > 1) return [start, ...path]
-    }
-    return []
-  }
-  const path = getTravelPath(
+  const path = bfs(
+    Object.values(statusFlowWithConsignorActions).map((v) => ({
+      value: v.status,
+      next: v.next,
+    })),
     'SubmitAppraisalStatus',
     ITEM_STATUS_KEY_MAP[item.status],
   )
 
-  // fill with happy path
-  if (path.length > 0) {
-    while (true) {
-      const last = path[path.length - 1]
-      const step = statusFlowWithConsignorActions[last]
-      const happyNext = 'next' in step && step.next?.[0]
-      if (!happyNext) break
-      path.push(happyNext)
-    }
+  if (!path) {
+    return null
   }
 
-  return path.map((status) => {
+  // fill with happy path
+  while (true) {
+    const last = path[path.length - 1]
+    const step = statusFlowWithConsignorActions[last]
+    const happyNext = 'next' in step && step.next?.[0]
+    if (!happyNext) break
+    path.push(happyNext)
+  }
+
+  const result = path.map((status) => {
     const step = statusFlowWithConsignorActions[status]
     const active = ITEM_STATUS_MAP[step.status] === item.status
     return (
@@ -143,6 +133,16 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
       </StatusStep>
     )
   })
+
+  // inject fake step --------------
+  const i = result.findIndex(({ key }) => key === 'ConsignmentApprovedStatus')
+  if (i !== -1) {
+    const active = result[i + 2].props.active
+    result.splice(i + 1, 0, <StatusStep key='fake' text='已到貨' active={active} />)
+  }
+  // -------------------------------
+
+  return result
 }
 
 function StatusStep({
@@ -170,7 +170,7 @@ function StatusStep({
         data-tail
         className='absolute left-1 right-0 top-3 h-full w-0.5 bg-[--tail-color,theme(colors.indigo.600)] bg-gray-400'
       />
-      <div className='relative flex h-6 items-center sm:h-5'>
+      <div className='relative flex h-6 items-center'>
         <div className='size-2.5 rounded-full bg-[--color,theme(colors.indigo.600)]' />
       </div>
       <div className='flex grow flex-col gap-y-2'>
