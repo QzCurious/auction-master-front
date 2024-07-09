@@ -170,7 +170,7 @@ function StatusStep({
     >
       <div
         data-tail
-        className='absolute left-1 right-0 top-3 h-full w-0.5 bg-[--tail-color,theme(colors.indigo.600)] bg-gray-400'
+        className='absolute left-1 right-0 top-3 h-full w-0.5 bg-[--tail-color,theme(colors.indigo.600)]'
       />
       <div className='relative flex h-6 items-center'>
         <div className='size-2.5 rounded-full bg-[--color,theme(colors.indigo.600)]' />

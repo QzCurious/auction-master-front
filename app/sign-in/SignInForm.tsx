@@ -7,6 +7,9 @@ import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { ErrorMessage, Field, Label } from '../catalyst-ui/fieldset'
+import { Input } from '../catalyst-ui/input'
+import { Button } from '../catalyst-ui/button'
 
 const Schema = z.object({
   account: z.string().min(1, { message: '必填' }),
@@ -65,27 +68,13 @@ export function SignInForm() {
           control={control}
           name='account'
           render={({ field, fieldState }) => (
-            <div>
-              <label
-                htmlFor='account'
-                className='block text-sm font-medium leading-6 text-gray-900'
-              >
-                帳號
-              </label>
-              <div className='mt-2'>
-                <input
-                  id='account'
-                  type='text'
-                  className='block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                  {...field}
-                />
-              </div>
+            <Field>
+              <Label>帳號</Label>
+              <Input type='text' {...field} />
               {fieldState.error && (
-                <p className='mt-1 text-sm text-red-600'>
-                  {fieldState.error.message}
-                </p>
+                <ErrorMessage>{fieldState.error.message}</ErrorMessage>
               )}
-            </div>
+            </Field>
           )}
         />
 
@@ -93,28 +82,13 @@ export function SignInForm() {
           control={control}
           name='password'
           render={({ field, fieldState }) => (
-            <div>
-              <label
-                htmlFor='password'
-                className='block text-sm font-medium leading-6 text-gray-900'
-              >
-                密碼
-              </label>
-              <div className='mt-2'>
-                <input
-                  id='password'
-                  type='password'
-                  autoComplete='current-password'
-                  className='block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                  {...field}
-                />
-              </div>
+            <Field>
+              <Label>密碼</Label>
+              <Input type='password' autoComplete='current-password' {...field} />
               {fieldState.error && (
-                <p className='mt-1 text-sm text-red-600'>
-                  {fieldState.error.message}
-                </p>
+                <ErrorMessage>{fieldState.error.message}</ErrorMessage>
               )}
-            </div>
+            </Field>
           )}
         />
 
@@ -135,20 +109,14 @@ export function SignInForm() {
         </div>
       </div> */}
 
-        <div>
-          <button
-            type='submit'
-            className={clsx(
-              'flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
-              isSubmitting && 'pointer-events-none opacity-50',
-            )}
-          >
-            {isSubmitting && (
-              <span className='mr-2 inline-block size-3 animate-spin self-center rounded-full border-2 border-l-0 border-indigo-200'></span>
-            )}
-            登入
-          </button>
-        </div>
+        <Button
+          type='submit'
+          color='indigo'
+          loading={isSubmitting}
+          className='w-full'
+        >
+          登入
+        </Button>
       </form>
     </>
   )
