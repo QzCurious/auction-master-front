@@ -1,8 +1,10 @@
 'use client'
 
 import { changePassword } from '@/app/api/frontend/consignor/changePassword'
+import { Button } from '@/app/catalyst-ui/button'
+import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
+import { Input } from '@/app/catalyst-ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -77,28 +79,13 @@ export default function ChangePasswordForm() {
             name='oldPassword'
             control={control}
             render={({ field, fieldState }) => (
-              <div className='col-span-full'>
-                <label
-                  htmlFor='oldPassword'
-                  className='block text-sm font-medium leading-6 text-gray-900'
-                >
-                  當前密碼
-                </label>
-                <div className='mt-2'>
-                  <input
-                    id='oldPassword'
-                    type='password'
-                    autoComplete='oldPassword'
-                    className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                    {...field}
-                  />
-                </div>
+              <Field className='col-span-full'>
+                <Label>當前密碼</Label>
+                <Input type='password' autoComplete='oldPassword' {...field} />
                 {fieldState.error && (
-                  <p className='mt-1 text-sm text-red-600'>
-                    {fieldState.error.message}
-                  </p>
+                  <ErrorMessage>{fieldState.error.message}</ErrorMessage>
                 )}
-              </div>
+              </Field>
             )}
           />
 
@@ -106,28 +93,13 @@ export default function ChangePasswordForm() {
             name='password'
             control={control}
             render={({ field, fieldState }) => (
-              <div className='col-span-full'>
-                <label
-                  htmlFor='password'
-                  className='block text-sm font-medium leading-6 text-gray-900'
-                >
-                  新密碼
-                </label>
-                <div className='mt-2'>
-                  <input
-                    id='password'
-                    type='password'
-                    autoComplete='new-password'
-                    className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                    {...field}
-                  />
-                </div>
+              <Field className='col-span-full'>
+                <Label>新密碼</Label>
+                <Input type='password' autoComplete='new-password' {...field} />
                 {fieldState.error && (
-                  <p className='mt-1 text-sm text-red-600'>
-                    {fieldState.error.message}
-                  </p>
+                  <ErrorMessage>{fieldState.error.message}</ErrorMessage>
                 )}
-              </div>
+              </Field>
             )}
           />
 
@@ -135,45 +107,21 @@ export default function ChangePasswordForm() {
             name='confirmPassword'
             control={control}
             render={({ field, fieldState }) => (
-              <div className='col-span-full'>
-                <label
-                  htmlFor='confirmPassword'
-                  className='block text-sm font-medium leading-6 text-gray-900'
-                >
-                  確認密碼
-                </label>
-                <div className='mt-2'>
-                  <input
-                    id='confirmPassword'
-                    type='password'
-                    autoComplete='new-password'
-                    className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                    {...field}
-                  />
-                </div>
+              <Field className='col-span-full'>
+                <Label>確認密碼</Label>
+                <Input type='password' autoComplete='new-password' {...field} />
                 {fieldState.error && (
-                  <p className='mt-1 text-sm text-red-600'>
-                    {fieldState.error.message}
-                  </p>
+                  <ErrorMessage>{fieldState.error.message}</ErrorMessage>
                 )}
-              </div>
+              </Field>
             )}
           />
         </div>
 
         <div className='mt-8 flex'>
-          <button
-            type='submit'
-            className={clsx(
-              'rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500',
-              isSubmitting && 'pointer-events-none opacity-50',
-            )}
-          >
-            {isSubmitting && (
-              <span className='mr-2 inline-block size-3 animate-spin self-center rounded-full border-2 border-l-0 border-indigo-200'></span>
-            )}
+          <Button type='submit' color='indigo' loading={isSubmitting}>
             送出
-          </button>
+          </Button>
         </div>
       </form>
     </div>

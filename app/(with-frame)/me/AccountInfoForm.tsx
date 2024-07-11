@@ -4,9 +4,11 @@ import { User } from '@/app/UserContext'
 import { Consignor } from '@/app/api/frontend/consignor/getConsignor'
 import { updateConsignor } from '@/app/api/frontend/consignor/updateConsignor'
 import { updateConsignorAvatar } from '@/app/api/frontend/consignor/updateConsignorAvatar'
+import { Button } from '@/app/catalyst-ui/button'
+import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
+import { Input } from '@/app/catalyst-ui/input'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
-import clsx from 'clsx'
 import Image from 'next/image'
 import { useEffect, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -109,6 +111,7 @@ export default function AccountInfoForm({
                           field.onChange(null)
                         }}
                       >
+                        <span className='sr-only'>刪除</span>
                         <XMarkIcon />
                       </button>
                     </div>
@@ -140,12 +143,13 @@ export default function AccountInfoForm({
                   />
 
                   <div>
-                    <label
-                      htmlFor='avatarPhoto'
-                      className='rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
+                    <Button
+                      type='button'
+                      outline
+                      onClick={() => document.getElementById('avatarPhoto')?.click()}
                     >
                       {user.avatar ? <>更換頭像</> : <>上傳頭像</>}
-                    </label>
+                    </Button>
                     <p className='mt-2 text-xs leading-5 text-gray-400'>
                       支援 PNG, JPG, JPEG
                     </p>
@@ -169,47 +173,21 @@ export default function AccountInfoForm({
               name='nickname'
               control={control}
               render={({ field, fieldState }) => (
-                <div className='sm:col-span-full'>
-                  <label
-                    htmlFor='nickname'
-                    className='block text-sm font-medium leading-6 text-gray-900'
-                  >
-                    暱稱
-                  </label>
-                  <div className='mt-2'>
-                    <div>
-                      <input
-                        type='text'
-                        id='nickname'
-                        autoComplete='given-name'
-                        className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                        {...field}
-                      />
-                      {fieldState.error && (
-                        <p className='mt-1 text-sm text-red-600'>
-                          {fieldState.error.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <Field className='sm:col-span-full'>
+                  <Label>暱稱</Label>
+                  <Input type='text' autoComplete='given-name' {...field} />
+                  {fieldState.error && (
+                    <ErrorMessage>{fieldState.error.message}</ErrorMessage>
+                  )}
+                </Field>
               )}
             />
           </div>
 
           <div className='mt-8 flex'>
-            <button
-              type='submit'
-              className={clsx(
-                'rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500',
-                isSubmitting && 'pointer-events-none opacity-50',
-              )}
-            >
-              {isSubmitting && (
-                <span className='mr-2 inline-block size-3 animate-spin self-center rounded-full border-2 border-l-0 border-indigo-200'></span>
-              )}
+            <Button type='submit' color='indigo' loading={isSubmitting}>
               送出
-            </button>
+            </Button>
           </div>
         </form>
       </div>
