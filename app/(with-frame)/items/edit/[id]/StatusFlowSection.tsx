@@ -16,6 +16,7 @@ import toast from 'react-hot-toast'
 
 import { Item } from '@/app/api/frontend/items/getItem'
 import { itemReady } from '@/app/api/frontend/items/itemReady'
+import { ItemReturn } from '@/app/api/frontend/items/ItemReturn'
 import { Button } from '@/app/catalyst-ui/button'
 import {
   Dialog,
@@ -70,6 +71,21 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
     ConsignmentApprovedStatus: null,
     CustomerServiceConfirmedStatus: (
       <>
+        <DoubleCheckPopover
+          title='申請物品退回'
+          onConfirm={async () => {
+            const res = await ItemReturn(item.id)
+            if (res.error) {
+              toast.error(`操作錯誤: ${res.error}`)
+              return
+            }
+            toast.success('物品已申請退回')
+          }}
+        >
+          <DoubleCheckPopoverButton as={Button} outline color='zinc' className='h-9'>
+            申請退回
+          </DoubleCheckPopoverButton>
+        </DoubleCheckPopover>
         <DoubleCheckPopover
           title='申請物品上架'
           onConfirm={async () => {
