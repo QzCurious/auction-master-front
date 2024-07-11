@@ -3,7 +3,6 @@ import { getConsignor } from '@/app/api/frontend/consignor/getConsignor'
 import { getUser } from '@/app/api/helpers/getUser'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
-import DeleteAccountForm from './DeleteAccountForm'
 import IdentityForm from './IdentityForm'
 
 export default async function Example() {
@@ -27,9 +26,8 @@ export default async function Example() {
             <div className='h-px bg-gray-200'></div>
 
             <IdentityForm consignor={consignorRes.data} />
-            <div className='h-px bg-gray-200'></div>
 
-            <DeleteAccountForm />
+            {/* <DeleteAccountForm /> */}
           </div>
         </main>
       </div>
