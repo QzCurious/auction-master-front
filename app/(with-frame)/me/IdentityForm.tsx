@@ -1,5 +1,6 @@
 'use client'
 
+import { database } from '@/app/address.data'
 import { CONSIGNOR_STATUS_MAP } from '@/app/api/frontend/configs.data'
 import { applyVerification } from '@/app/api/frontend/consignor/applyVerification'
 import { Consignor } from '@/app/api/frontend/consignor/getConsignor'
@@ -7,9 +8,9 @@ import { updateVerification } from '@/app/api/frontend/consignor/updateVerificat
 import { Button } from '@/app/catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
 import { Input } from '@/app/catalyst-ui/input'
+import { Listbox, ListboxLabel, ListboxOption } from '@/app/catalyst-ui/listbox'
 import { InformationCircleIcon, PhotoIcon } from '@heroicons/react/20/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
-import clsx from 'clsx'
 import { useEffect, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -70,6 +71,9 @@ const Schema = z.object({
   phone: z.string().min(1, { message: '必填' }),
   bankCode: z.string().min(1, { message: '必填' }),
   bankAccount: z.string().min(1, { message: '必填' }),
+  city: z.string().min(1, { message: '必填' }),
+  district: z.string().min(1, { message: '必填' }),
+  streetAddress: z.string().min(1, { message: '必填' }),
 })
 
 function Form({ consignor }: { consignor: Consignor }) {
@@ -78,14 +82,19 @@ function Form({ consignor }: { consignor: Consignor }) {
       ...consignor,
       name: '',
       identification: '',
+      city: '',
+      district: '',
+      streetAddress: '',
     }),
     [consignor],
   )
   const {
     control,
+    watch,
     handleSubmit,
     formState: { isSubmitting },
     setError,
+    setValue,
     reset,
   } = useForm<z.infer<typeof Schema>>({
     defaultValues,
@@ -206,7 +215,7 @@ function Form({ consignor }: { consignor: Consignor }) {
           render={({ field, fieldState }) => (
             <Field className='sm:col-span-3'>
               <Label>身分證字號</Label>
-              <Input type='text' autoComplete='off' {...field} />
+              <Input type='text' autoComplete='' {...field} />
               {fieldState.error && (
                 <ErrorMessage>{fieldState.error.message}</ErrorMessage>
               )}
@@ -251,6 +260,72 @@ function Form({ consignor }: { consignor: Consignor }) {
             <Field className='sm:col-span-4'>
               <Label>銀行戶號</Label>
               <Input type='text' autoComplete='off' {...field} />
+              {fieldState.error && (
+                <ErrorMessage>{fieldState.error.message}</ErrorMessage>
+              )}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name='city'
+          control={control}
+          render={({ field: { ref, onBlur, ...field }, fieldState }) => (
+            <Field className='sm:col-span-2'>
+              <Label>縣市</Label>
+              {/* @ts-ignore */}
+              <Listbox
+                {...field}
+                onChange={(v) => {
+                  field.onChange(v)
+                  setValue('district', '')
+                }}
+              
+              >
+                {Object.keys(database).map((v) => (
+                  <ListboxOption key={v} value={v} >
+                    <ListboxLabel>{v}</ListboxLabel>
+                  </ListboxOption>
+                ))}
+              </Listbox>
+
+              {fieldState.error && (
+                <ErrorMessage>{fieldState.error.message}</ErrorMessage>
+              )}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name='district'
+          control={control}
+          render={({ field: { ref, onBlur, ...field }, fieldState }) => (
+            <Field className='sm:col-span-2'>
+              <Label>區域</Label>
+              <Listbox {...field} disabled={!watch('city')}>
+                {watch('city') &&
+                  Object.keys(database[watch('city') as keyof typeof database]).map(
+                    (v) => (
+                      <ListboxOption key={v} value={v}>
+                        <ListboxLabel>{v}</ListboxLabel>
+                      </ListboxOption>
+                    ),
+                  )}
+              </Listbox>
+              {fieldState.error && (
+                <ErrorMessage>{fieldState.error.message}</ErrorMessage>
+              )}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name='streetAddress'
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field className='sm:col-span-5'>
+              <Label>地址</Label>
+              <Input type='text' autoComplete='street-address' {...field} />
               {fieldState.error && (
                 <ErrorMessage>{fieldState.error.message}</ErrorMessage>
               )}
