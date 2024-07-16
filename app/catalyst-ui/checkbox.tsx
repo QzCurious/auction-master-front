@@ -159,4 +159,3 @@ export function Checkbox<TTag extends ElementType = 'span', TType = string>({
     </Headless.Checkbox>
   )
 }
-
