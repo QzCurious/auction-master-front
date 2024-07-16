@@ -71,11 +71,11 @@ export default function AccountInfoForm({
               }
             }
 
-            const res = await updateConsignor({ nickname: data.nickname })
-            if (res.error) {
-              toast.error(`操作錯誤: ${res.error}`)
-              return
-            }
+            // const res = await updateConsignor({ nickname: data.nickname })
+            // if (res.error) {
+            //   toast.error(`操作錯誤: ${res.error}`)
+            //   return
+            // }
 
             await forceRefreshTokenAction()
             toast.success('更新成功')
@@ -169,7 +169,7 @@ export default function AccountInfoForm({
               </div>
             </div>
 
-            <Controller
+            {/* <Controller
               name='nickname'
               control={control}
               render={({ field, fieldState }) => (
@@ -181,7 +181,18 @@ export default function AccountInfoForm({
                   )}
                 </Field>
               )}
-            />
+            /> */}
+
+            <div className='sm:col-span-full'>
+              <p className='block text-sm font-medium leading-6 text-gray-900'>
+                暱稱
+              </p>
+              <div className='mt-2'>
+                <p className='block text-sm font-medium leading-6 text-gray-700'>
+                  {consignor.nickname}
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className='mt-8 flex'>
