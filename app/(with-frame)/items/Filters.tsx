@@ -17,25 +17,35 @@ import clsx from 'clsx'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 
+const side = 'consignor'
+
 const filters = [
   {
     field: 'status',
     label: '狀態',
-    options: ITEM_STATUS_DATA.map(({ value, message }) => ({
-      label: message,
-      value,
-    })),
+    options: ITEM_STATUS_DATA.map((x) => {
+      const step = StatusFlow.flow[x.key]
+      return {
+        ...x,
+        sort: 'adjudicator' in step && step.adjudicator === side ? 0 : 1,
+      }
+    })
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value, message }) => ({
+        label: message,
+        value,
+      })),
   },
 ]
+
+const showCountStatus = Object.values(StatusFlow.flow)
+  .filter((v) => 'adjudicator' in v && v.adjudicator === side)
+  .map((v) => ITEM_STATUS_MAP[v.status])
 
 interface StatusFilterProps {
   selected: Array<(typeof ITEM_STATUS_DATA)[number]['value']>
   statusCount: StatusCounts
 }
-
-const statusForConsignor = Object.values(StatusFlow.flow)
-  .filter((v) => 'adjudicator' in v && v.adjudicator === 'consignor')
-  .map((v) => ITEM_STATUS_MAP[v.status])
 
 export function DesktopFilters({ selected, statusCount }: StatusFilterProps) {
   const router = useRouter()
@@ -81,13 +91,13 @@ export function DesktopFilters({ selected, statusCount }: StatusFilterProps) {
                     htmlFor={`${section.field}-${optionIdx}`}
                     className={clsx(
                       'ml-3 text-sm',
-                      statusForConsignor.includes(option.value)
+                      showCountStatus.includes(option.value)
                         ? 'text-gray-900'
                         : 'text-gray-500',
                     )}
                   >
                     {option.label}{' '}
-                    {statusForConsignor.includes(option.value) && (
+                    {showCountStatus.includes(option.value) && (
                       <span>({statusCount[option.value] ?? 0})</span>
                     )}
                   </label>
@@ -218,13 +228,13 @@ export function MobileFilters({ selected, statusCount }: StatusFilterProps) {
                                 htmlFor={`${section.field}-${optionIdx}-mobile`}
                                 className={clsx(
                                   'ml-3 text-sm',
-                                  statusForConsignor.includes(option.value)
+                                  showCountStatus.includes(option.value)
                                     ? 'text-gray-900'
                                     : 'text-gray-500',
                                 )}
                               >
                                 {option.label}{' '}
-                                {statusForConsignor.includes(option.value) && (
+                                {showCountStatus.includes(option.value) && (
                                   <span>({statusCount[option.value] ?? 0})</span>
                                 )}
                               </label>
