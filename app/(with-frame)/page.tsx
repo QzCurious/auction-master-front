@@ -1,9 +1,10 @@
 import Image from 'next/image'
 import { getUser } from '../api/helpers/getUser'
 import { Button } from '../catalyst-ui/button'
-import bbbb from './bbbb.png'
+import heroImg1 from './hero-img-1.jpg'
+import heroImg2 from './hero-img-2.png'
+import heroImg3 from './hero-img-3.png'
 import HeroCarousel, { HeroCarouselItem } from './HeroCarousel'
-import ssss from './ssss.png'
 
 export default async function Page() {
   const user = await getUser()
@@ -48,19 +49,26 @@ export default async function Page() {
                   </div>
                 )}
 
-                <div className='mt-10'>
+                <div className='mt-10 rounded-lg p-2 shadow-md bg-gray-100'>
                   <HeroCarousel>
                     <HeroCarouselItem>
                       <Image
-                        src={ssss}
-                        className='w-full rounded-lg p-2 shadow-md'
+                        src={heroImg1}
+                        className='size-full object-contain object-center'
                         alt=''
                       />
                     </HeroCarouselItem>
                     <HeroCarouselItem>
                       <Image
-                        src={bbbb}
-                        className='w-full rounded-lg p-2 shadow-md'
+                        src={heroImg2}
+                        className='size-full object-contain object-center'
+                        alt=''
+                      />
+                    </HeroCarouselItem>
+                    <HeroCarouselItem>
+                      <Image
+                        src={heroImg3}
+                        className='size-full object-contain object-center'
                         alt=''
                       />
                     </HeroCarouselItem>
