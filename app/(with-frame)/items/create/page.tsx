@@ -2,7 +2,7 @@ import RedirectToHome from '@/app/RedirectToHome'
 import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import Form from './Form'
+import ItemForm from '../ItemForm'
 
 async function Page() {
   return (
@@ -33,5 +33,5 @@ async function Content() {
     return <RedirectToHome />
   }
 
-  return <Form />
+  return <ItemForm />
 }

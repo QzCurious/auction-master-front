@@ -1,6 +1,10 @@
 'use client'
 import { ITEM_TYPE_MAP } from '@/app/api/frontend/configs.data'
 import { createItem } from '@/app/api/frontend/items/createItem'
+import { deleteItemPhoto } from '@/app/api/frontend/items/deleteItemPhoto'
+import { Item } from '@/app/api/frontend/items/getItem'
+import { updateItem } from '@/app/api/frontend/items/updateItem'
+import { uploadItemPhotos } from '@/app/api/frontend/items/uploadItemPhotos'
 import { Button } from '@/app/catalyst-ui/button'
 import { Checkbox, CheckboxField } from '@/app/catalyst-ui/checkbox'
 import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
@@ -11,7 +15,7 @@ import QuillTextEditor from '@/app/components/QuillTextEditor/QuillTextEditor'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState, useTransition } from 'react'
 import {
   Control,
   Controller,
@@ -21,7 +25,7 @@ import {
 } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { z } from 'zod'
-import SortablePhotoList from '../SortablePhotoList'
+import SortablePhotoList from './SortablePhotoList'
 
 const Schema = z.object({
   name: z.string().min(1, { message: '必填' }),
@@ -29,20 +33,38 @@ const Schema = z.object({
   reservePrice: z.number({ message: '必填' }),
   photos: z
     .array(
-      z
-        .object({
-          file: z.instanceof(File, { message: '必填' }),
-        })
-        .refine(({ file }) => file.size <= 20 * 1024 * 1024, {
-          message: '上限 20MB',
-        }),
+      z.union([
+        z.object({ sorted: z.number(), photo: z.string() }),
+        z
+          .object({
+            file: z.instanceof(File, { message: '必填' }),
+          })
+          .refine(({ file }) => file.size <= 20 * 1024 * 1024, {
+            message: '上限 20MB',
+          }),
+      ]),
     )
     .min(1, { message: '必填' })
     .max(30, { message: '上限 30 張' }),
   description: z.string().default(''),
 })
 
-export default function Form() {
+interface ItemFormProps {
+  item?: Item
+}
+
+export default function ItemForm({ item }: ItemFormProps) {
+  const defaultValues = useMemo(
+    () =>
+      ({
+        name: item?.name || '',
+        type: item?.type || 0,
+        reservePrice: item?.reservePrice || ('' as any),
+        photos: item?.photos || [],
+        description: item?.description || '',
+      }) as z.output<typeof Schema>,
+    [item?.description, item?.name, item?.photos, item?.reservePrice, item?.type],
+  )
   const {
     control,
     handleSubmit,
@@ -51,13 +73,7 @@ export default function Form() {
     formState: { isSubmitting, errors, isDirty },
     reset,
   } = useForm<z.output<typeof Schema>>({
-    defaultValues: {
-      name: '',
-      type: 0,
-      reservePrice: '' as any,
-      photos: [],
-      description: '',
-    },
+    defaultValues,
     resolver: zodResolver(Schema),
   })
   const router = useRouter()
@@ -67,25 +83,39 @@ export default function Form() {
       {errors.root?.message && <ErrorAlert message={errors.root.message} />}
       <form
         className='col-span-7 mt-10'
-        onSubmit={handleSubmit(async (data) => {
-          const formData = new FormData()
-          formData.append('name', data.name)
-          formData.append('type', data.type.toString())
-          formData.append('reservePrice', data.reservePrice.toString())
-          formData.append('description', data.description.toString())
-          for (let i = 0; i < data.photos.length; i++) {
-            const f = data.photos[i]
-            formData.append('photo', f.file)
-            formData.append('sorted', `${i + 1}`)
-          }
-          const res = await createItem(formData)
-          if (res.error) {
-            setError('root', { message: `Failed to create item: ${res.error}` })
-            return
-          }
-          toast.success('新增成功')
-          router.push('/items')
-        })}
+        onSubmit={handleSubmit(
+          !item
+            ? async (data) => {
+                const formData = new FormData()
+                formData.append('name', data.name)
+                formData.append('type', data.type.toString())
+                formData.append('reservePrice', data.reservePrice.toString())
+                formData.append('description', data.description.toString())
+                for (let i = 0; i < data.photos.length; i++) {
+                  const f = data.photos[i]
+                  if ('file' in f) {
+                    formData.append('photo', f.file)
+                    formData.append('sorted', `${i + 1}`)
+                  }
+                }
+
+                const res = await createItem(formData)
+                if (res.error) {
+                  setError('root', { message: `操作失敗: ${res.error}` })
+                  return
+                }
+                toast.success('新增成功')
+                router.push('/items')
+              }
+            : async (data) => {
+                const res = await updateItem(item.id, data)
+                if (res.error) {
+                  setError('root', { message: `操作失敗: ${res.error}` })
+                  return
+                }
+                toast.success('更新成功')
+              },
+        )}
       >
         <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
           <Controller
@@ -143,7 +173,7 @@ export default function Form() {
           />
 
           <div className='col-span-full'>
-            <UploadImage control={control} />
+            <UploadImage control={control} item={item} />
           </div>
 
           <Controller
@@ -155,6 +185,7 @@ export default function Form() {
                 <div data-slot='control'>
                   <ClientOnly>
                     <QuillTextEditor
+                      defaultValue={item?.description}
                       onTextChange={(delta, oldDelta) =>
                         field.onChange(JSON.stringify(oldDelta.compose(delta).ops))
                       }
@@ -190,7 +221,13 @@ export default function Form() {
   )
 }
 
-function UploadImage({ control }: { control: Control<z.output<typeof Schema>> }) {
+function UploadImage({
+  item,
+  control,
+}: {
+  item?: Item
+  control: Control<z.output<typeof Schema>>
+}) {
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
     control,
     name: 'photos',
@@ -199,27 +236,51 @@ function UploadImage({ control }: { control: Control<z.output<typeof Schema>> })
     control,
     name: 'photos',
   })
+  const [isPending, startTransition] = useTransition()
   const { createUrl, revokeUrl } = useObjectUrl()
 
   return (
     <div className='relative'>
+      {isPending && (
+        <div className='pointer-events-none absolute inset-0 z-10 animate-pulse rounded bg-black opacity-40' />
+      )}
       <input
         type='file'
         id='file-upload'
         hidden
         multiple
-        onChange={(e) => {
-          const files = e.target.files
-          if (!files) return
-          for (const file of Array.from(files)) {
-            append({ file })
-          }
-        }}
+        onChange={
+          !item
+            ? (e) => {
+                const files = e.target.files
+                if (!files) return
+                for (const file of Array.from(files)) {
+                  append({ file })
+                }
+              }
+            : (e) => {
+                const files = e.target.files
+                if (!files) return
+                if (item) {
+                  const formData = new FormData()
+                  for (let i = 0; i < files.length; i++) {
+                    formData.append('photo', files[i])
+                    formData.append('sorted', `${i + item.photos.length + 1}`)
+                  }
+                  startTransition(async () => {
+                    await uploadItemPhotos(item.id, formData)
+                    for (const file of Array.from(files)) {
+                      append({ file })
+                    }
+                  })
+                }
+              }
+        }
       />
 
       <Field>
         <Label className='inline-flex items-center gap-x-2'>
-          物品圖片
+          物品圖片 {item && <span className='text-gray-500'>(自動儲存)</span>}
           <button onClick={() => document.getElementById('file-upload')?.click()}>
             <span className='sr-only'>新增圖片</span>
             <PlusIcon className='h-5 w-5 rounded bg-indigo-500 p-0.5 text-white hover:bg-indigo-400' />
@@ -228,15 +289,30 @@ function UploadImage({ control }: { control: Control<z.output<typeof Schema>> })
 
         <div className='relative overflow-hidden' data-slot='control'>
           <SortablePhotoList
-            photos={field.value.map(({ file }, i) => ({
-              photo: createUrl(file),
+            photos={field.value.map((f, i) => ({
+              photo: 'file' in f ? createUrl(f.file) : f.photo,
               sorted: i + 1,
             }))}
             onMove={move}
-            onDelete={(i) => {
-              remove(i)
-              revokeUrl(field.value[i].file)
-            }}
+            onDelete={
+              !item
+                ? (i) => {
+                    const f = field.value[i]
+                    if ('file' in f) {
+                      remove(i)
+                      revokeUrl(f.file)
+                    }
+                  }
+                : (i) => {
+                    const f = field.value[i]
+                    if ('sorted' in f) {
+                      startTransition(async () => {
+                        await deleteItemPhoto(item.id, f.sorted)
+                        remove(i)
+                      })
+                    }
+                  }
+            }
           />
         </div>
         {formState.errors.photos?.message && (

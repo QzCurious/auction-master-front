@@ -14,8 +14,8 @@ const ReqSchema = z.object({
     .refine((i) =>
       i === 0 ? true : !!ITEM_TYPE_DATA.find(({ value }) => i === value),
     ),
-  description: z.string(),
   reservePrice: z.number(),
+  description: z.string().optional(),
 })
 
 type Data = 'Success'
@@ -28,8 +28,8 @@ export async function updateItem(id: number, payload: z.input<typeof ReqSchema>)
   const formData = new FormData()
   formData.append('name', data.name)
   formData.append('type', data.type.toString())
-  formData.append('description', data.description)
   formData.append('reservePrice', data.reservePrice.toString())
+  data.description && formData.append('description', data.description)
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}`, {
     method: 'PATCH',

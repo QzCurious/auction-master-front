@@ -20,6 +20,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import 'quill/dist/quill.snow.css'
 import QuillTextEditor from '../../../../components/QuillTextEditor/QuillTextEditor'
+import ItemForm from '../../ItemForm'
 import ConsignmentApprovedStatusAlert from './ConsignmentApprovedStatusAlert'
 import PhotoListForm from './PhotoListForm'
 import { StatusFlowUI } from './StatusFlowSection'
@@ -69,6 +70,10 @@ async function Content({ params }: PageProps) {
 
   if (itemRes.error === '1801') {
     notFound()
+  }
+
+  if (itemRes.data.status === ITEM_STATUS_MAP.SubmitAppraisalStatus) {
+    return <ItemForm item={itemRes.data} />
   }
 
   return (
