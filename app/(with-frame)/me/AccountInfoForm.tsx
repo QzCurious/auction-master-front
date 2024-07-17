@@ -2,11 +2,8 @@
 
 import { User } from '@/app/UserContext'
 import { Consignor } from '@/app/api/frontend/consignor/getConsignor'
-import { updateConsignor } from '@/app/api/frontend/consignor/updateConsignor'
 import { updateConsignorAvatar } from '@/app/api/frontend/consignor/updateConsignorAvatar'
 import { Button } from '@/app/catalyst-ui/button'
-import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
-import { Input } from '@/app/catalyst-ui/input'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
@@ -61,6 +58,8 @@ export default function AccountInfoForm({
       <div className='md:col-span-2'>
         <form
           onSubmit={handleSubmit(async (data) => {
+            if (!data.avatarPhoto) return
+
             if (typeof data.avatarPhoto !== 'string') {
               const formData = new FormData()
               formData.append('avatarPhoto', data.avatarPhoto ?? '')

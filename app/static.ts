@@ -28,6 +28,9 @@ export const cookieConfigs = {
   },
 } satisfies Record<string, { name: string; opts: Partial<ResponseCookie> }>
 
+export const DATE_FORMAT = 'yyyy-MM-dd'
+export const DATE_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss'
+
 export const ROWS_PER_PAGE = 'rowsPerPage'
 export const PAGE = 'page'
 export const PaginationSchema = z.object({
@@ -36,3 +39,11 @@ export const PaginationSchema = z.object({
 })
 export type PaginationSearchParams = z.output<typeof PaginationSchema>
 export const defaultPagination = PaginationSchema.parse({})
+
+export const toPercent = (num: number) => {
+  return num.toLocaleString('en-US', {
+    style: 'percent',
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 2,
+  })
+}

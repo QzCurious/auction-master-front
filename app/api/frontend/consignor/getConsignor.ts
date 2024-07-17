@@ -9,16 +9,40 @@ export interface Consignor {
   account: string
   password: string
   nickname: string
+  name: string
+  identification: string
+  gender: number
+  birthday: string
+  city: string
+  district: string
+  streetAddress: string
   phone: string
   bankCode: string
   bankAccount: string
   status: (typeof CONSIGNOR_STATUS_DATA)[number]['value']
-  askingVerification: boolean
+  verification: null | {
+    id: number
+    consignorID: number
+    photo: string
+    name: string
+    identification: string
+    gender: number
+    birthday: string
+    city: string
+    district: string
+    streetAddress: string
+    phone: string
+    bankCode: string
+    bankAccount: string
+    status: number
+    createdAt: string
+    updatedAt: string
+  }
   createdAt: string
   updatedAt: string
 }
 
-interface Data extends Consignor {}
+type Data = Consignor
 
 type ErrorCode = never
 
