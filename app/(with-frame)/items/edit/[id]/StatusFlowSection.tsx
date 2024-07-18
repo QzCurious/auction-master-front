@@ -126,12 +126,14 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
   const path = bfs(
     Object.values(statusFlowWithConsignorActions).map((v) => ({
       value: v.status,
-      next: v.next,
+      nexts: v.nexts,
     })),
     'SubmitAppraisalStatus',
     ITEM_STATUS_KEY_MAP[item.status],
     (step) =>
-      StatusFlow.flow[step.value].type.some((t) => ITEM_TYPE_MAP[t] === item.type),
+      StatusFlow.flow[step.value].allowTypes.some(
+        (t) => ITEM_TYPE_MAP[t] === item.type,
+      ),
   )
 
   if (!path) {
@@ -142,8 +144,8 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
   while (true) {
     const last = path[path.length - 1]
     const step = statusFlowWithConsignorActions[last]
-    const happyNext = step.next.find((s) =>
-      StatusFlow.flow[s].type.some((t) => ITEM_TYPE_MAP[t] === item.type),
+    const happyNext = step.nexts.find((s) =>
+      StatusFlow.flow[s].allowTypes.some((t) => ITEM_TYPE_MAP[t] === item.type),
     )
     if (!happyNext) break
     path.push(happyNext)
