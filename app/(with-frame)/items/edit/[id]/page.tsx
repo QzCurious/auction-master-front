@@ -6,6 +6,7 @@ import {
   ITEM_TYPE_MAP,
 } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { GetConsignorItem } from '@/app/api/frontend/items/GetConsignorItem'
+import { getExchangeRate } from '@/app/api/getExchangeRate'
 import { getUser } from '@/app/api/helpers/getUser'
 import {
   DescriptionDetails,
@@ -73,7 +74,12 @@ async function Content({ params }: PageProps) {
   }
 
   if (itemRes.data.status === ITEM_STATUS_MAP.SubmitAppraisalStatus) {
-    return <ItemForm item={itemRes.data} />
+    return (
+      <ItemForm
+        item={itemRes.data}
+        yenToNtdRate={await getExchangeRate('JPY', 'NTD')}
+      />
+    )
   }
 
   return (
@@ -135,19 +141,26 @@ async function Content({ params }: PageProps) {
 
               <DescriptionTerm>期望金額</DescriptionTerm>
               <DescriptionDetails>
-                {itemRes.data.reservePrice.toLocaleString()}
+                ¥ {itemRes.data.reservePrice.toLocaleString()}
+                <p className='whitespace-nowrap text-zinc-500'>
+                  (約{' '}
+                  {(
+                    itemRes.data.reservePrice * (await getExchangeRate('JPY', 'NTD'))
+                  ).toLocaleString()}{' '}
+                  台幣)
+                </p>
               </DescriptionDetails>
 
               {itemRes.data.type === ITEM_TYPE_MAP['AppraisableAuctionItemType'] && (
                 <>
                   <DescriptionTerm>最低估值</DescriptionTerm>
                   <DescriptionDetails>
-                    {itemRes.data.minEstimatedPrice.toLocaleString()}
+                    ¥ {itemRes.data.minEstimatedPrice.toLocaleString()}
                   </DescriptionDetails>
 
                   <DescriptionTerm>最高估值</DescriptionTerm>
                   <DescriptionDetails>
-                    {itemRes.data.maxEstimatedPrice.toLocaleString()}
+                    ¥ {itemRes.data.maxEstimatedPrice.toLocaleString()}
                   </DescriptionDetails>
                 </>
               )}

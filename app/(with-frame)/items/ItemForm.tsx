@@ -1,4 +1,5 @@
 'use client'
+
 import { ITEM_TYPE_MAP } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { ConsignorDeleteItemPhoto } from '@/app/api/frontend/items/ConsignorDeleteItemPhoto'
 import { ConsignorUpsertItemPhoto } from '@/app/api/frontend/items/ConsignorUpsertItemPhoto'
@@ -7,8 +8,8 @@ import { Item } from '@/app/api/frontend/items/GetConsignorItems'
 import { UpdateConsignorItem } from '@/app/api/frontend/items/UpdateConsignorItem'
 import { Button } from '@/app/catalyst-ui/button'
 import { Checkbox, CheckboxField } from '@/app/catalyst-ui/checkbox'
-import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
-import { Input } from '@/app/catalyst-ui/input'
+import { Description, ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
+import { Input, InputGroup } from '@/app/catalyst-ui/input'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
 import ClientOnly from '@/app/components/ClientOnly'
 import QuillTextEditor from '@/app/components/QuillTextEditor/QuillTextEditor'
@@ -51,9 +52,10 @@ const Schema = z.object({
 
 interface ItemFormProps {
   item?: Item
+  yenToNtdRate: number
 }
 
-export default function ItemForm({ item }: ItemFormProps) {
+export default function ItemForm({ item, yenToNtdRate }: ItemFormProps) {
   const defaultValues = useMemo(
     () =>
       ({
@@ -155,16 +157,26 @@ export default function ItemForm({ item }: ItemFormProps) {
             render={({ field, fieldState }) => (
               <Field className='sm:col-span-3'>
                 <Label>期望價格</Label>
-                <Input
-                  type='number'
-                  autoComplete='off'
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(
-                      e.target.value === '' ? '' : parseFloat(e.target.value),
-                    )
-                  }}
-                />
+                <InputGroup>
+                  <div className='grid place-content-center' data-slot='icon'>
+                    ¥
+                  </div>
+                  <Input
+                    type='number'
+                    autoComplete='off'
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(
+                        e.target.value === '' ? '' : parseFloat(e.target.value),
+                      )
+                    }}
+                  />
+                </InputGroup>
+                {field.value && !fieldState.invalid && (
+                  <Description className='text-end'>
+                    約 {Number(field.value * yenToNtdRate).toLocaleString()} 台幣
+                  </Description>
+                )}
                 {fieldState.error && (
                   <ErrorMessage>{fieldState.error.message}</ErrorMessage>
                 )}

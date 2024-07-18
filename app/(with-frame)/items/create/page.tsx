@@ -1,4 +1,5 @@
 import RedirectToHome from '@/app/RedirectToHome'
+import { getExchangeRate } from '@/app/api/getExchangeRate'
 import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -33,5 +34,5 @@ async function Content() {
     return <RedirectToHome />
   }
 
-  return <ItemForm />
+  return <ItemForm yenToNtdRate={await getExchangeRate('JPY', 'NTD')} />
 }
