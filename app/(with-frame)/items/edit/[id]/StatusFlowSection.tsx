@@ -6,8 +6,9 @@ import {
   ITEM_STATUS_KEY_MAP,
   ITEM_STATUS_MAP,
   ITEM_STATUS_MESSAGE_MAP,
+  ITEM_TYPE_MAP,
 } from '@/app/api/frontend/configs.data'
-import { consignment } from '@/app/api/frontend/items/consignment'
+import { ItemConsignmentReview } from '@/app/api/frontend/items/ItemConsignmentReview'
 import { Text } from '@/app/catalyst-ui/text'
 import clsx from 'clsx'
 import type React from 'react'
@@ -36,11 +37,15 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
   const statusFlowWithConsignorActions = StatusFlow.withActions('consignor', {
     AppraisedStatus: (
       <div>
-        <div className='flex grow gap-x-4'>
+        <div className='flex flex-col gap-y-3'>
+          <CompanyDirectPurchaseBtn item={item} user={user} />
+          <ApproveConsignmentBtn item={item} user={user} />
           <DoubleCheckPopover
             title='取消託售'
             onConfirm={async () => {
-              const res = await consignment(item.id, { action: 'reject' })
+              const res = await ItemConsignmentReview(item.id, {
+                action: 'reject',
+              })
               if (res.error) {
                 toast.error(`操作錯誤: ${res.error}`)
                 return
@@ -48,28 +53,30 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
               toast.success('託售已取消')
             }}
           >
-            <DoubleCheckPopoverButton as={Button} outline className='h-9 min-w-20'>
+            <DoubleCheckPopoverButton
+              as={Button}
+              outline
+              className='h-9 w-full min-w-20'
+            >
               取消託售
             </DoubleCheckPopoverButton>
           </DoubleCheckPopover>
-          <ApproveConsignmentBtn item={item} user={user} />
         </div>
 
         {user.status ===
           CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus && (
-          <p className='mt-1 text-center text-sm text-gray-500'>
+          <p className='mt-1 text-center text-sm text-gray-500 w-32'>
             完成
             <Link href='/me#identity-form' className='text-indigo-600 underline'>
               身份認證
             </Link>
-            後即可託售
+            後即可申請公司直購或託售
           </p>
         )}
       </div>
     ),
-    // 確認按鈕顯示在 Alert 上
     ConsignmentApprovedStatus: null,
-    CustomerServiceConfirmedStatus: (
+    AppraiserConfirmedStatus: (
       <>
         <DoubleCheckPopover
           title='申請物品退回'
@@ -123,17 +130,21 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
     })),
     'SubmitAppraisalStatus',
     ITEM_STATUS_KEY_MAP[item.status],
+    (step) =>
+      StatusFlow.flow[step.value].type.some((t) => ITEM_TYPE_MAP[t] === item.type),
   )
 
   if (!path) {
     return null
   }
 
-  // fill with happy path
+  // fill reset path
   while (true) {
     const last = path[path.length - 1]
     const step = statusFlowWithConsignorActions[last]
-    const happyNext = 'next' in step && step.next?.[0]
+    const happyNext = step.next.find((s) =>
+      StatusFlow.flow[s].type.some((t) => ITEM_TYPE_MAP[t] === item.type),
+    )
     if (!happyNext) break
     path.push(happyNext)
   }
@@ -279,7 +290,7 @@ function ApproveConsignmentBtn({ item, user }: { item: Item; user: User }) {
           <Button
             color='indigo'
             onClick={async () => {
-              const res = await consignment(item.id, { action: 'approve' })
+              const res = await ItemConsignmentReview(item.id, { action: 'approve' })
               if (res.error) {
                 toast.error(`操作錯誤: ${res.error}`)
                 return
@@ -289,6 +300,105 @@ function ApproveConsignmentBtn({ item, user }: { item: Item; user: User }) {
             }}
           >
             確認託售
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+}
+
+function CompanyDirectPurchaseBtn({ item, user }: { item: Item; user: User }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+      <Button
+        color='sky'
+        className='h-9 min-w-20'
+        onClick={() => setOpen(true)}
+        disabled={
+          user.status === CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus
+        }
+      >
+        公司直購
+      </Button>
+      <Dialog open={open} onClose={() => {}}>
+        <DialogTitle>收費相關說明規章</DialogTitle>
+
+        <DialogBody>
+          <p>本公司收費方式</p>
+          <p>我們目前收費詳細如下</p>
+          <ol className='mt-4 list-inside list-decimal space-y-4 leading-snug'>
+            <li>
+              手續費 30%
+              <br />
+              我們將協助您
+              <br />
+              將商品送到日本雅虎競拍
+              <br />
+              收取的手續費為成交價的30%
+              <br />
+              此價格也包含日本雅虎平台會產生的費用
+              <br />
+              以及我們公司合理的利潤
+              <br />
+              所以此價格已經包含所有協助拍賣上架的服務
+              <br />
+              所有款項匯回台灣時 撥款到您戶頭內的日幣兌換台幣之
+              <br />
+              日幣匯率計算將採用台灣銀行當日的牌告現金匯率
+              <br />
+            </li>
+            <li>
+              寄倉費
+              <br />
+              每個物品會有一定的單位數
+              <br />
+              若您的商品上架到日本雅虎競拍後
+              <br />
+              在未產生得標者的情況下
+              <br />
+              我們就會酌收寄倉費
+              <br />
+              寄倉費的部分是一個單位30日100台幣
+              <br />
+              寄倉計算起始日由委售品在日本競標結束後隔日開始計算
+              <br />
+            </li>
+            <li>
+              若商品最後結標價格您不滿意需要取消時
+              <br />
+              那麼 我們將會跟您收取平台的手續費 <br />
+              注意 商品結標價的10%是平台的手續費
+              <br />
+            </li>
+            <li>
+              若商品上架的途中需要停止
+              <br />
+              那麼我們將會收取雅虎的競標停止手續費550日幣
+            </li>
+          </ol>
+        </DialogBody>
+
+        <DialogActions>
+          <Button outline onClick={() => setOpen(false)}>
+            取消
+          </Button>
+          <Button
+            color='indigo'
+            onClick={async () => {
+              const res = await ItemConsignmentReview(item.id, {
+                action: 'companyDirectPurchase',
+              })
+              if (res.error) {
+                toast.error(`操作錯誤: ${res.error}`)
+                return
+              }
+              toast.success('已申請公司直購')
+              setOpen(false)
+            }}
+          >
+            公司直購
           </Button>
         </DialogActions>
       </Dialog>

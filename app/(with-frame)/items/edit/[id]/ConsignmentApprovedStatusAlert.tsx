@@ -5,13 +5,14 @@ import { ITEM_STATUS_MESSAGE_MAP } from '@/app/api/frontend/configs.data'
 import { Item } from '@/app/api/frontend/items/getItem'
 import { itemShipped } from '@/app/api/frontend/items/itemShipped'
 import { Button } from '@/app/catalyst-ui/button'
+import { UserContext } from '@/app/UserContext'
 import { Select } from '@headlessui/react'
 import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import { ChevronUpDownIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import copy from 'copy-to-clipboard'
 import 'quill/dist/quill.snow.css'
-import { useState, useTransition } from 'react'
+import { useContext, useState, useTransition } from 'react'
 
 export default function ConsignmentApprovedStatusAlert({
   configs,
@@ -22,6 +23,7 @@ export default function ConsignmentApprovedStatusAlert({
 }) {
   const [value, setValue] = useState<'company' | 'sevenEleven' | 'family'>('company')
   const [isPending, startTransition] = useTransition()
+  const user = useContext(UserContext)
 
   return (
     <div className='rounded-md bg-blue-50 p-4 sm:text-sm'>
@@ -38,9 +40,10 @@ export default function ConsignmentApprovedStatusAlert({
       <div className='ml-8 mt-2 w-fit'>
         <div className='text-blue-800'>
           <p className='leading-tight'>
-            請將物品寄送至我司以完成後續寄售程序，並在
-            <span className='rounded-sm bg-yellow-100 px-0.5 font-semibold'>
-              寄送外箱上填寫 ID: {item.id}
+            請將物品寄送至我司以完成後續寄售程序，並請
+            <span className='rounded-sm bg-yellow-100 px-0.5'>
+              用便條紙寫上 {user && <span className='font-semibold underline'>{user.nickname}</span>}
+              ，附於箱子內
             </span>
             ，供我們快速辨識您的物品
           </p>

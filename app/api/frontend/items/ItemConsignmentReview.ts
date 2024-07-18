@@ -8,14 +8,14 @@ import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
 
 const ReqSchema = z.object({
-  action: z.enum(['approve', 'reject']),
+  action: z.enum(['approve', 'reject', 'companyDirectPurchase']),
 })
 
 type Data = 'Success'
 
 type ErrorCode = '1001'
 
-export async function consignment(id: number, payload: z.input<typeof ReqSchema>) {
+export async function ItemConsignmentReview(id: number, payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()

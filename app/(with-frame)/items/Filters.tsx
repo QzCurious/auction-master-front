@@ -30,18 +30,21 @@ const filters = [
         ITEM_STATUS_DATA[3],
         ITEM_STATUS_DATA[5],
         ITEM_STATUS_DATA[6],
-        ITEM_STATUS_DATA[9],
+        ITEM_STATUS_DATA[7],
         ITEM_STATUS_DATA[10],
         ITEM_STATUS_DATA[11],
         ITEM_STATUS_DATA[12],
-
-        ITEM_STATUS_DATA[1],
-        ITEM_STATUS_DATA[4],
-        ITEM_STATUS_DATA[7],
-        ITEM_STATUS_DATA[8],
         ITEM_STATUS_DATA[13],
         ITEM_STATUS_DATA[14],
         ITEM_STATUS_DATA[15],
+
+        ITEM_STATUS_DATA[1],
+        ITEM_STATUS_DATA[4],
+        ITEM_STATUS_DATA[8],
+        ITEM_STATUS_DATA[9],
+        ITEM_STATUS_DATA[16],
+        ITEM_STATUS_DATA[17],
+        ITEM_STATUS_DATA[18],
       ] as const
     ).map(({ value, message }) => ({
       label: message,
