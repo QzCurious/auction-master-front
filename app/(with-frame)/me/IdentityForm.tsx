@@ -1,9 +1,9 @@
 'use client'
 
 import { database } from '@/app/address.data'
-import { CONSIGNOR_STATUS_MAP } from '@/app/api/frontend/configs.data'
-import { applyVerification } from '@/app/api/frontend/consignor/applyVerification'
-import { Consignor } from '@/app/api/frontend/consignor/getConsignor'
+import { CreateConsignorVerification } from '@/app/api/frontend/consignor/CreateConsignorVerification'
+import { Consignor } from '@/app/api/frontend/consignor/GetConsignor'
+import { CONSIGNOR_STATUS_MAP } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { Button } from '@/app/catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
 import { Input } from '@/app/catalyst-ui/input'
@@ -182,7 +182,7 @@ function Form({ consignor }: { consignor: Consignor }) {
     <form
       onSubmit={handleSubmit(async (_, e) => {
         const formData = new FormData(e?.target)
-        const res = await applyVerification(formData)
+        const res = await CreateConsignorVerification(formData)
         if (res.error === '1003') {
           toast.error('請重新登入')
           return

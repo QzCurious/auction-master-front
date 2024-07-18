@@ -7,17 +7,11 @@ import {
   ITEM_STATUS_MAP,
   ITEM_STATUS_MESSAGE_MAP,
   ITEM_TYPE_MAP,
-} from '@/app/api/frontend/configs.data'
-import { ItemConsignmentReview } from '@/app/api/frontend/items/ItemConsignmentReview'
-import { Text } from '@/app/catalyst-ui/text'
-import clsx from 'clsx'
-import type React from 'react'
-import { useState } from 'react'
-import toast from 'react-hot-toast'
-
-import { Item } from '@/app/api/frontend/items/getItem'
+} from '@/app/api/frontend/GetFrontendConfigs.data'
+import { Item } from '@/app/api/frontend/items/GetConsignorItem'
 import { ItemChoosesCompanyDirectPurchase } from '@/app/api/frontend/items/ItemChoosesCompanyDirectPurchase'
-import { itemReady } from '@/app/api/frontend/items/itemReady'
+import { ItemConsignmentReview } from '@/app/api/frontend/items/ItemConsignmentReview'
+import { ItemReady } from '@/app/api/frontend/items/ItemReady'
 import { ItemReturn } from '@/app/api/frontend/items/ItemReturn'
 import { Button } from '@/app/catalyst-ui/button'
 import {
@@ -26,13 +20,18 @@ import {
   DialogBody,
   DialogTitle,
 } from '@/app/catalyst-ui/dialog'
+import { Text } from '@/app/catalyst-ui/text'
 import {
   DoubleCheckPopover,
   DoubleCheckPopoverButton,
 } from '@/app/components/DoubleCheckPopover'
 import { bfs, StatusFlow } from '@/app/StatusFlow'
 import { User } from '@/app/UserContext'
+import clsx from 'clsx'
 import Link from 'next/link'
+import type React from 'react'
+import { useState } from 'react'
+import toast from 'react-hot-toast'
 
 export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
   const statusFlowWithConsignorActions = StatusFlow.withActions('consignor', {
@@ -97,7 +96,7 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
         <DoubleCheckPopover
           title='申請物品上架'
           onConfirm={async () => {
-            const res = await itemReady(item.id)
+            const res = await ItemReady(item.id)
             if (res.error) {
               toast.error(`操作錯誤: ${res.error}`)
               return

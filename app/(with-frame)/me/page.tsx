@@ -1,12 +1,12 @@
 import RedirectToHome from '@/app/RedirectToHome'
-import { getConsignor } from '@/app/api/frontend/consignor/getConsignor'
+import { GetConsignor } from '@/app/api/frontend/consignor/GetConsignor'
 import { getUser } from '@/app/api/helpers/getUser'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
 import IdentityForm from './IdentityForm'
 
 export default async function Example() {
-  const [user, consignorRes] = await Promise.all([getUser(), getConsignor()])
+  const [user, consignorRes] = await Promise.all([getUser(), GetConsignor()])
 
   if (!user || consignorRes.error === '1003') {
     return <RedirectToHome />

@@ -1,15 +1,14 @@
 'use client'
 
-import { session } from '@/app/api/session'
 import { XCircleIcon } from '@heroicons/react/20/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
-import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { ConsignorLogin } from '../api/ConsignorLogin'
+import { Button } from '../catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '../catalyst-ui/fieldset'
 import { Input } from '../catalyst-ui/input'
-import { Button } from '../catalyst-ui/button'
 
 const Schema = z.object({
   account: z.string().min(1, { message: '必填' }),
@@ -51,7 +50,7 @@ export function SignInForm() {
       <form
         className='space-y-6'
         onSubmit={handleSubmit(async (data) => {
-          const res = await session(data)
+          const res = await ConsignorLogin(data)
           if (res.error === '1002') {
             setError('root', { message: '被封鎖的帳號，請聯繫客服' })
             return

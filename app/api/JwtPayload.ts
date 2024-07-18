@@ -1,4 +1,4 @@
-import { CONSIGNOR_STATUS_DATA } from './frontend/configs.data'
+import { CONSIGNOR_STATUS_DATA } from './frontend/GetFrontendConfigs.data'
 
 export interface JwtPayload {
   id: number

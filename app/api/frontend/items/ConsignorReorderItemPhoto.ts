@@ -1,35 +1,39 @@
 'use server'
 
+import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
 
 const ReqSchema = z.object({
-  oldPassword: z.string().min(1),
-  password: z.string().min(1),
+  originalSorted: z.number(),
+  newSorted: z.number(),
 })
 
 type Data = 'Success'
 
-// 11: password cannot be same as old password
-// 1004: old password incorrect
-type ErrorCode = '11' | '1004'
+type ErrorCode = never
 
-export async function changePassword(payload: z.input<typeof ReqSchema>) {
+export async function ConsignorReorderItemPhoto(
+  id: number,
+  payload: z.input<typeof ReqSchema>,
+) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()
-  formData.append('oldPassword', data.oldPassword)
-  formData.append('password', data.password)
+  formData.append('originalSorted', data.originalSorted.toString())
+  formData.append('newSorted', data.newSorted.toString())
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(
-    '/frontend/consignor/password',
+    `/frontend/items/${id}/photos`,
     {
       method: 'PATCH',
       body: formData,
     },
   )
+
+  revalidateTag('items')
 
   return res
 }

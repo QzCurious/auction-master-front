@@ -15,7 +15,7 @@ type Data = 'Success'
 
 type ErrorCode = never
 
-export async function updateConsignorAvatar(formData: FormData) {
+export async function UpdateConsignorAvatar(formData: FormData) {
   if (!formData.has('avatarPhoto')) {
     throw new Error('field avatarPhoto is required')
   }

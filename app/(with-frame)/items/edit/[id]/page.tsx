@@ -1,11 +1,11 @@
-import { configs } from '@/app/api/frontend/configs'
+import { GetFrontendConfigs } from '@/app/api/frontend/GetFrontendConfigs'
 import {
   ITEM_STATUS_DATA,
   ITEM_STATUS_MAP,
   ITEM_TYPE_DATA,
   ITEM_TYPE_MAP,
-} from '@/app/api/frontend/configs.data'
-import { getItem } from '@/app/api/frontend/items/getItem'
+} from '@/app/api/frontend/GetFrontendConfigs.data'
+import { GetConsignorItem } from '@/app/api/frontend/items/GetConsignorItem'
 import { getUser } from '@/app/api/helpers/getUser'
 import {
   DescriptionDetails,
@@ -56,8 +56,8 @@ async function Content({ params }: PageProps) {
   }
   const [user, itemRes, configsRes] = await Promise.all([
     getUser(),
-    getItem(id),
-    configs(),
+    GetConsignorItem(id),
+    GetFrontendConfigs(),
   ])
 
   if (!user) {

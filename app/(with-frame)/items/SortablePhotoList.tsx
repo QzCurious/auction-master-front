@@ -1,5 +1,5 @@
 'use client'
-import { Item } from '@/app/api/frontend/items/getItem'
+import { Item } from '@/app/api/frontend/items/GetConsignorItems'
 import { Bars2Icon } from '@heroicons/react/20/solid'
 import { ArrowPathIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { PhotoIcon } from '@heroicons/react/24/solid'

@@ -9,7 +9,7 @@ type Data = 'Success'
 
 type ErrorCode = never
 
-export async function itemReady(id: number) {
+export async function ItemReady(id: number) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/items/${id}/ready`,
     {

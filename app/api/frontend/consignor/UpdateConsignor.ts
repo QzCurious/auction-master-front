@@ -17,7 +17,7 @@ type Data = 'Success'
 
 type ErrorCode = never
 
-export async function updateConsignor(payload: z.input<typeof ReqSchema>) {
+export async function UpdateConsignor(payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()

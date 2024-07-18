@@ -1,9 +1,9 @@
 'use client'
-import { consignor } from '@/app/api/consignor'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { CreateConsignor } from '../api/CreateConsignor'
 import { Button } from '../catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '../catalyst-ui/fieldset'
 import { Input } from '../catalyst-ui/input'
@@ -41,7 +41,7 @@ export function SignUpForm() {
     <form
       className='space-y-6'
       onSubmit={handleSubmit(async (data) => {
-        const result = await consignor(data)
+        const result = await CreateConsignor(data)
         if (result.error === '1601') {
           setError('account', { message: 'Account already exists' })
           return

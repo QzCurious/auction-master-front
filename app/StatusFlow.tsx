@@ -1,5 +1,5 @@
 import type React from 'react'
-import { ITEM_STATUS_MAP, ITEM_TYPE_MAP } from './api/frontend/configs.data'
+import { ITEM_STATUS_MAP, ITEM_TYPE_MAP } from './api/frontend/GetFrontendConfigs.data'
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] } & unknown
 

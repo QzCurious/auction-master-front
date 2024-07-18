@@ -2,7 +2,7 @@
 
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { CONSIGNOR_STATUS_DATA } from '../configs.data'
+import { CONSIGNOR_STATUS_DATA } from '../GetFrontendConfigs.data'
 
 export interface Consignor {
   id: number
@@ -46,7 +46,7 @@ type Data = Consignor
 
 type ErrorCode = never
 
-export async function getConsignor() {
+export async function GetConsignor() {
   const res = await withAuth(apiClient)<Data, ErrorCode>('/frontend/consignor', {
     method: 'GET',
     next: { tags: ['consignor'] },

@@ -1,13 +1,12 @@
 'use client'
 
-import { Item } from '@/app/api/frontend/items/getItem'
-import { uploadItemPhotos } from '@/app/api/frontend/items/uploadItemPhotos'
-import { PlusIcon } from '@heroicons/react/24/outline'
-
-import { ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
-import { changeItemPhotoSort } from '@/app/api/frontend/items/changeItemPhotoSort'
-import { deleteItemPhoto } from '@/app/api/frontend/items/deleteItemPhoto'
+import { ITEM_STATUS_MAP } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ConsignorDeleteItemPhoto } from '@/app/api/frontend/items/ConsignorDeleteItemPhoto'
+import { ConsignorReorderItemPhoto } from '@/app/api/frontend/items/ConsignorReorderItemPhoto'
+import { ConsignorUpsertItemPhoto } from '@/app/api/frontend/items/ConsignorUpsertItemPhoto'
+import { Item } from '@/app/api/frontend/items/GetConsignorItems'
 import { Field, Label } from '@/app/catalyst-ui/fieldset'
+import { PlusIcon } from '@heroicons/react/24/outline'
 import { useState, useTransition } from 'react'
 import SortablePhotoList from '../../SortablePhotoList'
 
@@ -50,7 +49,7 @@ export default function PhotoListForm({ item }: PhotoListFormProps) {
               formData.append('sorted', `${i + item.photos.length + 1}`)
             }
             startTransition(async () => {
-              await uploadItemPhotos(item.id, formData)
+              await ConsignorUpsertItemPhoto(item.id, formData)
               setPhotos([
                 ...photos,
                 ...Array.from(files, (f) => ({
@@ -79,14 +78,14 @@ export default function PhotoListForm({ item }: PhotoListFormProps) {
             photos={item.photos}
             onDelete={(i) => {
               startTransition(async () => {
-                await deleteItemPhoto(item.id, i + 1)
+                await ConsignorDeleteItemPhoto(item.id, i + 1)
                 URL.revokeObjectURL(photos[i].photo)
                 setPhotos([...photos.splice(i, 1)])
               })
             }}
             onMove={(from, to) => {
               startTransition(async () => {
-                await changeItemPhotoSort(item.id, {
+                await ConsignorReorderItemPhoto(item.id, {
                   originalSorted: item.photos[from].sorted,
                   newSorted: item.photos[to].sorted,
                 })

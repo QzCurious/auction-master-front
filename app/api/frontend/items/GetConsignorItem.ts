@@ -1,38 +1,47 @@
-'use server'
-
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { ITEM_STATUS_DATA } from '../configs.data'
+import { ITEM_STATUS_KEY_MAP } from '../GetFrontendConfigs.data'
 
 export interface Item {
   id: number
   consignorID: number
+  nickname: string
   type: number
   name: string
   description: string
   photos: Array<{
     sorted: number
     photo: string
+    createdAt: string
+    updatedAt: string
   }>
-  space: number
+  pastStatuses: {
+    '1': string
+    '11': string
+    '13': string
+    '3': string
+  }
+  directPurchasePrice: number
   minEstimatedPrice: number
   maxEstimatedPrice: number
-  sellerID: number
   reservePrice: number
-  expireAt: any
-  status: (typeof ITEM_STATUS_DATA)[number]['value']
+  expireAt: string
+  warehouseID: string
+  space: number
+  grossWeight: number
+  volumetricWeight: number
+  status: keyof typeof ITEM_STATUS_KEY_MAP
   createdAt: string
   updatedAt: string
 }
 
 interface Data extends Item {}
 
-/**
- * 1801: item not exist
- */
-type ErrorCode = '1801'
+type ErrorCode = never
 
-export async function getItem(id: number) {
+export async function GetConsignorItem(id: number) {
+  'use server'
+
   const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}`, {
     method: 'GET',
     next: { tags: ['items'] },

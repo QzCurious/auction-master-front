@@ -3,7 +3,7 @@
 import { apiClient } from '@/app/api/apiClient'
 import { z } from 'zod'
 import { throwIfInvalid } from './helpers/throwIfInvalid'
-import { session } from './session'
+import { ConsignorLogin } from './ConsignorLogin'
 
 const ReqSchema = z.object({
   account: z.string(),
@@ -17,7 +17,7 @@ type ErrorCode =
   // ConsignorExisted
   '1601'
 
-export async function consignor(payload: z.input<typeof ReqSchema>) {
+export async function CreateConsignor(payload: z.input<typeof ReqSchema>) {
   throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()
@@ -31,7 +31,7 @@ export async function consignor(payload: z.input<typeof ReqSchema>) {
   })
 
   if (!res.error) {
-    const res = await session({
+    const res = await ConsignorLogin({
       account: payload.account,
       password: payload.password,
     })

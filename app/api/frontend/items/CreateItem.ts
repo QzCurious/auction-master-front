@@ -3,13 +3,13 @@
 import { revalidateTag } from 'next/cache'
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { ITEM_TYPE_DATA } from '../configs.data'
+import { ITEM_TYPE_DATA } from '../GetFrontendConfigs.data'
 
 type Data = 'Success'
 
 type ErrorCode = never
 
-export async function createItem(formData: FormData) {
+export async function CreateItem(formData: FormData) {
   const name = formData.get('name')
   if (typeof name !== 'string' || name === '') {
     throw new Error('name is required and should be a string')

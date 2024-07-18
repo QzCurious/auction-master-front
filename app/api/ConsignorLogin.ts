@@ -24,7 +24,7 @@ type ErrorCode =
   // ConsignorNotExist
   | '1602'
 
-export async function session(payload: z.input<typeof ReqSchema>) {
+export async function ConsignorLogin(payload: z.input<typeof ReqSchema>) {
   throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()

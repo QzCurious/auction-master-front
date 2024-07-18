@@ -1,10 +1,10 @@
 'use client'
-import { ITEM_TYPE_MAP } from '@/app/api/frontend/configs.data'
-import { createItem } from '@/app/api/frontend/items/createItem'
-import { deleteItemPhoto } from '@/app/api/frontend/items/deleteItemPhoto'
-import { Item } from '@/app/api/frontend/items/getItem'
-import { updateItem } from '@/app/api/frontend/items/updateItem'
-import { uploadItemPhotos } from '@/app/api/frontend/items/uploadItemPhotos'
+import { ITEM_TYPE_MAP } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ConsignorDeleteItemPhoto } from '@/app/api/frontend/items/ConsignorDeleteItemPhoto'
+import { ConsignorUpsertItemPhoto } from '@/app/api/frontend/items/ConsignorUpsertItemPhoto'
+import { CreateItem } from '@/app/api/frontend/items/CreateItem'
+import { Item } from '@/app/api/frontend/items/GetConsignorItems'
+import { UpdateConsignorItem } from '@/app/api/frontend/items/UpdateConsignorItem'
 import { Button } from '@/app/catalyst-ui/button'
 import { Checkbox, CheckboxField } from '@/app/catalyst-ui/checkbox'
 import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
@@ -99,7 +99,7 @@ export default function ItemForm({ item }: ItemFormProps) {
                   }
                 }
 
-                const res = await createItem(formData)
+                const res = await CreateItem(formData)
                 if (res.error) {
                   setError('root', { message: `操作失敗: ${res.error}` })
                   return
@@ -108,7 +108,7 @@ export default function ItemForm({ item }: ItemFormProps) {
                 router.push('/items')
               }
             : async (data) => {
-                const res = await updateItem(item.id, data)
+                const res = await UpdateConsignorItem(item.id, data)
                 if (res.error) {
                   setError('root', { message: `操作失敗: ${res.error}` })
                   return
@@ -268,7 +268,7 @@ function UploadImage({
                     formData.append('sorted', `${i + item.photos.length + 1}`)
                   }
                   startTransition(async () => {
-                    await uploadItemPhotos(item.id, formData)
+                    await ConsignorUpsertItemPhoto(item.id, formData)
                     for (const file of Array.from(files)) {
                       append({ file })
                     }
@@ -307,7 +307,7 @@ function UploadImage({
                     const f = field.value[i]
                     if ('sorted' in f) {
                       startTransition(async () => {
-                        await deleteItemPhoto(item.id, f.sorted)
+                        await ConsignorDeleteItemPhoto(item.id, f.sorted)
                         remove(i)
                       })
                     }

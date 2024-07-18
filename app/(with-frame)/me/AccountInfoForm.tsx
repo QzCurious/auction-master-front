@@ -1,8 +1,8 @@
 'use client'
 
 import { User } from '@/app/UserContext'
-import { Consignor } from '@/app/api/frontend/consignor/getConsignor'
-import { updateConsignorAvatar } from '@/app/api/frontend/consignor/updateConsignorAvatar'
+import { Consignor } from '@/app/api/frontend/consignor/GetConsignor'
+import { UpdateConsignorAvatar } from '@/app/api/frontend/consignor/UpdateConsignorAvatar'
 import { Button } from '@/app/catalyst-ui/button'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
@@ -66,7 +66,7 @@ export default function AccountInfoForm({
                           startTransition(async () => {
                             const formData = new FormData()
                             formData.append('avatarPhoto', '')
-                            const res = await updateConsignorAvatar(formData)
+                            const res = await UpdateConsignorAvatar(formData)
                             if (res.error) {
                               toast.error(`刪除頭像失敗: ${res.error}`)
                               return
@@ -118,7 +118,7 @@ export default function AccountInfoForm({
 
                     const formData = new FormData()
                     formData.append('avatarPhoto', file)
-                    const res = await updateConsignorAvatar(formData)
+                    const res = await UpdateConsignorAvatar(formData)
                     if (res.error) {
                       toast.error(`頭像更新失敗: ${res.error}`)
                       return

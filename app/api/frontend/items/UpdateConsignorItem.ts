@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
-import { ITEM_TYPE_DATA } from '../configs.data'
+import { ITEM_TYPE_DATA } from '../GetFrontendConfigs.data'
 
 const ReqSchema = z.object({
   name: z.string(),
@@ -22,7 +22,7 @@ type Data = 'Success'
 
 type ErrorCode = never
 
-export async function updateItem(id: number, payload: z.input<typeof ReqSchema>) {
+export async function UpdateConsignorItem(id: number, payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()

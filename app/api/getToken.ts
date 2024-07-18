@@ -5,9 +5,9 @@ import { cookies } from 'next/headers'
 
 import { cookieConfigs } from '../static'
 import { type JwtPayload } from './JwtPayload'
-import { sessionRefresh } from './session-refresh'
+import { RefreshToken } from './RefreshToken'
 
-let sessionRefreshing: ReturnType<typeof sessionRefresh> | null = null
+let sessionRefreshing: ReturnType<typeof RefreshToken> | null = null
 
 export async function getToken({ force }: { force?: boolean } = { force: false }) {
   // no token
@@ -29,7 +29,7 @@ export async function getToken({ force }: { force?: boolean } = { force: false }
   }
 
   if (!sessionRefreshing) {
-    sessionRefreshing = sessionRefresh({
+    sessionRefreshing = RefreshToken({
       token: token.value,
       refreshToken: refreshToken.value,
     })

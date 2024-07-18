@@ -1,6 +1,9 @@
 import RedirectToHome from '@/app/RedirectToHome'
-import { ITEM_STATUS_DATA, ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
-import { items } from '@/app/api/frontend/items/items'
+import {
+  ITEM_STATUS_DATA,
+  ITEM_STATUS_MAP,
+} from '@/app/api/frontend/GetFrontendConfigs.data'
+import { GetConsignorItems } from '@/app/api/frontend/items/GetConsignorItems'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
 import {
   PAGE,
@@ -14,8 +17,8 @@ import { PlusCircleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import * as R from 'remeda'
 import { z } from 'zod'
-import { DesktopFilters, MobileFilters } from './Filters'
 import AutoRefreshPage from './AutoRefreshPage'
+import { DesktopFilters, MobileFilters } from './Filters'
 
 export const metadata = { title: `我的物品 | ${SITE_NAME}` }
 
@@ -38,7 +41,7 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const filter = filterSchema.parse(searchParams)
   const pagination = PaginationSchema.parse(searchParams)
-  const itemsRes = await items({
+  const itemsRes = await GetConsignorItems({
     limit: pagination[ROWS_PER_PAGE],
     offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
     sort: 'createdAt',

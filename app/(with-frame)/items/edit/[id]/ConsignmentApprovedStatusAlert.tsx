@@ -1,9 +1,9 @@
 'use client'
 
-import { Configs } from '@/app/api/frontend/configs'
-import { ITEM_STATUS_MESSAGE_MAP } from '@/app/api/frontend/configs.data'
-import { Item } from '@/app/api/frontend/items/getItem'
-import { itemShipped } from '@/app/api/frontend/items/itemShipped'
+import { Configs } from '@/app/api/frontend/GetFrontendConfigs'
+import { ITEM_STATUS_MESSAGE_MAP } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { Item } from '@/app/api/frontend/items/GetConsignorItems'
+import { ItemShipped } from '@/app/api/frontend/items/ItemShipped'
 import { Button } from '@/app/catalyst-ui/button'
 import { UserContext } from '@/app/UserContext'
 import { Select } from '@headlessui/react'
@@ -42,7 +42,10 @@ export default function ConsignmentApprovedStatusAlert({
           <p className='leading-tight'>
             請將物品寄送至我司以完成後續寄售程序，並請
             <span className='rounded-sm bg-yellow-100 px-0.5'>
-              用便條紙寫上 {user && <span className='font-semibold underline'>{user.nickname}</span>}
+              用便條紙寫上{' '}
+              {user && (
+                <span className='font-semibold underline'>{user.nickname}</span>
+              )}
               ，附於箱子內
             </span>
             ，供我們快速辨識您的物品
@@ -141,7 +144,7 @@ export default function ConsignmentApprovedStatusAlert({
                 color='indigo'
                 onClick={() => {
                   startTransition(() => {
-                    itemShipped(item.id)
+                    ItemShipped(item.id)
                   })
                 }}
               >

@@ -2,7 +2,7 @@
 
 import { apiClient } from '../apiClient'
 import { withAuth } from '../withAuth'
-import { CONFIGS_DATA } from './configs.data'
+import { GetFrontendConfigs_DATA } from './GetFrontendConfigs.data'
 
 export interface Configs {
   yahooAuctionFeeRate: number
@@ -29,17 +29,17 @@ export interface Configs {
     }
   }
   itemType: Array<{
-    key: (typeof CONFIGS_DATA.itemType)[number]['key']
+    key: (typeof GetFrontendConfigs_DATA.itemType)[number]['key']
     message: string
     value: number
   }>
   itemStatus: Array<{
-    key: (typeof CONFIGS_DATA.itemStatus)[number]['key']
+    key: (typeof GetFrontendConfigs_DATA.itemStatus)[number]['key']
     message: string
     value: number
   }>
   auctionItemStatus: Array<{
-    key: (typeof CONFIGS_DATA.auctionItemStatus)[number]['key']
+    key: (typeof GetFrontendConfigs_DATA.auctionItemStatus)[number]['key']
     message: string
     value: number
   }>
@@ -57,7 +57,7 @@ interface Data extends Configs {}
 
 type ErrorCode = never
 
-export async function configs() {
+export async function GetFrontendConfigs() {
   const res = await withAuth(apiClient)<Data, ErrorCode>('/frontend/configs', {
     method: 'GET',
     next: { tags: ['configs'] },

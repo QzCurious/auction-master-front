@@ -1,7 +1,10 @@
 'use client'
 
-import { ITEM_STATUS_DATA, ITEM_STATUS_MAP } from '@/app/api/frontend/configs.data'
-import { StatusCounts } from '@/app/api/frontend/items/items'
+import {
+  ITEM_STATUS_DATA,
+  ITEM_STATUS_MAP,
+} from '@/app/api/frontend/GetFrontendConfigs.data'
+import { StatusCounts } from '@/app/api/frontend/items/GetConsignorItems'
 import { StatusFlow } from '@/app/StatusFlow'
 import {
   Dialog,

@@ -1,6 +1,6 @@
 'use client'
 
-import { changePassword } from '@/app/api/frontend/consignor/changePassword'
+import { UpdateConsignorPassword } from '@/app/api/frontend/consignor/UpdateConsignorPassword'
 import { Button } from '@/app/catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
 import { Input } from '@/app/catalyst-ui/input'
@@ -51,7 +51,7 @@ export default function ChangePasswordForm() {
       <form
         className='md:col-span-2'
         onSubmit={handleSubmit(async (data) => {
-          const res = await changePassword({
+          const res = await UpdateConsignorPassword({
             oldPassword: data.oldPassword,
             password: data.password,
           })

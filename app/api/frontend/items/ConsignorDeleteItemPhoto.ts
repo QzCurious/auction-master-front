@@ -8,7 +8,7 @@ type Data = 'Success'
 
 type ErrorCode = never
 
-export async function deleteItemPhoto(id: number, sorted: number) {
+export async function ConsignorDeleteItemPhoto(id: number, sorted: number) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/items/${id}/photos/${sorted}`,
     {

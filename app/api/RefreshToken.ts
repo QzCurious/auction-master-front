@@ -16,7 +16,7 @@ type ErrorCode =
   // TokenIncorrect
   '1003'
 
-export async function sessionRefresh(payload: z.input<typeof ReqSchema>) {
+export async function RefreshToken(payload: z.input<typeof ReqSchema>) {
   throwIfInvalid(payload, ReqSchema)
 
   const { token, refreshToken } = payload
