@@ -16,6 +16,7 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 
 import { Item } from '@/app/api/frontend/items/getItem'
+import { ItemChoosesCompanyDirectPurchase } from '@/app/api/frontend/items/ItemChoosesCompanyDirectPurchase'
 import { itemReady } from '@/app/api/frontend/items/itemReady'
 import { ItemReturn } from '@/app/api/frontend/items/ItemReturn'
 import { Button } from '@/app/catalyst-ui/button'
@@ -65,7 +66,7 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
 
         {user.status ===
           CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus && (
-          <p className='mt-1 text-center text-sm text-gray-500 w-32'>
+          <p className='mt-1 w-32 text-center text-sm text-gray-500'>
             完成
             <Link href='/me#identity-form' className='text-indigo-600 underline'>
               身份認證
@@ -387,9 +388,7 @@ function CompanyDirectPurchaseBtn({ item, user }: { item: Item; user: User }) {
           <Button
             color='indigo'
             onClick={async () => {
-              const res = await ItemConsignmentReview(item.id, {
-                action: 'companyDirectPurchase',
-              })
+              const res = await ItemChoosesCompanyDirectPurchase(item.id)
               if (res.error) {
                 toast.error(`操作錯誤: ${res.error}`)
                 return

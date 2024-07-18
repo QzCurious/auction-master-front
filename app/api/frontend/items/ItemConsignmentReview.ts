@@ -8,7 +8,7 @@ import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
 
 const ReqSchema = z.object({
-  action: z.enum(['approve', 'reject', 'companyDirectPurchase']),
+  action: z.enum(['approve', 'reject']),
 })
 
 type Data = 'Success'
