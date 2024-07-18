@@ -1,9 +1,7 @@
 'use client'
 
 import Quill, { Delta, type EmitterSource, type Range } from 'quill/core'
-
 import 'quill/dist/quill.snow.css'
-
 import { BackgroundStyle } from 'quill/formats/background'
 import Bold from 'quill/formats/bold'
 import { ColorStyle } from 'quill/formats/color'
@@ -16,7 +14,6 @@ import Underline from 'quill/formats/underline'
 import Toolbar from 'quill/modules/toolbar'
 import SnowTheme from 'quill/themes/snow'
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react'
-
 import './QuillTextEditor.css'
 
 Quill.register('modules/toolbar', Toolbar)

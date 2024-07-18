@@ -14,17 +14,21 @@ import {
   DescriptionTerm,
 } from '@/app/catalyst-ui/description-list'
 import { Subheading } from '@/app/catalyst-ui/heading'
-import ClientOnly from '@/app/components/ClientOnly'
 import RedirectToHome from '@/app/RedirectToHome'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import 'quill/dist/quill.snow.css'
-import QuillTextEditor from '../../../../components/QuillTextEditor/QuillTextEditor'
 import ItemForm from '../../ItemForm'
 import ConsignmentApprovedStatusAlert from './ConsignmentApprovedStatusAlert'
 import PhotoListForm from './PhotoListForm'
 import { StatusFlowUI } from './StatusFlowSection'
+
+const QuillTextEditor = dynamic(
+  () => import('@/app/components/QuillTextEditor/QuillTextEditor'),
+  { ssr: false },
+)
 
 interface PageProps {
   params: { id: string }
@@ -113,13 +117,11 @@ async function Content({ params }: PageProps) {
             <Subheading level={2}>描述</Subheading>
             {itemRes.data.description ? (
               <div className='mt-2'>
-                <ClientOnly>
-                  <QuillTextEditor
-                    readOnly
-                    hideToolbar
-                    defaultValue={itemRes.data.description}
-                  />
-                </ClientOnly>
+                <QuillTextEditor
+                  readOnly
+                  hideToolbar
+                  defaultValue={itemRes.data.description}
+                />
               </div>
             ) : (
               <div className='mt-2'>暫無描述</div>

@@ -11,10 +11,9 @@ import { Checkbox, CheckboxField } from '@/app/catalyst-ui/checkbox'
 import { Description, ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
 import { Input, InputGroup } from '@/app/catalyst-ui/input'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
-import ClientOnly from '@/app/components/ClientOnly'
-import QuillTextEditor from '@/app/components/QuillTextEditor/QuillTextEditor'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState, useTransition } from 'react'
 import {
@@ -27,6 +26,11 @@ import {
 import { toast } from 'react-hot-toast'
 import { z } from 'zod'
 import SortablePhotoList from './SortablePhotoList'
+
+const QuillTextEditor = dynamic(
+  () => import('@/app/components/QuillTextEditor/QuillTextEditor'),
+  { ssr: false },
+)
 
 const Schema = z.object({
   name: z.string().min(1, { message: '必填' }),
@@ -195,14 +199,12 @@ export default function ItemForm({ item, yenToNtdRate }: ItemFormProps) {
               <Field className='col-span-full'>
                 <Label className='mb-3'>物品描述</Label>
                 <div data-slot='control'>
-                  <ClientOnly>
-                    <QuillTextEditor
-                      defaultValue={item?.description}
-                      onTextChange={(delta, oldDelta) =>
-                        field.onChange(JSON.stringify(oldDelta.compose(delta).ops))
-                      }
-                    />
-                  </ClientOnly>
+                  <QuillTextEditor
+                    defaultValue={item?.description}
+                    onTextChange={(delta, oldDelta) =>
+                      field.onChange(JSON.stringify(oldDelta.compose(delta).ops))
+                    }
+                  />
                 </div>
               </Field>
             )}
