@@ -153,28 +153,29 @@ async function Content({ params }: PageProps) {
                 </p>
               </DescriptionDetails>
 
-              {StatusFlow.flow[
-                ITEM_STATUS_KEY_MAP[itemRes.data.status]
-              ].allowTypes.some(
-                (t) =>
-                  itemRes.data.type === 0 ||
-                  t === ITEM_TYPE_KEY_MAP[itemRes.data.type],
-              ) &&
-                itemRes.data.type === ITEM_TYPE_MAP['CompanyDirectPurchaseType'] && (
-                  <>
-                    <DescriptionTerm>現金收購金額</DescriptionTerm>
-                    <DescriptionDetails className='text-end'>
-                      ¥ {itemRes.data.directPurchasePrice.toLocaleString()}
-                      <p className='whitespace-nowrap text-zinc-500'>
-                        (約{' '}
-                        {Math.floor(
-                          itemRes.data.directPurchasePrice * yenToNtdRate,
-                        ).toLocaleString()}{' '}
-                        台幣)
-                      </p>
-                    </DescriptionDetails>
-                  </>
-                )}
+              {(itemRes.data.status === ITEM_STATUS_MAP.AppraisedStatus ||
+                (itemRes.data.type === ITEM_TYPE_MAP.CompanyDirectPurchaseType &&
+                  StatusFlow.flow[
+                    ITEM_STATUS_KEY_MAP[itemRes.data.status]
+                  ].allowTypes.some(
+                    (t) =>
+                      itemRes.data.type === 0 ||
+                      t === ITEM_TYPE_KEY_MAP[itemRes.data.type],
+                  ))) && (
+                <>
+                  <DescriptionTerm>現金收購金額</DescriptionTerm>
+                  <DescriptionDetails className='text-end'>
+                    ¥ {itemRes.data.directPurchasePrice.toLocaleString()}
+                    <p className='whitespace-nowrap text-zinc-500'>
+                      (約{' '}
+                      {Math.floor(
+                        itemRes.data.directPurchasePrice * yenToNtdRate,
+                      ).toLocaleString()}{' '}
+                      台幣)
+                    </p>
+                  </DescriptionDetails>
+                </>
+              )}
 
               {itemRes.data.type === ITEM_TYPE_MAP['AppraisableAuctionItemType'] && (
                 <>
