@@ -77,13 +77,10 @@ async function Content({ params }: PageProps) {
     notFound()
   }
 
+  const yenToNtdRate = await getExchangeRate('JPY', 'NTD')
+
   if (itemRes.data.status === ITEM_STATUS_MAP.SubmitAppraisalStatus) {
-    return (
-      <ItemForm
-        item={itemRes.data}
-        yenToNtdRate={await getExchangeRate('JPY', 'NTD')}
-      />
-    )
+    return <ItemForm item={itemRes.data} yenToNtdRate={yenToNtdRate} />
   }
 
   return (
@@ -142,12 +139,12 @@ async function Content({ params }: PageProps) {
               <DescriptionDetails>{itemRes.data.space}</DescriptionDetails>
 
               <DescriptionTerm>期望金額</DescriptionTerm>
-              <DescriptionDetails>
+              <DescriptionDetails className='text-end'>
                 ¥ {itemRes.data.reservePrice.toLocaleString()}
                 <p className='whitespace-nowrap text-zinc-500'>
                   (約{' '}
                   {Math.floor(
-                    itemRes.data.reservePrice * (await getExchangeRate('JPY', 'NTD')),
+                    itemRes.data.reservePrice * yenToNtdRate,
                   ).toLocaleString()}{' '}
                   台幣)
                 </p>
@@ -156,8 +153,15 @@ async function Content({ params }: PageProps) {
               {itemRes.data.type === ITEM_TYPE_MAP['CompanyDirectPurchaseType'] && (
                 <>
                   <DescriptionTerm>現金收購金額</DescriptionTerm>
-                  <DescriptionDetails>
+                  <DescriptionDetails className='text-end'>
                     ¥ {itemRes.data.directPurchasePrice.toLocaleString()}
+                    <p className='whitespace-nowrap text-zinc-500'>
+                      (約{' '}
+                      {Math.floor(
+                        itemRes.data.directPurchasePrice * yenToNtdRate,
+                      ).toLocaleString()}{' '}
+                      台幣)
+                    </p>
                   </DescriptionDetails>
                 </>
               )}
@@ -165,13 +169,27 @@ async function Content({ params }: PageProps) {
               {itemRes.data.type === ITEM_TYPE_MAP['AppraisableAuctionItemType'] && (
                 <>
                   <DescriptionTerm>最低估值</DescriptionTerm>
-                  <DescriptionDetails>
+                  <DescriptionDetails className='text-end'>
                     ¥ {itemRes.data.minEstimatedPrice.toLocaleString()}
+                    <p className='whitespace-nowrap text-zinc-500'>
+                      (約{' '}
+                      {Math.floor(
+                        itemRes.data.minEstimatedPrice * yenToNtdRate,
+                      ).toLocaleString()}{' '}
+                      台幣)
+                    </p>
                   </DescriptionDetails>
 
                   <DescriptionTerm>最高估值</DescriptionTerm>
-                  <DescriptionDetails>
+                  <DescriptionDetails className='text-end'>
                     ¥ {itemRes.data.maxEstimatedPrice.toLocaleString()}
+                    <p className='whitespace-nowrap text-zinc-500'>
+                      (約{' '}
+                      {Math.floor(
+                        itemRes.data.maxEstimatedPrice * yenToNtdRate,
+                      ).toLocaleString()}{' '}
+                      台幣)
+                    </p>
                   </DescriptionDetails>
                 </>
               )}
