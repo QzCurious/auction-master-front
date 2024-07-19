@@ -1,12 +1,12 @@
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { ITEM_STATUS_KEY_MAP } from '../GetFrontendConfigs.data'
+import { ITEM_STATUS_KEY_MAP, ITEM_TYPE_KEY_MAP } from '../GetFrontendConfigs.data'
 
 export interface Item {
   id: number
   consignorID: number
   nickname: string
-  type: number
+  type: keyof typeof ITEM_TYPE_KEY_MAP
   name: string
   description: string
   photos: Array<{
@@ -15,7 +15,7 @@ export interface Item {
     createdAt: string
     updatedAt: string
   }>
-  pastStatuses: { [k in keyof typeof ITEM_STATUS_KEY_MAP]?: string };
+  pastStatuses: { [k in keyof typeof ITEM_STATUS_KEY_MAP]?: string }
   directPurchasePrice: number
   minEstimatedPrice: number
   maxEstimatedPrice: number

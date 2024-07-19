@@ -1,8 +1,10 @@
 import { GetFrontendConfigs } from '@/app/api/frontend/GetFrontendConfigs'
 import {
   ITEM_STATUS_DATA,
+  ITEM_STATUS_KEY_MAP,
   ITEM_STATUS_MAP,
   ITEM_TYPE_DATA,
+  ITEM_TYPE_KEY_MAP,
   ITEM_TYPE_MAP,
 } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { GetConsignorItem } from '@/app/api/frontend/items/GetConsignorItem'
@@ -15,6 +17,7 @@ import {
 } from '@/app/catalyst-ui/description-list'
 import { Subheading } from '@/app/catalyst-ui/heading'
 import RedirectToHome from '@/app/RedirectToHome'
+import { StatusFlow } from '@/app/StatusFlow'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
@@ -150,21 +153,24 @@ async function Content({ params }: PageProps) {
                 </p>
               </DescriptionDetails>
 
-              {itemRes.data.type === ITEM_TYPE_MAP['CompanyDirectPurchaseType'] && (
-                <>
-                  <DescriptionTerm>現金收購金額</DescriptionTerm>
-                  <DescriptionDetails className='text-end'>
-                    ¥ {itemRes.data.directPurchasePrice.toLocaleString()}
-                    <p className='whitespace-nowrap text-zinc-500'>
-                      (約{' '}
-                      {Math.floor(
-                        itemRes.data.directPurchasePrice * yenToNtdRate,
-                      ).toLocaleString()}{' '}
-                      台幣)
-                    </p>
-                  </DescriptionDetails>
-                </>
-              )}
+              {StatusFlow.flow[
+                ITEM_STATUS_KEY_MAP[itemRes.data.status]
+              ].allowTypes.some((t) => t === ITEM_TYPE_KEY_MAP[itemRes.data.type]) &&
+                itemRes.data.type === ITEM_TYPE_MAP['CompanyDirectPurchaseType'] && (
+                  <>
+                    <DescriptionTerm>現金收購金額</DescriptionTerm>
+                    <DescriptionDetails className='text-end'>
+                      ¥ {itemRes.data.directPurchasePrice.toLocaleString()}
+                      <p className='whitespace-nowrap text-zinc-500'>
+                        (約{' '}
+                        {Math.floor(
+                          itemRes.data.directPurchasePrice * yenToNtdRate,
+                        ).toLocaleString()}{' '}
+                        台幣)
+                      </p>
+                    </DescriptionDetails>
+                  </>
+                )}
 
               {itemRes.data.type === ITEM_TYPE_MAP['AppraisableAuctionItemType'] && (
                 <>

@@ -221,6 +221,10 @@ export const ITEM_TYPE_MAP = mapToObj(ITEM_TYPE_DATA, ({ key, value }) => [
   key,
   value,
 ])
+export const ITEM_TYPE_KEY_MAP = mapToObj(ITEM_TYPE_DATA, ({ key, value }) => [
+  value,
+  key,
+])
 
 export const ITEM_STATUS_DATA = GetFrontendConfigs_DATA.itemStatus
 export const ITEM_STATUS_MAP = mapToObj(ITEM_STATUS_DATA, ({ key, value }) => [
