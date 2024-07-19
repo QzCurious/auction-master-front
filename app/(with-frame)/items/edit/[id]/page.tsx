@@ -138,7 +138,7 @@ async function Content({ params }: PageProps) {
                   ?.message ?? '(待定)'}
               </DescriptionDetails>
 
-              <DescriptionTerm>空間</DescriptionTerm>
+              <DescriptionTerm>佔用空間</DescriptionTerm>
               <DescriptionDetails>{itemRes.data.space}</DescriptionDetails>
 
               <DescriptionTerm>期望金額</DescriptionTerm>
