@@ -207,7 +207,7 @@ async function Content({ params }: PageProps) {
           </section>
 
           <div className='mt-10'>
-            <Subheading level={2}>狀態流程</Subheading>
+            <Subheading level={2}>物品進度</Subheading>
             <div className='mt-3'>
               <StatusFlowUI item={itemRes.data} user={user} />
             </div>
