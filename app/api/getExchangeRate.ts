@@ -48,9 +48,9 @@ const cache = new LRUCache<`${Currency}-${Currency}`, number>({
 const schema = z.array(
   z.object({
     Currency: z.enum(currencies),
-    Rate: z.enum(['Selling', 'Buying']),
-    Cash: z.coerce.number(),
-    Spot: z.coerce.number(),
+    Rate: z.tuple([z.literal('Buying'), z.literal('Selling')]),
+    Cash: z.tuple([z.coerce.number(), z.coerce.number()]),
+    Spot: z.tuple([z.coerce.number(), z.coerce.number()]),
   }),
 )
 
@@ -64,13 +64,14 @@ async function _exchangeRate(from: Currency, to: Currency) {
     from_line: 1,
     columns: true,
     ignore_last_delimiters: true,
+    group_columns_by_name: true,
   })
 
   const parsed = schema.parse(data)
 
   const fromExchange =
-    from === 'NTD' ? 1 : parsed.find((d) => d.Currency === from)?.Spot
-  const toExchange = to === 'NTD' ? 1 : parsed.find((d) => d.Currency === to)?.Spot
+    from === 'NTD' ? 1 : parsed.find((d) => d.Currency === from)?.Spot[0]
+  const toExchange = to === 'NTD' ? 1 : parsed.find((d) => d.Currency === to)?.Spot[0]
   if (!toExchange || !fromExchange) {
     throw new Error(`Invalid args: to: ${to}, from: ${from}`)
   }

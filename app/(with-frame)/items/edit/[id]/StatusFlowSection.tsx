@@ -70,7 +70,7 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
             <Link href='/me#identity-form' className='text-indigo-600 underline'>
               身份認證
             </Link>
-            後即可申請公司直購或託售
+            後即可申請現金收購或託售
           </p>
         )}
       </div>
@@ -322,7 +322,7 @@ function CompanyDirectPurchaseBtn({ item, user }: { item: Item; user: User }) {
           user.status === CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus
         }
       >
-        公司直購
+        現金收購
       </Button>
       <Dialog open={open} onClose={() => {}}>
         <DialogTitle>收費相關說明規章</DialogTitle>
@@ -394,11 +394,11 @@ function CompanyDirectPurchaseBtn({ item, user }: { item: Item; user: User }) {
                 toast.error(`操作錯誤: ${res.error}`)
                 return
               }
-              toast.success('已申請公司直購')
+              toast.success('已申請現金收購')
               setOpen(false)
             }}
           >
-            公司直購
+            現金收購
           </Button>
         </DialogActions>
       </Dialog>

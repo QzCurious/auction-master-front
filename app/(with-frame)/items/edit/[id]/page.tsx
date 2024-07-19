@@ -146,12 +146,21 @@ async function Content({ params }: PageProps) {
                 ¥ {itemRes.data.reservePrice.toLocaleString()}
                 <p className='whitespace-nowrap text-zinc-500'>
                   (約{' '}
-                  {(
-                    itemRes.data.reservePrice * (await getExchangeRate('JPY', 'NTD'))
+                  {Math.floor(
+                    itemRes.data.reservePrice * (await getExchangeRate('JPY', 'NTD')),
                   ).toLocaleString()}{' '}
                   台幣)
                 </p>
               </DescriptionDetails>
+
+              {itemRes.data.type === ITEM_TYPE_MAP['CompanyDirectPurchaseType'] && (
+                <>
+                  <DescriptionTerm>現金收購金額</DescriptionTerm>
+                  <DescriptionDetails>
+                    ¥ {itemRes.data.directPurchasePrice.toLocaleString()}
+                  </DescriptionDetails>
+                </>
+              )}
 
               {itemRes.data.type === ITEM_TYPE_MAP['AppraisableAuctionItemType'] && (
                 <>
