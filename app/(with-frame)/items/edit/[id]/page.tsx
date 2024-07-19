@@ -155,7 +155,11 @@ async function Content({ params }: PageProps) {
 
               {StatusFlow.flow[
                 ITEM_STATUS_KEY_MAP[itemRes.data.status]
-              ].allowTypes.some((t) => t === ITEM_TYPE_KEY_MAP[itemRes.data.type]) &&
+              ].allowTypes.some(
+                (t) =>
+                  itemRes.data.type === 0 ||
+                  t === ITEM_TYPE_KEY_MAP[itemRes.data.type],
+              ) &&
                 itemRes.data.type === ITEM_TYPE_MAP['CompanyDirectPurchaseType'] && (
                   <>
                     <DescriptionTerm>現金收購金額</DescriptionTerm>

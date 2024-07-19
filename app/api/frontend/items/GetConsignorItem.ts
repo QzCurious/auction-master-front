@@ -6,7 +6,7 @@ export interface Item {
   id: number
   consignorID: number
   nickname: string
-  type: keyof typeof ITEM_TYPE_KEY_MAP
+  type: 0 | keyof typeof ITEM_TYPE_KEY_MAP
   name: string
   description: string
   photos: Array<{
