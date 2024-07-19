@@ -25,9 +25,11 @@ import {
   DoubleCheckPopover,
   DoubleCheckPopoverButton,
 } from '@/app/components/DoubleCheckPopover'
+import { DATE_TIME_FORMAT } from '@/app/static'
 import { bfs, StatusFlow } from '@/app/StatusFlow'
 import { User } from '@/app/UserContext'
 import clsx from 'clsx'
+import { format } from 'date-fns'
 import Link from 'next/link'
 import type React from 'react'
 import { useState } from 'react'
@@ -154,10 +156,13 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
   const result = path.map((status) => {
     const step = statusFlowWithConsignorActions[status]
     const active = ITEM_STATUS_MAP[step.status] === item.status
+    const time = item.pastStatuses[ITEM_STATUS_MAP[step.status]]
+
     return (
       <StatusStep
         key={step.status}
         text={ITEM_STATUS_MESSAGE_MAP[step.status]}
+        time={time ? format(time, DATE_TIME_FORMAT) : undefined}
         active={active}
       >
         {active && 'actions' in step && step.actions}
@@ -178,10 +183,12 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
 
 function StatusStep({
   text,
+  time,
   children,
   active,
 }: {
   text: string
+  time?: string
   children?: React.ReactNode
   active: boolean
 }) {
@@ -193,6 +200,7 @@ function StatusStep({
         '[&[data-active]~[data-status-step]]:[--tail-color:theme(colors.zinc.400)]',
         '[&[data-active]]:[--tail-color:theme(colors.zinc.400)]',
         '[&:last-of-type_[data-tail]]:hidden',
+        '[&[data-active]~[data-status-step]_[data-time]]:hidden',
       )}
       data-status-step
       data-active={active ? true : undefined}
@@ -206,6 +214,14 @@ function StatusStep({
       </div>
       <div className='flex grow flex-col gap-y-2'>
         <Text className={clsx(active && '!text-zinc-950')}>{text}</Text>
+        {time && (
+          <Text
+            className={clsx('-mt-2 sm:-mt-3', active && '!text-zinc-950')}
+            data-time
+          >
+            {time}
+          </Text>
+        )}
         {children && <div className='flex gap-x-4'>{children}</div>}
       </div>
     </div>

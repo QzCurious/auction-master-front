@@ -15,12 +15,7 @@ export interface Item {
     createdAt: string
     updatedAt: string
   }>
-  pastStatuses: {
-    '1': string
-    '11': string
-    '13': string
-    '3': string
-  }
+  pastStatuses: { [k in keyof typeof ITEM_STATUS_KEY_MAP]?: string };
   directPurchasePrice: number
   minEstimatedPrice: number
   maxEstimatedPrice: number
