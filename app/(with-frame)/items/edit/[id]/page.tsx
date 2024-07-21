@@ -105,7 +105,10 @@ async function Content({ params }: PageProps) {
 
   return (
     <>
-      {itemRes.data.status === ITEM_STATUS_MAP.ConsignmentApprovedStatus && (
+      {[
+        ITEM_STATUS_MAP.ConsignmentApprovedStatus,
+        ITEM_STATUS_MAP.ConsignorChoosesCompanyDirectPurchaseStatus,
+      ].includes(itemRes.data.status) && (
         <div className='mb-6'>
           <ConsignmentApprovedStatusAlert
             configs={configsRes.data}

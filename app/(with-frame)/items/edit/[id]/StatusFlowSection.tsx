@@ -6,6 +6,7 @@ import {
   ITEM_STATUS_MAP,
   ITEM_STATUS_MESSAGE_MAP,
   ITEM_TYPE_KEY_MAP,
+  ITEM_TYPE_MAP,
 } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { Item } from '@/app/api/frontend/items/GetConsignorItem'
 import { ItemChoosesCompanyDirectPurchase } from '@/app/api/frontend/items/ItemChoosesCompanyDirectPurchase'
@@ -28,6 +29,7 @@ import { DATE_TIME_FORMAT } from '@/app/static'
 import { StatusFlow } from '@/app/StatusFlow'
 import { User } from '@/app/UserContext'
 import clsx from 'clsx'
+import copy from 'copy-to-clipboard'
 import { format } from 'date-fns'
 import Link from 'next/link'
 import type React from 'react'
@@ -77,6 +79,7 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
       </div>
     ),
     ConsignmentApprovedStatus: null,
+    ConsignorChoosesCompanyDirectPurchaseStatus: null,
     AppraiserConfirmedStatus: (
       <>
         <DoubleCheckPopover
@@ -94,21 +97,44 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
             申請退回
           </DoubleCheckPopoverButton>
         </DoubleCheckPopover>
-        <DoubleCheckPopover
-          title='申請物品上架'
-          onConfirm={async () => {
-            const res = await ItemReady(item.id)
-            if (res.error) {
-              toast.error(`操作錯誤: ${res.error}`)
-              return
-            }
-            toast.success('物品上架申請已送出')
-          }}
-        >
-          <DoubleCheckPopoverButton as={Button} color='indigo' className='h-9'>
-            申請上架
-          </DoubleCheckPopoverButton>
-        </DoubleCheckPopover>
+        {item.type === ITEM_TYPE_MAP.CompanyDirectPurchaseType ? (
+          <DoubleCheckPopover
+            title='確認公司直購'
+            onConfirm={async () => {
+              // const res = await ItemChoosesCompanyDirectPurchase(item.id)
+              // if (res.error) {
+              //   toast.error(`操作錯誤: ${res.error}`)
+              //   return
+              // }
+              // toast.success('已確認公司直購')
+            }}
+          >
+            <DoubleCheckPopoverButton
+              as={Button}
+              color='indigo'
+              className='h-9'
+              disabled
+            >
+              未實作確認公司直購
+            </DoubleCheckPopoverButton>
+          </DoubleCheckPopover>
+        ) : (
+          <DoubleCheckPopover
+            title='申請物品上架'
+            onConfirm={async () => {
+              const res = await ItemReady(item.id)
+              if (res.error) {
+                toast.error(`操作錯誤: ${res.error}`)
+                return
+              }
+              toast.success('物品上架申請已送出')
+            }}
+          >
+            <DoubleCheckPopoverButton as={Button} color='indigo' className='h-9'>
+              申請上架
+            </DoubleCheckPopoverButton>
+          </DoubleCheckPopover>
+        )}
       </>
     ),
   })
@@ -128,6 +154,7 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
     return (
       <StatusStep
         key={step.status}
+        _statusKey={status}
         text={ITEM_STATUS_MESSAGE_MAP[step.status]}
         time={time ? format(time, DATE_TIME_FORMAT) : undefined}
         active={active}
@@ -141,11 +168,13 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
 }
 
 function StatusStep({
+  _statusKey,
   text,
   time,
   children,
   active,
 }: {
+  _statusKey: string
   text: string
   time?: string
   children?: React.ReactNode
@@ -172,7 +201,13 @@ function StatusStep({
         <div className='size-2.5 rounded-full bg-[--color,theme(colors.indigo.600)]' />
       </div>
       <div className='flex grow flex-col gap-y-2'>
-        <Text className={clsx(active && '!text-zinc-950')}>{text}</Text>
+        <Text
+          className={clsx(active && '!text-zinc-950')}
+          title={_statusKey}
+          onClick={() => process.env.NODE_ENV !== 'production' && copy(_statusKey)}
+        >
+          {text}
+        </Text>
         {time && (
           <Text
             className={clsx('-mt-2 sm:-mt-3', active && '!text-zinc-950')}

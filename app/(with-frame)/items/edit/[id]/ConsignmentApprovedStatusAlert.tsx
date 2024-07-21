@@ -1,7 +1,7 @@
 'use client'
 
 import { Configs } from '@/app/api/frontend/GetFrontendConfigs'
-import { ITEM_STATUS_MESSAGE_MAP } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_STATUS_DATA } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { Item } from '@/app/api/frontend/items/GetConsignorItems'
 import { ItemShipped } from '@/app/api/frontend/items/ItemShipped'
 import { Button } from '@/app/catalyst-ui/button'
@@ -33,7 +33,7 @@ export default function ConsignmentApprovedStatusAlert({
           className='h-5 w-5 shrink-0 text-blue-400'
         />
         <h3 className='font-medium text-blue-800'>
-          {ITEM_STATUS_MESSAGE_MAP.ConsignmentApprovedStatus}
+          {ITEM_STATUS_DATA.find((data) => data.value === item.status)?.message}
         </h3>
       </div>
 
