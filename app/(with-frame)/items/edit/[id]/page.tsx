@@ -87,6 +87,22 @@ async function Content({ params }: PageProps) {
     return <ItemForm item={itemRes.data} yenToNtdRate={yenToNtdRate} />
   }
 
+  const flowPath = StatusFlow.flowPath(
+    ITEM_STATUS_KEY_MAP[itemRes.data.status],
+    itemRes.data.type ? ITEM_TYPE_KEY_MAP[itemRes.data.type] : null,
+  )
+
+  function flowMightOfType(type: keyof typeof ITEM_TYPE_MAP) {
+    const i = itemRes.data
+      ? flowPath.indexOf(ITEM_STATUS_KEY_MAP[itemRes.data.status])
+      : -1
+    const isTypeDecided = i <= flowPath.indexOf('AppraisedStatus')
+
+    if (isTypeDecided) return true
+
+    return itemRes.data?.type === ITEM_TYPE_MAP[type]
+  }
+
   return (
     <>
       {itemRes.data.status === ITEM_STATUS_MAP.ConsignmentApprovedStatus && (
@@ -161,15 +177,7 @@ async function Content({ params }: PageProps) {
                 </p>
               </DescriptionDetails>
 
-              {(itemRes.data.status === ITEM_STATUS_MAP.AppraisedStatus ||
-                (itemRes.data.type === ITEM_TYPE_MAP.CompanyDirectPurchaseType &&
-                  StatusFlow.flow[
-                    ITEM_STATUS_KEY_MAP[itemRes.data.status]
-                  ].allowTypes.some(
-                    (t) =>
-                      itemRes.data.type === 0 ||
-                      t === ITEM_TYPE_KEY_MAP[itemRes.data.type],
-                  ))) && (
+              {flowMightOfType('CompanyDirectPurchaseType') && (
                 <>
                   <DescriptionTerm>
                     收購金額
@@ -192,7 +200,7 @@ async function Content({ params }: PageProps) {
                 </>
               )}
 
-              {itemRes.data.type === ITEM_TYPE_MAP['AppraisableAuctionItemType'] && (
+              {flowMightOfType('AppraisableAuctionItemType') && (
                 <>
                   <DescriptionTerm>
                     最低估值

@@ -2,11 +2,10 @@
 
 import {
   CONSIGNOR_STATUS_MAP,
-  ITEM_STATUS_DATA,
   ITEM_STATUS_KEY_MAP,
   ITEM_STATUS_MAP,
   ITEM_STATUS_MESSAGE_MAP,
-  ITEM_TYPE_MAP,
+  ITEM_TYPE_KEY_MAP,
 } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { Item } from '@/app/api/frontend/items/GetConsignorItem'
 import { ItemChoosesCompanyDirectPurchase } from '@/app/api/frontend/items/ItemChoosesCompanyDirectPurchase'
@@ -26,7 +25,7 @@ import {
   DoubleCheckPopoverButton,
 } from '@/app/components/DoubleCheckPopover'
 import { DATE_TIME_FORMAT } from '@/app/static'
-import { bfs, StatusFlow } from '@/app/StatusFlow'
+import { StatusFlow } from '@/app/StatusFlow'
 import { User } from '@/app/UserContext'
 import clsx from 'clsx'
 import { format } from 'date-fns'
@@ -36,7 +35,7 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 
 export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
-  const statusFlowWithConsignorActions = StatusFlow.withActions('consignor', {
+  const actionMap = StatusFlow.makeActionMap('consignor', {
     AppraisedStatus: (
       <div>
         <div className='flex flex-col gap-y-3'>
@@ -114,49 +113,17 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
     ),
   })
 
-  if (process.env.NODE_ENV === 'development') {
-    if (
-      Object.keys(statusFlowWithConsignorActions).length !== ITEM_STATUS_DATA.length
-    ) {
-      const missing = ITEM_STATUS_DATA.map((s) => s.key).filter(
-        (s) => !Object.keys(statusFlowWithConsignorActions).includes(s),
-      )
-      console.error(`Steps length mismatch, missing: ${missing.join(', ')}`)
-    }
-  }
-
-  const path = bfs(
-    Object.values(statusFlowWithConsignorActions).map((v) => ({
-      value: v.status,
-      nexts: v.nexts,
-    })),
-    'SubmitAppraisalStatus',
+  const path = StatusFlow.flowPath(
     ITEM_STATUS_KEY_MAP[item.status],
-    (step) =>
-      item.type === 0 ||
-      StatusFlow.flow[step.value].allowTypes.some(
-        (t) => ITEM_TYPE_MAP[t] === item.type,
-      ),
-  ) ?? ['SubmitAppraisalStatus']
-
-  // fill reset path
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const last = path[path.length - 1]
-    const step = statusFlowWithConsignorActions[last]
-    const happyNext = step.nexts.find(
-      (s) =>
-        item.type === 0 ||
-        StatusFlow.flow[s].allowTypes.some((t) => ITEM_TYPE_MAP[t] === item.type),
-    )
-    if (!happyNext) break
-    path.push(happyNext)
-  }
+    item.type ? ITEM_TYPE_KEY_MAP[item.type] : null,
+  )
 
   const result = path.map((status) => {
-    const step = statusFlowWithConsignorActions[status]
+    const step = StatusFlow.flow[status]
     const active = ITEM_STATUS_MAP[step.status] === item.status
     const time = item.pastStatuses[ITEM_STATUS_MAP[step.status]]
+    const action =
+      status in actionMap ? actionMap[status as keyof typeof actionMap] : null
 
     return (
       <StatusStep
@@ -165,18 +132,10 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
         time={time ? format(time, DATE_TIME_FORMAT) : undefined}
         active={active}
       >
-        {active && 'actions' in step && step.actions}
+        {active && action}
       </StatusStep>
     )
   })
-
-  // inject fake step --------------
-  // const i = result.findIndex(({ key }) => key === 'ConsignmentApprovedStatus')
-  // if (i !== -1) {
-  //   const active = result[i + 2].props.active
-  //   result.splice(i + 1, 0, <StatusStep key='fake' text='已到貨' active={active} />)
-  // }
-  // -------------------------------
 
   return result
 }

@@ -32,7 +32,7 @@ export interface Item {
 
 interface Data extends Item {}
 
-type ErrorCode = never
+type ErrorCode = '1801'
 
 export async function GetConsignorItem(id: number) {
   'use server'
