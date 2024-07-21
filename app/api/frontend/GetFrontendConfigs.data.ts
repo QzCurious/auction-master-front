@@ -42,7 +42,7 @@ export const GetFrontendConfigs_DATA = {
     },
     {
       key: 'CompanyDirectPurchaseType',
-      message: '現金收購物品',
+      message: '公司直購物品',
       value: 4,
     },
   ],
@@ -74,7 +74,7 @@ export const GetFrontendConfigs_DATA = {
     },
     {
       key: 'ConsignorChoosesCompanyDirectPurchaseStatus',
-      message: '選擇現金收購',
+      message: '選擇公司直購',
       value: 13,
     },
     {
@@ -124,7 +124,7 @@ export const GetFrontendConfigs_DATA = {
     },
     {
       key: 'CompanyDirectPurchaseStatus',
-      message: '現金收購',
+      message: '公司直購',
       value: 32,
     },
     {
