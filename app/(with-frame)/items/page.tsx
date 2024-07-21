@@ -1,10 +1,11 @@
-import RedirectToHome from '@/app/RedirectToHome'
 import {
   ITEM_STATUS_DATA,
   ITEM_STATUS_MAP,
 } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { GetConsignorItems } from '@/app/api/frontend/items/GetConsignorItems'
+import { Button } from '@/app/catalyst-ui/button'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
+import RedirectToHome from '@/app/RedirectToHome'
 import {
   PAGE,
   PaginationSchema,
@@ -13,7 +14,8 @@ import {
   SITE_NAME,
 } from '@/app/static'
 import { PhotoIcon } from '@heroicons/react/20/solid'
-import { PlusCircleIcon } from '@heroicons/react/24/outline'
+import { PlusIcon } from '@heroicons/react/24/outline'
+import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import Link from 'next/link'
 import * as R from 'remeda'
 import { z } from 'zod'
@@ -63,13 +65,10 @@ export default async function Page({ searchParams }: PageProps) {
             statusCount={itemsRes.data.statusCounts}
           />
           <div className='mx-auto'></div>
-          <Link
-            href='/items/create'
-            className='flex items-center gap-x-1 font-medium text-indigo-600 hover:text-indigo-500'
-          >
-            新增物品
-            <PlusCircleIcon className='inline-block size-5' />
-          </Link>
+          <Button href='/items/create' color='indigo' className='!px-4'>
+            <PlusIcon className='inline-block !size-5 stroke-2 !text-white' />
+            <span className='text-base'>新增物品</span>
+          </Button>
         </div>
 
         <div className='mt-6 sm:flex sm:gap-16'>
@@ -80,12 +79,17 @@ export default async function Page({ searchParams }: PageProps) {
 
           <div className='grid grow grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8'>
             {itemsRes.data.items.length === 0 && (
-              <p className='mt-6 text-base leading-6 text-gray-500'>沒有物品</p>
+              <div className='col-span-full grid place-items-center'>
+                <div className='mx-auto w-fit text-indigo-400'>
+                  <FileDashed className='mx-auto size-20' />
+                  <p className='mt-6 text-center text-lg leading-6'>目前沒有物品</p>
+                </div>
+              </div>
             )}
             {itemsRes.data.items.map((item) => (
               <article key={item.id} className='relative'>
                 <Link href={`/items/edit/${item.id}`}>
-                  <div className='aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75'>
+                  <div className='aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg border border-gray-200 group-hover:opacity-75'>
                     <div className='min-w-0 shrink-0 basis-full'>
                       {item.photos.length > 0 ? (
                         <img
@@ -102,7 +106,7 @@ export default async function Page({ searchParams }: PageProps) {
 
                 <div className='mt-2 flex items-center gap-x-2'>
                   <h2
-                    className='truncate text-xl font-medium text-gray-900'
+                    className='truncate text-xl font-medium text-indigo-500'
                     title={item.name}
                   >
                     {item.name}

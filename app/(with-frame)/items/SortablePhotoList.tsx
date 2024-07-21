@@ -1,8 +1,8 @@
 'use client'
 import { Item } from '@/app/api/frontend/items/GetConsignorItems'
-import { Bars2Icon } from '@heroicons/react/20/solid'
 import { ArrowPathIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { PhotoIcon } from '@heroicons/react/24/solid'
+import { ArrowsOutLineHorizontal } from '@phosphor-icons/react/dist/ssr/ArrowsOutLineHorizontal'
 import { useGesture } from '@use-gesture/react'
 import clsx from 'clsx'
 import { useMotionValue } from 'framer-motion'
@@ -14,7 +14,11 @@ interface PhotoListProps {
   onDelete?: (index: number) => void
 }
 
-export default function SortablePhotoList({ photos, onMove, onDelete }: PhotoListProps) {
+export default function SortablePhotoList({
+  photos,
+  onMove,
+  onDelete,
+}: PhotoListProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const refs = useRef<(HTMLLIElement | null)[]>([])
   const [isDragging, setIsDragging] = useState<HTMLLIElement | null>(null)
@@ -79,7 +83,7 @@ export default function SortablePhotoList({ photos, onMove, onDelete }: PhotoLis
 
       <div ref={containerRef} className='overflow-x-auto px-1 pb-3'>
         <ul role='list' className='-mx-2 flex'>
-          {photos.map(({ photo,sorted }, i) => (
+          {photos.map(({ photo, sorted }, i) => (
             <li
               key={photo}
               ref={(el) => {
@@ -92,13 +96,13 @@ export default function SortablePhotoList({ photos, onMove, onDelete }: PhotoLis
               )}
             >
               <div className='absolute right-0 top-0 z-20 flex w-fit items-center gap-x-2 pr-3 pt-1'>
+                <button type='button' className='touch-none' {...bind(i)}>
+                  <span className='sr-only'>Drag to move</span>
+                  <ArrowsOutLineHorizontal className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+                </button>
                 <button type='button' onClick={() => onDelete?.(i)}>
                   <span className='sr-only'>Delete</span>
                   <XMarkIcon className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
-                </button>
-                <button type='button' className='touch-none' {...bind(i)}>
-                  <span className='sr-only'>Drag to move</span>
-                  <Bars2Icon className='size-7 rotate-90 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
                 </button>
                 {/* <div className='bg-white size-6 grid place-items-center'>
                   {sorted}
