@@ -16,6 +16,7 @@ import {
   DescriptionTerm,
 } from '@/app/catalyst-ui/description-list'
 import { Subheading } from '@/app/catalyst-ui/heading'
+import InfoPopover, { InfoPopoverPanel } from '@/app/components/InfoPopover'
 import RedirectToHome from '@/app/RedirectToHome'
 import { StatusFlow } from '@/app/StatusFlow'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
@@ -131,7 +132,7 @@ async function Content({ params }: PageProps) {
 
         <div className='min-w-40'>
           <section>
-            <DescriptionList className=''>
+            <DescriptionList className='whitespace-nowrap'>
               <DescriptionTerm>類別</DescriptionTerm>
               <DescriptionDetails>
                 {ITEM_TYPE_DATA.find(({ value }) => value === itemRes.data.type)
@@ -141,7 +142,14 @@ async function Content({ params }: PageProps) {
               <DescriptionTerm>佔用空間</DescriptionTerm>
               <DescriptionDetails>{itemRes.data.space}</DescriptionDetails>
 
-              <DescriptionTerm>期望金額</DescriptionTerm>
+              <DescriptionTerm>
+                期望金額
+                <InfoPopover>
+                  <InfoPopoverPanel>
+                    物品上架競拍期望最低售出之價格；若競拍價格低於期望金額，公司將自動拍下此物品並安排下一次競拍
+                  </InfoPopoverPanel>
+                </InfoPopover>
+              </DescriptionTerm>
               <DescriptionDetails className='text-end'>
                 ¥ {itemRes.data.reservePrice.toLocaleString()}
                 <p className='whitespace-nowrap text-zinc-500'>
@@ -163,7 +171,14 @@ async function Content({ params }: PageProps) {
                       t === ITEM_TYPE_KEY_MAP[itemRes.data.type],
                   ))) && (
                 <>
-                  <DescriptionTerm>現金收購金額</DescriptionTerm>
+                  <DescriptionTerm>
+                    收購金額
+                    <InfoPopover>
+                      <InfoPopoverPanel>
+                        本金額是由本公司直接以該現金價直接收購您的商品，物品收到後檢查沒問題後立即匯款
+                      </InfoPopoverPanel>
+                    </InfoPopover>
+                  </DescriptionTerm>
                   <DescriptionDetails className='text-end'>
                     ¥ {itemRes.data.directPurchasePrice.toLocaleString()}
                     <p className='whitespace-nowrap text-zinc-500'>
@@ -179,7 +194,14 @@ async function Content({ params }: PageProps) {
 
               {itemRes.data.type === ITEM_TYPE_MAP['AppraisableAuctionItemType'] && (
                 <>
-                  <DescriptionTerm>最低估值</DescriptionTerm>
+                  <DescriptionTerm>
+                    最低估值
+                    <InfoPopover>
+                      <InfoPopoverPanel>
+                        經由鑑價師評估此物品可能被拍出的最低價格
+                      </InfoPopoverPanel>
+                    </InfoPopover>
+                  </DescriptionTerm>
                   <DescriptionDetails className='text-end'>
                     ¥ {itemRes.data.minEstimatedPrice.toLocaleString()}
                     <p className='whitespace-nowrap text-zinc-500'>
@@ -191,7 +213,14 @@ async function Content({ params }: PageProps) {
                     </p>
                   </DescriptionDetails>
 
-                  <DescriptionTerm>最高估值</DescriptionTerm>
+                  <DescriptionTerm>
+                    最高估值
+                    <InfoPopover>
+                      <InfoPopoverPanel>
+                        經由鑑價師評估此物品可能被拍出的最高價格
+                      </InfoPopoverPanel>
+                    </InfoPopover>
+                  </DescriptionTerm>
                   <DescriptionDetails className='text-end'>
                     ¥ {itemRes.data.maxEstimatedPrice.toLocaleString()}
                     <p className='whitespace-nowrap text-zinc-500'>

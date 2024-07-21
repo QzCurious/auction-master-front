@@ -11,6 +11,7 @@ import { Checkbox, CheckboxField } from '@/app/catalyst-ui/checkbox'
 import { Description, ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
 import { Input, InputGroup } from '@/app/catalyst-ui/input'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
+import InfoPopover, { InfoPopoverPanel } from '@/app/components/InfoPopover'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import dynamic from 'next/dynamic'
@@ -160,7 +161,14 @@ export default function ItemForm({ item, yenToNtdRate }: ItemFormProps) {
             name='reservePrice'
             render={({ field, fieldState }) => (
               <Field className='sm:col-span-3'>
-                <Label>期望價格</Label>
+                <Label>
+                  期望金額
+                  <InfoPopover>
+                    <InfoPopoverPanel>
+                      經由鑑價師評估此物品可能被拍出的最高價格
+                    </InfoPopoverPanel>
+                  </InfoPopover>
+                </Label>
                 <InputGroup>
                   <div className='grid place-content-center' data-slot='icon'>
                     ¥
