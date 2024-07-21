@@ -270,6 +270,7 @@ function UploadImage({
         type='file'
         id='file-upload'
         hidden
+        accept='image/png, image/jpeg, image/jpg'
         multiple
         onChange={
           !item
