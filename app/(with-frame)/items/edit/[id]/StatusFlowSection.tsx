@@ -115,7 +115,7 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
               className='h-9'
               disabled
             >
-              未實作確認公司直購
+              確認直購
             </DoubleCheckPopoverButton>
           </DoubleCheckPopover>
         ) : (
