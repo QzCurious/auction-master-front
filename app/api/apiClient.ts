@@ -29,7 +29,7 @@ export async function apiClient<Data, ErrorCode extends string = never>(
   try {
     const j = await res.json()
 
-    return { ...j, error: !j.data ? j.status.code : null }
+    return { ...j, error: j.status.code !== '0' ? j.status.code : null }
   } catch (e) {
     console.log(e)
     throw new Error('Failed to parse response as JSON')
