@@ -10,6 +10,7 @@ import {
 } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { Item } from '@/app/api/frontend/items/GetConsignorItem'
 import { ItemChoosesCompanyDirectPurchase } from '@/app/api/frontend/items/ItemChoosesCompanyDirectPurchase'
+import { ItemCompanyDirectPurchase } from '@/app/api/frontend/items/ItemCompanyDirectPurchase'
 import { ItemConsignmentReview } from '@/app/api/frontend/items/ItemConsignmentReview'
 import { ItemReady } from '@/app/api/frontend/items/ItemReady'
 import { ItemReturn } from '@/app/api/frontend/items/ItemReturn'
@@ -101,20 +102,15 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
           <DoubleCheckPopover
             title='確認公司直購'
             onConfirm={async () => {
-              // const res = await ItemChoosesCompanyDirectPurchase(item.id)
-              // if (res.error) {
-              //   toast.error(`操作錯誤: ${res.error}`)
-              //   return
-              // }
-              // toast.success('已確認公司直購')
+              const res = await ItemCompanyDirectPurchase(item.id)
+              if (res.error) {
+                toast.error(`操作錯誤: ${res.error}`)
+                return
+              }
+              toast.success('已確認公司直購')
             }}
           >
-            <DoubleCheckPopoverButton
-              as={Button}
-              color='indigo'
-              className='h-9'
-              disabled
-            >
+            <DoubleCheckPopoverButton as={Button} color='indigo' className='h-9'>
               確認直購
             </DoubleCheckPopoverButton>
           </DoubleCheckPopover>

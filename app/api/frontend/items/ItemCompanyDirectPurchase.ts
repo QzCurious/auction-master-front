@@ -9,9 +9,9 @@ type Data = 'Success'
 
 type ErrorCode = never
 
-export async function ItemChoosesCompanyDirectPurchase(id: number) {
+export async function ItemCompanyDirectPurchase(id: number) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(
-    `/frontend/items/${id}/choose-company-direct-purchase`,
+    `/frontend/items/${id}/company-direct-purchase`,
     {
       method: 'POST',
     },
