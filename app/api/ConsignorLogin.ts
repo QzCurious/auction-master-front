@@ -40,11 +40,11 @@ export async function ConsignorLogin(payload: z.input<typeof ReqSchema>) {
     return { data: null, error: res.error }
   }
 
-  cookies().set(cookieConfigs.token.name, res.data.token, cookieConfigs.token.opts)
+  cookies().set(cookieConfigs.token.name, res.data.token, cookieConfigs.token.opts())
   cookies().set(
     cookieConfigs.refreshToken.name,
     res.data.refreshToken,
-    cookieConfigs.refreshToken.opts,
+    cookieConfigs.refreshToken.opts(),
   )
 
   return { data: res.data, error: null }

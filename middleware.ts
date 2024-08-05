@@ -17,7 +17,11 @@ export async function middleware(request: NextRequest) {
 
   if (newToken && token !== newToken) {
     console.log('middleware: new token set')
-    response.cookies.set(cookieConfigs.token.name, newToken, cookieConfigs.token.opts)
+    response.cookies.set(
+      cookieConfigs.token.name,
+      newToken,
+      cookieConfigs.token.opts(),
+    )
   }
   return response
 }

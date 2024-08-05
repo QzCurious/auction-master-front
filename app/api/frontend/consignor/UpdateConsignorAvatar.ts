@@ -30,7 +30,7 @@ export async function UpdateConsignorAvatar(formData: FormData) {
 
   const { token } = await getToken({ force: true })
   if (token) {
-    cookies().set(cookieConfigs.token.name, token, cookieConfigs.token.opts)
+    cookies().set(cookieConfigs.token.name, token, cookieConfigs.token.opts())
   }
 
   return res
