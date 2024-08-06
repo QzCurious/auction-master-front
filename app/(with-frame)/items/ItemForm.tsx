@@ -165,7 +165,7 @@ export default function ItemForm({ item, yenToNtdRate }: ItemFormProps) {
                   期望金額
                   <InfoPopover>
                     <InfoPopoverPanel>
-                      經由鑑價師評估此物品可能被拍出的最高價格
+                      物品上架競拍期望最低售出之價格；若競拍價格低於期望金額，公司將自動拍下此物品並安排下一次競拍
                     </InfoPopoverPanel>
                   </InfoPopover>
                 </Label>
