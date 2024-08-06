@@ -87,10 +87,12 @@ async function Content({ params }: PageProps) {
     return <ItemForm item={itemRes.data} yenToNtdRate={yenToNtdRate} />
   }
 
-  const flowPath = StatusFlow.flowPath(
-    ITEM_STATUS_KEY_MAP[itemRes.data.status],
-    itemRes.data.type ? ITEM_TYPE_KEY_MAP[itemRes.data.type] : null,
-  )
+  const flowPath = StatusFlow.flowPath({
+    from: 'SubmitAppraisalStatus',
+    to: ITEM_STATUS_KEY_MAP[itemRes.data.status],
+    type: itemRes.data.type ? ITEM_TYPE_KEY_MAP[itemRes.data.type] : null,
+    withFuture: true,
+  })
 
   function flowMightOfType(type: keyof typeof ITEM_TYPE_MAP) {
     const i = itemRes.data
@@ -158,8 +160,17 @@ async function Content({ params }: PageProps) {
                   ?.message ?? '(待定)'}
               </DescriptionDetails>
 
-              <DescriptionTerm>佔用空間</DescriptionTerm>
-              <DescriptionDetails>{itemRes.data.space}</DescriptionDetails>
+              {!!StatusFlow.flowPath({
+                from: 'WarehousePersonnelConfirmedStatus',
+                to: ITEM_STATUS_KEY_MAP[itemRes.data.status],
+                type: itemRes.data.type ? ITEM_TYPE_KEY_MAP[itemRes.data.type] : null,
+                withFuture: false,
+              }).length && (
+                <>
+                  <DescriptionTerm>佔用空間</DescriptionTerm>
+                  <DescriptionDetails>{itemRes.data.space}</DescriptionDetails>
+                </>
+              )}
 
               <DescriptionTerm>
                 期望金額

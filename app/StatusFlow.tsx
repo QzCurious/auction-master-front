@@ -237,12 +237,18 @@ export class StatusFlow {
     return actionMap
   }
 
-  static flowPath(
-    to: keyof typeof ITEM_STATUS_MAP,
-    type: null | keyof typeof ITEM_TYPE_MAP,
-  ) {
-    const from = 'SubmitAppraisalStatus'
-    const path = bfs(
+  static flowPath({
+    from,
+    to,
+    type,
+    withFuture,
+  }: {
+    from: keyof typeof ITEM_STATUS_MAP
+    to: keyof typeof ITEM_STATUS_MAP
+    type: null | keyof typeof ITEM_TYPE_MAP
+    withFuture: boolean
+  }) {
+    let path = bfs(
       Object.values(this.flow).map((v) => ({
         value: v.status,
         nexts: v.nexts,
@@ -251,7 +257,11 @@ export class StatusFlow {
       to,
       (step) =>
         type === null || this.flow[step.value].allowTypes.some((t) => t === type),
-    ) ?? ['SubmitAppraisalStatus']
+    )
+
+    if (!withFuture) return path
+
+    if (path.length === 0) path = [from]
 
     // fill reset path
     // eslint-disable-next-line no-constant-condition
@@ -274,45 +284,14 @@ interface TreeNode<T> {
   nexts: T[]
 }
 
-export function dfs<T>(nodes: TreeNode<T>[], from: T, to: T): T[] | null {
-  const startNode = nodes.find((node) => node.value === from)
-  if (!startNode) return null
-
-  const visited = new Set<T>()
-  const path: T[] = []
-
-  function dfsRecursive(node: TreeNode<T>): boolean {
-    visited.add(node.value)
-    path.push(node.value)
-
-    if (node.value === to) {
-      return true
-    }
-
-    for (const nextValue of node.nexts) {
-      if (!visited.has(nextValue)) {
-        const nextNode = nodes.find((n) => n.value === nextValue)
-        if (nextNode && dfsRecursive(nextNode)) {
-          return true
-        }
-      }
-    }
-
-    path.pop()
-    return false
-  }
-
-  return dfsRecursive(startNode) ? path : null
-}
-
 export function bfs<T>(
   nodes: TreeNode<T>[],
   from: T,
   to: T,
   additionalCondition?: (node: TreeNode<T>) => boolean,
-): T[] | null {
+): T[] {
   const startNode = nodes.find((node) => node.value === from)
-  if (!startNode) return null
+  if (!startNode) return []
 
   const queue: [TreeNode<T>, T[]][] = [[startNode, []]]
   const visited = new Set<T>()
@@ -336,5 +315,5 @@ export function bfs<T>(
     }
   }
 
-  return null
+  return []
 }

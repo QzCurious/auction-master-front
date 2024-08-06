@@ -135,10 +135,12 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
     ),
   })
 
-  const path = StatusFlow.flowPath(
-    ITEM_STATUS_KEY_MAP[item.status],
-    item.type ? ITEM_TYPE_KEY_MAP[item.type] : null,
-  )
+  const path = StatusFlow.flowPath({
+    from: 'SubmitAppraisalStatus',
+    to: ITEM_STATUS_KEY_MAP[item.status],
+    type: item.type ? ITEM_TYPE_KEY_MAP[item.type] : null,
+    withFuture: true,
+  })
 
   const result = path.map((status) => {
     const step = StatusFlow.flow[status]
