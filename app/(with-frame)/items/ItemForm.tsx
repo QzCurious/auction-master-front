@@ -1,6 +1,6 @@
 'use client'
 
-import { ITEM_TYPE_MAP } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_TYPE } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { ConsignorDeleteItemPhoto } from '@/app/api/frontend/items/ConsignorDeleteItemPhoto'
 import { ConsignorUpsertItemPhoto } from '@/app/api/frontend/items/ConsignorUpsertItemPhoto'
 import { CreateItem } from '@/app/api/frontend/items/CreateItem'
@@ -132,9 +132,9 @@ export default function ItemForm({ item, yenToNtdRate }: ItemFormProps) {
               <CheckboxField className='col-span-full'>
                 <Checkbox
                   {...field}
-                  checked={field.value === ITEM_TYPE_MAP.FixedPriceItemType}
+                  checked={field.value === ITEM_TYPE.enum('FixedPriceItemType')}
                   onChange={(v) =>
-                    field.onChange(v ? ITEM_TYPE_MAP.FixedPriceItemType : 0)
+                    field.onChange(v ? ITEM_TYPE.enum('FixedPriceItemType') : 0)
                   }
                 />
                 <Label>是否為定價物品</Label>

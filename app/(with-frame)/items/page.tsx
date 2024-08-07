@@ -1,7 +1,4 @@
-import {
-  ITEM_STATUS_DATA,
-  ITEM_STATUS_MAP,
-} from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_STATUS } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { GetConsignorItems } from '@/app/api/frontend/items/GetConsignorItems'
 import { Button } from '@/app/catalyst-ui/button'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
@@ -30,7 +27,7 @@ const filterSchema = z.object({
       (v) => (typeof v === 'string' ? [v] : v),
       z.coerce
         .number()
-        .refine((v) => R.isIncludedIn(v, Object.values(ITEM_STATUS_MAP)))
+        .refine(R.isIncludedIn(ITEM_STATUS.data.map((item) => item.value)))
         .array(),
     )
     .default([]),
@@ -113,10 +110,7 @@ export default async function Page({ searchParams }: PageProps) {
                   </h2>
 
                   <p className='ml-auto inline-flex flex-none cursor-default items-center rounded-md bg-gray-50 px-2 py-1 text-sm text-gray-800 ring-1 ring-inset ring-gray-500/10'>
-                    {
-                      ITEM_STATUS_DATA.find(({ value }) => value === item.status)
-                        ?.message
-                    }
+                    {ITEM_STATUS.get('value', item.status).message}
                   </p>
                 </div>
               </article>

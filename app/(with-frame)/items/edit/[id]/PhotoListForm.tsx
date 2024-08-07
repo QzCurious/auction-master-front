@@ -1,6 +1,6 @@
 'use client'
 
-import { ITEM_STATUS_MAP } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_STATUS } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { ConsignorDeleteItemPhoto } from '@/app/api/frontend/items/ConsignorDeleteItemPhoto'
 import { ConsignorReorderItemPhoto } from '@/app/api/frontend/items/ConsignorReorderItemPhoto'
 import { ConsignorUpsertItemPhoto } from '@/app/api/frontend/items/ConsignorUpsertItemPhoto'
@@ -8,6 +8,7 @@ import { Item } from '@/app/api/frontend/items/GetConsignorItems'
 import { Field, Label } from '@/app/catalyst-ui/fieldset'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { useState, useTransition } from 'react'
+import * as R from 'remeda'
 import SortablePhotoList from '../../SortablePhotoList'
 
 interface PhotoListFormProps {
@@ -15,14 +16,14 @@ interface PhotoListFormProps {
 }
 
 export default function PhotoListForm({ item }: PhotoListFormProps) {
-  const enabled = [
-    ITEM_STATUS_MAP.WarehouseArrivalStatus,
-    ITEM_STATUS_MAP.SubmitAppraisalStatus,
-    ITEM_STATUS_MAP.AppraisalFailureStatus,
-    ITEM_STATUS_MAP.AppraisedStatus,
-    ITEM_STATUS_MAP.ConsignmentApprovedStatus,
-    ITEM_STATUS_MAP.WarehouseArrivalStatus,
-  ].includes(item.status)
+  const enabled = R.isIncludedIn(item.status, [
+    ITEM_STATUS.enum('WarehouseArrivalStatus'),
+    ITEM_STATUS.enum('SubmitAppraisalStatus'),
+    ITEM_STATUS.enum('AppraisalFailureStatus'),
+    ITEM_STATUS.enum('AppraisedStatus'),
+    ITEM_STATUS.enum('ConsignmentApprovedStatus'),
+    ITEM_STATUS.enum('WarehouseArrivalStatus'),
+  ])
 
   const [photos, setPhotos] = useState(item.photos)
   const [isPending, startTransition] = useTransition()

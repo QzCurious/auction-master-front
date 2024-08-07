@@ -1,11 +1,11 @@
-import { CONSIGNOR_STATUS_DATA } from './frontend/GetFrontendConfigs.data'
+import { CONSIGNOR_STATUS } from './frontend/GetFrontendConfigs.data'
 
 export interface JwtPayload {
   id: number
   avatar: string
   account: string
   nickname: string
-  status: (typeof CONSIGNOR_STATUS_DATA)[number]['value']
+  status: CONSIGNOR_STATUS['value']
   exp: number
   iat: number
   nbf: number

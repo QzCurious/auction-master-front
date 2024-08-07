@@ -5,14 +5,14 @@ import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
-import { ITEM_TYPE_DATA } from '../GetFrontendConfigs.data'
+import { ITEM_TYPE } from '../GetFrontendConfigs.data'
 
 const ReqSchema = z.object({
   name: z.string(),
   type: z
     .number()
     .refine((i) =>
-      i === 0 ? true : !!ITEM_TYPE_DATA.find(({ value }) => i === value),
+      i === 0 ? true : !!ITEM_TYPE.data.find(({ value }) => i === value),
     ),
   reservePrice: z.number(),
   description: z.string().optional(),
@@ -22,7 +22,10 @@ type Data = 'Success'
 
 type ErrorCode = never
 
-export async function UpdateConsignorItem(id: number, payload: z.input<typeof ReqSchema>) {
+export async function UpdateConsignorItem(
+  id: number,
+  payload: z.input<typeof ReqSchema>,
+) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()

@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
-import { ITEM_STATUS_KEY_MAP } from '../GetFrontendConfigs.data'
+import { ITEM_STATUS } from '../GetFrontendConfigs.data'
 
 export const ReqSchema = z.object({
   status: z.coerce.number().array().optional(),
@@ -27,13 +27,13 @@ export interface Item {
   maxEstimatedPrice: number
   reservePrice: number
   expireAt: string
-  status: keyof typeof ITEM_STATUS_KEY_MAP
+  status: ITEM_STATUS['value']
   createdAt: string
   updatedAt: string
 }
 
 export type StatusCounts = {
-  [k in keyof typeof ITEM_STATUS_KEY_MAP]?: number
+  [k in ITEM_STATUS['value']]?: number
 }
 
 interface Data {

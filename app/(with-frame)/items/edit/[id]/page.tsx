@@ -1,12 +1,5 @@
 import { GetFrontendConfigs } from '@/app/api/frontend/GetFrontendConfigs'
-import {
-  ITEM_STATUS_DATA,
-  ITEM_STATUS_KEY_MAP,
-  ITEM_STATUS_MAP,
-  ITEM_TYPE_DATA,
-  ITEM_TYPE_KEY_MAP,
-  ITEM_TYPE_MAP,
-} from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_STATUS, ITEM_TYPE } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { GetConsignorItem } from '@/app/api/frontend/items/GetConsignorItem'
 import { getExchangeRate } from '@/app/api/getExchangeRate'
 import { getUser } from '@/app/api/helpers/getUser'
@@ -24,6 +17,7 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import 'quill/dist/quill.snow.css'
+import * as R from 'remeda'
 import ItemForm from '../../ItemForm'
 import ConsignmentApprovedStatusAlert from './ConsignmentApprovedStatusAlert'
 import PhotoListForm from './PhotoListForm'
@@ -83,34 +77,34 @@ async function Content({ params }: PageProps) {
 
   const yenToNtdRate = await getExchangeRate('JPY', 'NTD')
 
-  if (itemRes.data.status === ITEM_STATUS_MAP.SubmitAppraisalStatus) {
+  if (itemRes.data.status === ITEM_STATUS.enum('SubmitAppraisalStatus')) {
     return <ItemForm item={itemRes.data} yenToNtdRate={yenToNtdRate} />
   }
 
   const flowPath = StatusFlow.flowPath({
     from: 'SubmitAppraisalStatus',
-    to: ITEM_STATUS_KEY_MAP[itemRes.data.status],
-    type: itemRes.data.type ? ITEM_TYPE_KEY_MAP[itemRes.data.type] : null,
+    to: ITEM_STATUS.enum(itemRes.data.status),
+    type: itemRes.data.type ? ITEM_TYPE.enum(itemRes.data.type) : null,
     withFuture: true,
   })
 
-  function flowMightOfType(type: keyof typeof ITEM_TYPE_MAP) {
+  function flowMightOfType(type: ITEM_TYPE['key']) {
     const i = itemRes.data
-      ? flowPath.indexOf(ITEM_STATUS_KEY_MAP[itemRes.data.status])
+      ? flowPath.indexOf(ITEM_STATUS.enum(itemRes.data.status))
       : -1
     const isTypeDecided = i <= flowPath.indexOf('AppraisedStatus')
 
     if (isTypeDecided) return true
 
-    return itemRes.data?.type === ITEM_TYPE_MAP[type]
+    return itemRes.data?.type === ITEM_TYPE.enum(type)
   }
 
   return (
     <>
-      {[
-        ITEM_STATUS_MAP.ConsignmentApprovedStatus,
-        ITEM_STATUS_MAP.ConsignorChoosesCompanyDirectPurchaseStatus,
-      ].includes(itemRes.data.status) && (
+      {R.isIncludedIn(itemRes.data.status, [
+        ITEM_STATUS.enum('ConsignmentApprovedStatus'),
+        ITEM_STATUS.enum('ConsignorChoosesCompanyDirectPurchaseStatus'),
+      ]) && (
         <div className='mb-6'>
           <ConsignmentApprovedStatusAlert
             configs={configsRes.data}
@@ -124,10 +118,7 @@ async function Content({ params }: PageProps) {
           <div className='flex items-center justify-between gap-x-6 sm:justify-start'>
             <h1 className='text-2xl font-bold text-gray-900'>{itemRes.data.name}</h1>
             <p className='inline-flex flex-none cursor-default items-center rounded-md bg-gray-50 px-2 py-1 text-sm text-gray-800 ring-1 ring-inset ring-gray-500/10'>
-              {
-                ITEM_STATUS_DATA.find(({ value }) => value === itemRes.data.status)
-                  ?.message
-              }
+              {ITEM_STATUS.get('value', itemRes.data.status).message}
             </p>
           </div>
 
@@ -156,14 +147,14 @@ async function Content({ params }: PageProps) {
             <DescriptionList className='whitespace-nowrap'>
               <DescriptionTerm>類別</DescriptionTerm>
               <DescriptionDetails>
-                {ITEM_TYPE_DATA.find(({ value }) => value === itemRes.data.type)
+                {ITEM_TYPE.data.find(({ value }) => value === itemRes.data.type)
                   ?.message ?? '(待定)'}
               </DescriptionDetails>
 
               {!!StatusFlow.flowPath({
                 from: 'WarehousePersonnelConfirmedStatus',
-                to: ITEM_STATUS_KEY_MAP[itemRes.data.status],
-                type: itemRes.data.type ? ITEM_TYPE_KEY_MAP[itemRes.data.type] : null,
+                to: ITEM_STATUS.enum(itemRes.data.status),
+                type: itemRes.data.type ? ITEM_TYPE.enum(itemRes.data.type) : null,
                 withFuture: false,
               }).length && (
                 <>

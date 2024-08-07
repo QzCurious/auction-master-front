@@ -1,9 +1,9 @@
-import { mapToObj } from 'remeda'
-
 export const GetFrontendConfigs_DATA = {
   yahooAuctionFeeRate: 0.1,
   commissionRate: 0.2,
   commissionBonusRate: 0.05,
+  auctionItemCancellationFee: 550,
+  costPerSpace: 99,
   lineURL: 'https://lin.ee/YgTRcyc',
   shippingInfo: {
     company: {
@@ -214,40 +214,144 @@ export const GetFrontendConfigs_DATA = {
       value: 13,
     },
   ],
+  shippingType: [
+    {
+      key: 'AddressType',
+      message: '地址寄出',
+      value: 1,
+    },
+    {
+      key: 'SevenElevenType',
+      message: '7-11寄出',
+      value: 2,
+    },
+    {
+      key: 'FamilyType',
+      message: '全家寄出',
+      value: 3,
+    },
+  ],
+  shippingStatus: [
+    {
+      key: 'SubmitAppraisalStatus',
+      message: '已提交出貨',
+      value: 1,
+    },
+    {
+      key: 'ProcessingStatus',
+      message: '理貨中',
+      value: 2,
+    },
+    {
+      key: 'ShippedStatus',
+      message: '已寄出',
+      value: 3,
+    },
+  ],
 } as const
 
-export const ITEM_TYPE_DATA = GetFrontendConfigs_DATA.itemType
-export const ITEM_TYPE_MAP = mapToObj(ITEM_TYPE_DATA, ({ key, value }) => [
-  key,
-  value,
-])
-export const ITEM_TYPE_KEY_MAP = mapToObj(ITEM_TYPE_DATA, ({ key, value }) => [
-  value,
-  key,
-])
+type MapFromTuple<T extends readonly any[], K extends keyof T[number]> = {
+  [k in T[number] extends { [t in K]: any } ? T[number][K] : never]: Extract<
+    T[number],
+    { [t in K]: k }
+  >
+}
 
-export const ITEM_STATUS_DATA = GetFrontendConfigs_DATA.itemStatus
-export const ITEM_STATUS_MAP = mapToObj(ITEM_STATUS_DATA, ({ key, value }) => [
-  key,
-  value,
-])
-export const ITEM_STATUS_MESSAGE_MAP = mapToObj(
-  ITEM_STATUS_DATA,
-  ({ key, message }) => [key, message],
+function createMapFromTuple<T extends Record<PropertyKey, any>, By extends keyof T>(
+  tuple: readonly T[],
+  by: By,
+): MapFromTuple<T[], By> {
+  return tuple.reduce<any>((acc, cur) => {
+    const key = cur[by]
+    ;(acc as Record<T[By], T>)[key] = cur
+    return acc
+  }, {})
+}
+
+type MapperTupleField = 'key' | 'value' | 'message'
+function createMapper<T extends Record<MapperTupleField, any>>(data: readonly T[]) {
+  const indexByKey = createMapFromTuple(data, 'key')
+  const indexByValue = createMapFromTuple(data, 'value')
+  const indexByMessage = createMapFromTuple(data, 'message')
+
+  interface ValueMap {
+    key: keyof typeof indexByKey
+    value: keyof typeof indexByValue
+    message: keyof typeof indexByMessage
+  }
+  type ReturnMap<K extends MapperTupleField, V extends ValueMap[K]> = {
+    key: typeof indexByKey
+    value: typeof indexByValue
+    message: typeof indexByMessage
+  }[K][V]
+
+  function get<K extends MapperTupleField, V extends ValueMap[K]>(
+    key: K,
+    value: V,
+  ): ReturnMap<K, V> {
+    if (key === 'key') {
+      return indexByKey[value] as any
+    } else if (key === 'value') {
+      return indexByValue[value] as any
+    }
+    return indexByMessage[value] as any
+  }
+
+  function getEnum<K extends keyof typeof indexByKey | keyof typeof indexByValue>(
+    index: K,
+  ): K extends keyof typeof indexByKey
+    ? (typeof indexByKey)[K]['value']
+    : (typeof indexByValue)[K]['key'] {
+    if (typeof index === 'string') {
+      return indexByKey[index].value
+    }
+    return indexByValue[index].key
+  }
+
+  return { data, get, enum: getEnum }
+}
+
+// function createEnum<T extends { key: string; value: number }>(tuple: readonly T[]) {
+//   const indexByKey = createMapFromTuple(tuple, 'key')
+//   const indexByValue = createMapFromTuple(tuple, 'value')
+
+//   function get<I extends keyof typeof indexByKey | keyof typeof indexByValue>(
+//     index: I,
+//   ): I extends keyof typeof indexByKey
+//     ? (typeof indexByKey)[I]['value']
+//     : (typeof indexByValue)[I]['key'] {
+//     if (typeof index === 'string') {
+//       return indexByKey[index].value as any
+//     } else {
+//       return indexByValue[index].key as any
+//     }
+//   }
+
+//   return { get }
+// }
+
+export const ITEM_TYPE = createMapper(GetFrontendConfigs_DATA.itemType)
+export type ITEM_TYPE = (typeof ITEM_TYPE.data)[number]
+
+export const ITEM_STATUS = createMapper(GetFrontendConfigs_DATA.itemStatus)
+export type ITEM_STATUS = (typeof ITEM_STATUS.data)[number]
+
+export const AUCTION_ITEM_STATUS = createMapper(
+  GetFrontendConfigs_DATA.auctionItemStatus,
 )
-export const ITEM_STATUS_KEY_MAP = mapToObj(ITEM_STATUS_DATA, ({ key, value }) => [
-  value,
-  key,
-])
+export type AUCTION_ITEM_STATUS = (typeof AUCTION_ITEM_STATUS.data)[number]
 
-export const AUCTION_ITEM_STATUS_DATA = GetFrontendConfigs_DATA.auctionItemStatus
+export const CONSIGNOR_STATUS = createMapper(GetFrontendConfigs_DATA.consignorStatus)
+export type CONSIGNOR_STATUS = (typeof CONSIGNOR_STATUS.data)[number]
 
-export const CONSIGNOR_STATUS_DATA = GetFrontendConfigs_DATA.consignorStatus
-export const CONSIGNOR_STATUS_MAP = mapToObj(
-  CONSIGNOR_STATUS_DATA,
-  ({ key, value }) => [key, value],
+export const CONSIGNOR_VERIFICATION_STATUS = createMapper(
+  GetFrontendConfigs_DATA.consignorVerificationStatus,
 )
+export type CONSIGNOR_VERIFICATION_STATUS =
+  (typeof CONSIGNOR_VERIFICATION_STATUS.data)[number]
 
-export const CONSIGNOR_VERIFICATION_STATUS_DATA =
-  GetFrontendConfigs_DATA.consignorVerificationStatus
-export const SHIPPING_INFO = GetFrontendConfigs_DATA.shippingInfo
+export const SHIPPING_TYPE = createMapper(GetFrontendConfigs_DATA.shippingType)
+export type SHIPPING_TYPE = (typeof SHIPPING_TYPE.data)[number]
+
+export const SHIPPING_STATUS = createMapper(GetFrontendConfigs_DATA.shippingStatus)
+export type SHIPPING_STATUS = (typeof SHIPPING_STATUS.data)[number]

@@ -1,12 +1,9 @@
 'use client'
 
 import {
-  CONSIGNOR_STATUS_MAP,
-  ITEM_STATUS_KEY_MAP,
-  ITEM_STATUS_MAP,
-  ITEM_STATUS_MESSAGE_MAP,
-  ITEM_TYPE_KEY_MAP,
-  ITEM_TYPE_MAP,
+  CONSIGNOR_STATUS,
+  ITEM_STATUS,
+  ITEM_TYPE,
 } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { Item } from '@/app/api/frontend/items/GetConsignorItem'
 import { ItemChoosesCompanyDirectPurchase } from '@/app/api/frontend/items/ItemChoosesCompanyDirectPurchase'
@@ -68,7 +65,7 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
         </div>
 
         {user.status ===
-          CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus && (
+          CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus') && (
           <p className='mt-1 w-32 text-center text-sm text-gray-500'>
             完成
             <Link href='/me#identity-form' className='text-indigo-600 underline'>
@@ -98,7 +95,7 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
             申請退回
           </DoubleCheckPopoverButton>
         </DoubleCheckPopover>
-        {item.type === ITEM_TYPE_MAP.CompanyDirectPurchaseType ? (
+        {item.type === ITEM_TYPE.enum('CompanyDirectPurchaseType') ? (
           <DoubleCheckPopover
             title='確認公司直購'
             onConfirm={async () => {
@@ -137,15 +134,15 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
 
   const path = StatusFlow.flowPath({
     from: 'SubmitAppraisalStatus',
-    to: ITEM_STATUS_KEY_MAP[item.status],
-    type: item.type ? ITEM_TYPE_KEY_MAP[item.type] : null,
+    to: ITEM_STATUS.enum(item.status),
+    type: item.type ? ITEM_TYPE.enum(item.type) : null,
     withFuture: true,
   })
 
   const result = path.map((status) => {
     const step = StatusFlow.flow[status]
-    const active = ITEM_STATUS_MAP[step.status] === item.status
-    const time = item.pastStatuses[ITEM_STATUS_MAP[step.status]]
+    const active = ITEM_STATUS.enum(step.status) === item.status
+    const time = item.pastStatuses[ITEM_STATUS.enum(step.status)]
     const action =
       status in actionMap ? actionMap[status as keyof typeof actionMap] : null
 
@@ -153,7 +150,7 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
       <StatusStep
         key={step.status}
         _statusKey={status}
-        text={ITEM_STATUS_MESSAGE_MAP[step.status]}
+        text={ITEM_STATUS.get('key', step.status).message}
         time={time ? format(time, DATE_TIME_FORMAT) : undefined}
         active={active}
       >
@@ -230,7 +227,8 @@ function ApproveConsignmentBtn({ item, user }: { item: Item; user: User }) {
         className='h-9 min-w-20'
         onClick={() => setOpen(true)}
         disabled={
-          user.status === CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus
+          user.status ===
+          CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
         }
       >
         託售
@@ -327,7 +325,8 @@ function CompanyDirectPurchaseBtn({ item, user }: { item: Item; user: User }) {
         className='h-9 min-w-20'
         onClick={() => setOpen(true)}
         disabled={
-          user.status === CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus
+          user.status ===
+          CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
         }
       >
         現金收購

@@ -1,21 +1,18 @@
 import type React from 'react'
-import {
-  ITEM_STATUS_MAP,
-  ITEM_TYPE_MAP,
-} from './api/frontend/GetFrontendConfigs.data'
+import { ITEM_STATUS, ITEM_TYPE } from './api/frontend/GetFrontendConfigs.data'
 
 type Adjudicator = 'admin' | 'consignor'
 
 type Step = {
-  allowTypes?: Array<keyof typeof ITEM_TYPE_MAP>
-  status: keyof typeof ITEM_STATUS_MAP
+  allowTypes?: Array<ITEM_TYPE['key']>
+  status: ITEM_STATUS['key']
 } & (
   | {
       nexts: []
       adjudicator?: never
     }
   | {
-      nexts: [keyof typeof ITEM_STATUS_MAP, ...Array<keyof typeof ITEM_STATUS_MAP>]
+      nexts: [ITEM_STATUS['key'], ...Array<ITEM_STATUS['key']>]
       adjudicator: Adjudicator
     }
 )
@@ -222,7 +219,7 @@ export class StatusFlow {
       status: 'CompanyReclaimedStatus',
       nexts: [],
     },
-  } satisfies Record<keyof typeof ITEM_STATUS_MAP, Step>
+  } satisfies Record<ITEM_STATUS['key'], Step>
 
   static makeActionMap<T extends Adjudicator>(
     adjudicator: T,
@@ -243,9 +240,9 @@ export class StatusFlow {
     type,
     withFuture,
   }: {
-    from: keyof typeof ITEM_STATUS_MAP
-    to: keyof typeof ITEM_STATUS_MAP
-    type: null | keyof typeof ITEM_TYPE_MAP
+    from: ITEM_STATUS['key']
+    to: ITEM_STATUS['key']
+    type: null | ITEM_TYPE['key']
     withFuture: boolean
   }) {
     let path = bfs(

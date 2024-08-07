@@ -3,7 +3,7 @@
 import { database } from '@/app/address.data'
 import { CreateConsignorVerification } from '@/app/api/frontend/consignor/CreateConsignorVerification'
 import { Consignor } from '@/app/api/frontend/consignor/GetConsignor'
-import { CONSIGNOR_STATUS_MAP } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { CONSIGNOR_STATUS } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { Button } from '@/app/catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
 import { Input } from '@/app/catalyst-ui/input'
@@ -31,13 +31,13 @@ export default function IdentityForm({ consignor }: { consignor: Consignor }) {
       <div>
         <h2 className='flex items-center gap-x-2 font-medium leading-6 text-gray-900'>
           身份認證
-          {consignor.status === CONSIGNOR_STATUS_MAP.EnabledStatus && (
+          {consignor.status === CONSIGNOR_STATUS.enum('EnabledStatus') && (
             <span className='inline-block rounded-md bg-green-100 py-1 pl-1 pr-2 text-xs font-medium text-green-700'>
               已完成
             </span>
           )}
         </h2>
-        {consignor.status !== CONSIGNOR_STATUS_MAP.EnabledStatus && (
+        {consignor.status !== CONSIGNOR_STATUS.enum('EnabledStatus') && (
           <p className='mt-1 text-sm leading-6 text-gray-400'>
             完成身份認證即可開始托售物品
           </p>
@@ -45,7 +45,7 @@ export default function IdentityForm({ consignor }: { consignor: Consignor }) {
       </div>
 
       <div className='md:col-span-2'>
-        {consignor.status === CONSIGNOR_STATUS_MAP.EnabledStatus ? (
+        {consignor.status === CONSIGNOR_STATUS.enum('EnabledStatus') ? (
           <ConsignorInfoDescriptionList data={consignor} />
         ) : consignor.verification ? (
           <div>
@@ -192,7 +192,7 @@ function Form({ consignor }: { consignor: Consignor }) {
       })}
     >
       <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
-        {consignor.status !== CONSIGNOR_STATUS_MAP.EnabledStatus && (
+        {consignor.status !== CONSIGNOR_STATUS.enum('EnabledStatus') && (
           <Controller
             name='identificationPhoto'
             control={control}
@@ -455,7 +455,7 @@ function Form({ consignor }: { consignor: Consignor }) {
       <div className='mt-8 flex'>
         <Button type='submit' color='indigo' loading={isSubmitting}>
           {consignor.status ===
-          CONSIGNOR_STATUS_MAP.AwaitingVerificationCompletionStatus
+          CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
             ? '送出'
             : '更新'}
         </Button>

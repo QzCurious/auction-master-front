@@ -2,7 +2,7 @@
 
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { CONSIGNOR_STATUS_DATA } from '../GetFrontendConfigs.data'
+import { CONSIGNOR_STATUS } from '../GetFrontendConfigs.data'
 
 export interface Consignor {
   id: number
@@ -19,7 +19,7 @@ export interface Consignor {
   phone: string
   bankCode: string
   bankAccount: string
-  status: (typeof CONSIGNOR_STATUS_DATA)[number]['value']
+  status: CONSIGNOR_STATUS['value']
   verification: null | {
     id: number
     consignorID: number

@@ -1,9 +1,6 @@
 'use client'
 
-import {
-  ITEM_STATUS_DATA,
-  ITEM_STATUS_MAP,
-} from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_STATUS } from '@/app/api/frontend/GetFrontendConfigs.data'
 import { StatusCounts } from '@/app/api/frontend/items/GetConsignorItems'
 import { StatusFlow } from '@/app/StatusFlow'
 import {
@@ -19,6 +16,7 @@ import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
+import * as R from 'remeda'
 
 const side = 'consignor'
 
@@ -28,26 +26,26 @@ const filters = [
     label: '狀態',
     options: (
       [
-        ITEM_STATUS_DATA[0],
-        ITEM_STATUS_DATA[2],
-        ITEM_STATUS_DATA[3],
-        ITEM_STATUS_DATA[5],
-        ITEM_STATUS_DATA[6],
-        ITEM_STATUS_DATA[7],
-        ITEM_STATUS_DATA[10],
-        ITEM_STATUS_DATA[11],
-        ITEM_STATUS_DATA[12],
-        ITEM_STATUS_DATA[13],
-        ITEM_STATUS_DATA[14],
-        ITEM_STATUS_DATA[15],
+        ITEM_STATUS.data[0],
+        ITEM_STATUS.data[2],
+        ITEM_STATUS.data[3],
+        ITEM_STATUS.data[5],
+        ITEM_STATUS.data[6],
+        ITEM_STATUS.data[7],
+        ITEM_STATUS.data[10],
+        ITEM_STATUS.data[11],
+        ITEM_STATUS.data[12],
+        ITEM_STATUS.data[13],
+        ITEM_STATUS.data[14],
+        ITEM_STATUS.data[15],
 
-        ITEM_STATUS_DATA[1],
-        ITEM_STATUS_DATA[4],
-        ITEM_STATUS_DATA[8],
-        ITEM_STATUS_DATA[9],
-        ITEM_STATUS_DATA[16],
-        ITEM_STATUS_DATA[17],
-        ITEM_STATUS_DATA[18],
+        ITEM_STATUS.data[1],
+        ITEM_STATUS.data[4],
+        ITEM_STATUS.data[8],
+        ITEM_STATUS.data[9],
+        ITEM_STATUS.data[16],
+        ITEM_STATUS.data[17],
+        ITEM_STATUS.data[18],
       ] as const
     ).map(({ value, message }) => ({
       label: message,
@@ -68,16 +66,16 @@ const filters = [
   },
 ]
 
-if (filters[0].options.length !== ITEM_STATUS_DATA.length) {
+if (filters[0].options.length !== ITEM_STATUS.data.length) {
   throw new Error('Not up to date')
 }
 
 const showCountStatus = Object.values(StatusFlow.flow)
   .filter((v) => 'adjudicator' in v && v.adjudicator === side)
-  .map((v) => ITEM_STATUS_MAP[v.status])
+  .map((v) => ITEM_STATUS.enum(v.status))
 
 interface StatusFilterProps {
-  selected: Array<(typeof ITEM_STATUS_DATA)[number]['value']>
+  selected: Array<ITEM_STATUS['value']>
   statusCount: StatusCounts
 }
 
@@ -125,13 +123,13 @@ export function DesktopFilters({ selected, statusCount }: StatusFilterProps) {
                     htmlFor={`${section.field}-${optionIdx}`}
                     className={clsx(
                       'ml-3 text-sm',
-                      showCountStatus.includes(option.value)
+                      R.isIncludedIn(option.value, showCountStatus)
                         ? 'text-gray-900'
                         : 'text-gray-500',
                     )}
                   >
                     {option.label}{' '}
-                    {showCountStatus.includes(option.value) && (
+                    {R.isIncludedIn(option.value, showCountStatus) && (
                       <span>({statusCount[option.value] ?? 0})</span>
                     )}
                   </label>
@@ -262,13 +260,13 @@ export function MobileFilters({ selected, statusCount }: StatusFilterProps) {
                                 htmlFor={`${section.field}-${optionIdx}-mobile`}
                                 className={clsx(
                                   'ml-3 text-sm',
-                                  showCountStatus.includes(option.value)
+                                  R.isIncludedIn(option.value, showCountStatus)
                                     ? 'text-gray-900'
                                     : 'text-gray-500',
                                 )}
                               >
                                 {option.label}{' '}
-                                {showCountStatus.includes(option.value) && (
+                                {R.isIncludedIn(option.value, showCountStatus) && (
                                   <span>({statusCount[option.value] ?? 0})</span>
                                 )}
                               </label>
