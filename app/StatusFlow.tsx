@@ -164,7 +164,11 @@ export class StatusFlow {
         'FixedPriceItemType',
       ],
       status: 'ConsignorConfirmedStatus',
-      nexts: ['BiddingStatus', 'CompanyReclaimedStatus'],
+      nexts: [
+        'BiddingStatus',
+        'WarehouseReturnPendingStatus',
+        'CompanyReclaimedStatus',
+      ],
       adjudicator: 'admin',
     },
     BiddingStatus: {
