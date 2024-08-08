@@ -261,19 +261,21 @@ type MapFromTuple<T extends readonly any[], K extends keyof T[number]> = {
   >
 }
 
-function createMapFromTuple<T extends Record<PropertyKey, any>, By extends keyof T>(
-  tuple: readonly T[],
-  by: By,
-): MapFromTuple<T[], By> {
+function createMapFromTuple<
+  T extends Readonly<Array<Record<PropertyKey, any>>>,
+  By extends keyof T[number],
+>(tuple: T, by: By): MapFromTuple<T, By> {
   return tuple.reduce<any>((acc, cur) => {
     const key = cur[by]
-    ;(acc as Record<T[By], T>)[key] = cur
+    ;(acc as Record<By, T>)[key] = cur
     return acc
   }, {})
 }
 
 type MapperTupleField = 'key' | 'value' | 'message'
-function createMapper<T extends Record<MapperTupleField, any>>(data: readonly T[]) {
+function createMapper<T extends Readonly<Array<Record<MapperTupleField, any>>>>(
+  data: T,
+) {
   const indexByKey = createMapFromTuple(data, 'key')
   const indexByValue = createMapFromTuple(data, 'value')
   const indexByMessage = createMapFromTuple(data, 'message')
