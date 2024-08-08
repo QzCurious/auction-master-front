@@ -2,8 +2,11 @@ import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
+import { BONUS_ACTION } from '../static-configs.data'
 
 const ReqSchema = z.object({
+  startAt: z.coerce.date().optional(),
+  endAt: z.coerce.date().optional(),
   status: z.coerce.number().array().optional(),
   sort: z.string().optional().default('createdAt'),
   order: z.enum(['asc', 'desc']).optional().default('desc'),
@@ -15,7 +18,7 @@ export interface BonusLog {
   id: number
   consignorID: number
   opCode: string
-  action: string
+  action: BONUS_ACTION['value']
   previousBalance: number
   netDifference: number
   createdAt: string
@@ -34,6 +37,8 @@ export async function GetBonusLogs(payload: z.input<typeof ReqSchema>) {
 
   const query = new URLSearchParams()
 
+  parsed.startAt != null && query.append('startAt', parsed.startAt.toISOString())
+  parsed.endAt != null && query.append('endAt', parsed.endAt.toISOString())
   for (const status of parsed.status ?? []) {
     query.append('status', status.toString())
   }

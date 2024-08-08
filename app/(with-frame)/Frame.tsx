@@ -15,7 +15,7 @@ import { MobileMenu, MobileMenuProvider, MobileMenuToggle } from './components'
 
 const navigation = [
   { name: '我的物品', href: '/items' },
-  { name: '帳戶餘額', href: '/balance' },
+  { name: '帳戶紀錄', href: '/balance' },
 ]
 
 const footerNavigation = {
