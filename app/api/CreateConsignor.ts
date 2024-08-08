@@ -14,8 +14,8 @@ const ReqSchema = z.object({
 type Data = 'Success'
 
 type ErrorCode =
-  // ConsignorExisted
-  '1601'
+  // consignor account exists
+  '1028'
 
 export async function CreateConsignor(payload: z.input<typeof ReqSchema>) {
   throwIfInvalid(payload, ReqSchema)

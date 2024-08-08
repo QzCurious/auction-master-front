@@ -42,8 +42,8 @@ export function SignUpForm() {
       className='space-y-6'
       onSubmit={handleSubmit(async (data) => {
         const result = await CreateConsignor(data)
-        if (result.error === '1601') {
-          setError('account', { message: 'Account already exists' })
+        if (result.error === '1028') {
+          setError('account', { message: '此帳號已存在' })
           return
         }
         router.push('/')
