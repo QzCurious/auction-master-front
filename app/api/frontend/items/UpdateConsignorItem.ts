@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
-import { ITEM_TYPE } from '../GetFrontendConfigs.data'
+import { ITEM_TYPE } from '../static-configs.data'
 
 const ReqSchema = z.object({
   name: z.string(),

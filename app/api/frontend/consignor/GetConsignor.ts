@@ -2,7 +2,7 @@
 
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { CONSIGNOR_STATUS } from '../GetFrontendConfigs.data'
+import { CONSIGNOR_STATUS } from '../static-configs.data'
 
 export interface Consignor {
   id: number

@@ -3,7 +3,7 @@
 import { database } from '@/app/address.data'
 import { CreateConsignorVerification } from '@/app/api/frontend/consignor/CreateConsignorVerification'
 import { Consignor } from '@/app/api/frontend/consignor/GetConsignor'
-import { CONSIGNOR_STATUS } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { CONSIGNOR_STATUS } from '@/app/api/frontend/static-configs.data'
 import { Button } from '@/app/catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
 import { Input } from '@/app/catalyst-ui/input'

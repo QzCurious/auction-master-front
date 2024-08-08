@@ -1,6 +1,6 @@
 'use client'
 
-import { ITEM_TYPE } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_TYPE } from '@/app/api/frontend/static-configs.data'
 import { ConsignorDeleteItemPhoto } from '@/app/api/frontend/items/ConsignorDeleteItemPhoto'
 import { ConsignorUpsertItemPhoto } from '@/app/api/frontend/items/ConsignorUpsertItemPhoto'
 import { CreateItem } from '@/app/api/frontend/items/CreateItem'

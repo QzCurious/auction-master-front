@@ -1,5 +1,4 @@
-import { GetFrontendConfigs } from '@/app/api/frontend/GetFrontendConfigs'
-import { ITEM_STATUS, ITEM_TYPE } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_STATUS, ITEM_TYPE } from '@/app/api/frontend/static-configs.data'
 import { GetConsignorItem } from '@/app/api/frontend/items/GetConsignorItem'
 import { getExchangeRate } from '@/app/api/getExchangeRate'
 import { getUser } from '@/app/api/helpers/getUser'
@@ -22,6 +21,7 @@ import ItemForm from '../../ItemForm'
 import ConsignmentApprovedStatusAlert from './ConsignmentApprovedStatusAlert'
 import PhotoListForm from './PhotoListForm'
 import { StatusFlowUI } from './StatusFlowSection'
+import { GetConfigs } from '@/app/api/frontend/GetConfigs'
 
 const QuillTextEditor = dynamic(
   () => import('@/app/components/QuillTextEditor/QuillTextEditor'),
@@ -60,7 +60,7 @@ async function Content({ params }: PageProps) {
   const [user, itemRes, configsRes] = await Promise.all([
     getUser(),
     GetConsignorItem(id),
-    GetFrontendConfigs(),
+    GetConfigs(),
   ])
 
   if (!user) {

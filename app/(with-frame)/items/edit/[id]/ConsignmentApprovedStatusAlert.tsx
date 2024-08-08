@@ -1,9 +1,9 @@
 'use client'
 
-import { Configs } from '@/app/api/frontend/GetFrontendConfigs'
-import { ITEM_STATUS } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { Configs } from '@/app/api/frontend/GetConfigs'
 import { Item } from '@/app/api/frontend/items/GetConsignorItems'
 import { ItemShipped } from '@/app/api/frontend/items/ItemShipped'
+import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { Button } from '@/app/catalyst-ui/button'
 import { UserContext } from '@/app/UserContext'
 import { Select } from '@headlessui/react'

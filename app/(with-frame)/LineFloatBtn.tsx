@@ -1,9 +1,9 @@
 import Image from 'next/image'
-import { GetFrontendConfigs } from '../api/frontend/GetFrontendConfigs'
+import { GetConfigs } from '../api/frontend/GetConfigs'
 import img from './LINE_APP_Android.png'
 
 export default async function LineFloatBtn() {
-  const { data } = await GetFrontendConfigs()
+  const { data } = await GetConfigs()
 
   if (!data) return null
 

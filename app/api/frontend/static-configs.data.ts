@@ -1,29 +1,33 @@
-export const GetFrontendConfigs_DATA = {
-  yahooAuctionFeeRate: 0.1,
-  commissionRate: 0.2,
-  commissionBonusRate: 0.05,
-  auctionItemCancellationFee: 550,
-  costPerSpace: 99,
-  lineURL: 'https://lin.ee/YgTRcyc',
-  shippingInfo: {
-    company: {
-      address: '台北市信義區市府路45號',
-      recipientName: '台灣王',
-      phone: '0900000000',
+export const STATIC_CONFIGS_DATA = {
+  walletAction: [
+    {
+      key: 'WalletSoldItemAction',
+      message: '售出物品',
+      value: 1000,
     },
-    sevenEleven: {
-      storeNumber: '123',
-      storeName: '台灣7-11',
-      recipientName: '7-11王',
-      phone: '0987654321',
+    {
+      key: 'WalletPayFeeAction',
+      message: '支付手續費',
+      value: 2000,
     },
-    family: {
-      storeNumber: '1234',
-      storeName: '台灣全家',
-      recipientName: '全家王',
-      phone: '0912345678',
+    {
+      key: 'WalletPaySpaceFeeAction',
+      message: '支付倉儲費',
+      value: 2001,
     },
-  },
+    {
+      key: 'WalletPayAuctionItemCancellationFeeAction',
+      message: '支付取消日拍手續費',
+      value: 2002,
+    },
+  ],
+  bonusAction: [
+    {
+      key: 'BonusSoldItemAction',
+      message: '售出物品',
+      value: 1000,
+    },
+  ],
   itemType: [
     {
       key: 'AppraisableAuctionItemType',
@@ -330,28 +334,32 @@ function createMapper<T extends Record<MapperTupleField, any>>(data: readonly T[
 //   return { get }
 // }
 
-export const ITEM_TYPE = createMapper(GetFrontendConfigs_DATA.itemType)
+export const WALLET_ACTION = createMapper(STATIC_CONFIGS_DATA.walletAction)
+export type WALLET_ACTION = (typeof WALLET_ACTION.data)[number]
+
+export const BONUS_ACTION = createMapper(STATIC_CONFIGS_DATA.bonusAction)
+export type BONUS_ACTION = (typeof BONUS_ACTION.data)[number]
+
+export const ITEM_TYPE = createMapper(STATIC_CONFIGS_DATA.itemType)
 export type ITEM_TYPE = (typeof ITEM_TYPE.data)[number]
 
-export const ITEM_STATUS = createMapper(GetFrontendConfigs_DATA.itemStatus)
+export const ITEM_STATUS = createMapper(STATIC_CONFIGS_DATA.itemStatus)
 export type ITEM_STATUS = (typeof ITEM_STATUS.data)[number]
 
-export const AUCTION_ITEM_STATUS = createMapper(
-  GetFrontendConfigs_DATA.auctionItemStatus,
-)
+export const AUCTION_ITEM_STATUS = createMapper(STATIC_CONFIGS_DATA.auctionItemStatus)
 export type AUCTION_ITEM_STATUS = (typeof AUCTION_ITEM_STATUS.data)[number]
 
-export const CONSIGNOR_STATUS = createMapper(GetFrontendConfigs_DATA.consignorStatus)
+export const CONSIGNOR_STATUS = createMapper(STATIC_CONFIGS_DATA.consignorStatus)
 export type CONSIGNOR_STATUS = (typeof CONSIGNOR_STATUS.data)[number]
 
 export const CONSIGNOR_VERIFICATION_STATUS = createMapper(
-  GetFrontendConfigs_DATA.consignorVerificationStatus,
+  STATIC_CONFIGS_DATA.consignorVerificationStatus,
 )
 export type CONSIGNOR_VERIFICATION_STATUS =
   (typeof CONSIGNOR_VERIFICATION_STATUS.data)[number]
 
-export const SHIPPING_TYPE = createMapper(GetFrontendConfigs_DATA.shippingType)
+export const SHIPPING_TYPE = createMapper(STATIC_CONFIGS_DATA.shippingType)
 export type SHIPPING_TYPE = (typeof SHIPPING_TYPE.data)[number]
 
-export const SHIPPING_STATUS = createMapper(GetFrontendConfigs_DATA.shippingStatus)
+export const SHIPPING_STATUS = createMapper(STATIC_CONFIGS_DATA.shippingStatus)
 export type SHIPPING_STATUS = (typeof SHIPPING_STATUS.data)[number]

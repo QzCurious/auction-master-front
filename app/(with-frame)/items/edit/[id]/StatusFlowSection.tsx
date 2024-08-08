@@ -4,7 +4,7 @@ import {
   CONSIGNOR_STATUS,
   ITEM_STATUS,
   ITEM_TYPE,
-} from '@/app/api/frontend/GetFrontendConfigs.data'
+} from '@/app/api/frontend/static-configs.data'
 import { Item } from '@/app/api/frontend/items/GetConsignorItem'
 import { ItemChoosesCompanyDirectPurchase } from '@/app/api/frontend/items/ItemChoosesCompanyDirectPurchase'
 import { ItemCompanyDirectPurchase } from '@/app/api/frontend/items/ItemCompanyDirectPurchase'

@@ -1,6 +1,6 @@
 'use client'
 
-import { ITEM_STATUS } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { StatusCounts } from '@/app/api/frontend/items/GetConsignorItems'
 import { StatusFlow } from '@/app/StatusFlow'
 import {

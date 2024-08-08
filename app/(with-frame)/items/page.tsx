@@ -1,4 +1,4 @@
-import { ITEM_STATUS } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { GetConsignorItems } from '@/app/api/frontend/items/GetConsignorItems'
 import { Button } from '@/app/catalyst-ui/button'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'

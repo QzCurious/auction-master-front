@@ -1,6 +1,6 @@
 'use client'
 
-import { ITEM_STATUS } from '@/app/api/frontend/GetFrontendConfigs.data'
+import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { ConsignorDeleteItemPhoto } from '@/app/api/frontend/items/ConsignorDeleteItemPhoto'
 import { ConsignorReorderItemPhoto } from '@/app/api/frontend/items/ConsignorReorderItemPhoto'
 import { ConsignorUpsertItemPhoto } from '@/app/api/frontend/items/ConsignorUpsertItemPhoto'

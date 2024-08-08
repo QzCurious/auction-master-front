@@ -1,6 +1,6 @@
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { ITEM_STATUS, ITEM_TYPE } from '../GetFrontendConfigs.data'
+import { ITEM_STATUS, ITEM_TYPE } from '../static-configs.data'
 
 export interface Item {
   id: number
