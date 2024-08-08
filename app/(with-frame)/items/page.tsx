@@ -1,5 +1,5 @@
-import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { GetConsignorItems } from '@/app/api/frontend/items/GetConsignorItems'
+import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { Button } from '@/app/catalyst-ui/button'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
 import RedirectToHome from '@/app/RedirectToHome'
@@ -27,8 +27,10 @@ const filterSchema = z.object({
       (v) => (typeof v === 'string' ? [v] : v),
       z.coerce
         .number()
-        .refine(R.isIncludedIn(ITEM_STATUS.data.map((item) => item.value)))
-        .array(),
+        .array()
+        .transform(
+          R.filter(R.isIncludedIn(ITEM_STATUS.data.map((item) => item.value))),
+        ),
     )
     .default([]),
 })
