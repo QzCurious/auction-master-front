@@ -33,7 +33,7 @@ export default function ErrorPage({
               {error.digest && (
                 <>
                   {' '}
-                  或將錯誤訊回報給我們: <code>{error.digest}</code>.
+                  或將錯誤回報給我們: <code>{error.digest}</code>.
                 </>
               )}
             </p>

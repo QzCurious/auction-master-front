@@ -13,7 +13,10 @@ import { UserContext } from '../UserContext'
 import { logout } from '../api/logout'
 import { MobileMenu, MobileMenuProvider, MobileMenuToggle } from './components'
 
-const navigation = [{ name: '我的物品', href: '/items' }]
+const navigation = [
+  { name: '我的物品', href: '/items' },
+  { name: '帳戶餘額', href: '/balance' },
+]
 
 const footerNavigation = {
   solutions: [

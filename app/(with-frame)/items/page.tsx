@@ -16,7 +16,7 @@ import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import Link from 'next/link'
 import * as R from 'remeda'
 import { z } from 'zod'
-import AutoRefreshPage from './AutoRefreshPage'
+import AutoRefreshPage from '../../components/AutoRefreshPage'
 import { DesktopFilters, MobileFilters } from './Filters'
 
 export const metadata = { title: `我的物品 | ${SITE_NAME}` }

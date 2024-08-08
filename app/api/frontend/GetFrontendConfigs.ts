@@ -8,6 +8,8 @@ export interface Configs {
   yahooAuctionFeeRate: number
   commissionRate: number
   commissionBonusRate: number
+  auctionItemCancellationFee: number
+  costPerSpace: number
   lineURL: string
   shippingInfo: {
     company: {
@@ -44,10 +46,22 @@ export interface Configs {
     value: number
   }>
   consignorStatus: Array<{
+    key: (typeof GetFrontendConfigs_DATA.consignorStatus)[number]['key']
     message: string
     value: number
   }>
   consignorVerificationStatus: Array<{
+    key: (typeof GetFrontendConfigs_DATA.consignorVerificationStatus)[number]['key']
+    message: string
+    value: number
+  }>
+  shippingType: Array<{
+    key: (typeof GetFrontendConfigs_DATA.shippingType)[number]['key']
+    message: string
+    value: number
+  }>
+  shippingStatus: Array<{
+    key: (typeof GetFrontendConfigs_DATA.shippingStatus)[number]['key']
     message: string
     value: number
   }>
