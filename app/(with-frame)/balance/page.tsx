@@ -113,7 +113,7 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <AutoRefreshPage ms={10_000}>
       <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
-        <h1 className='sr-only'>帳戶餘額</h1>
+        <h1 className='sr-only'>帳戶紀錄</h1>
 
         <div className='flex gap-x-4'>
           <Link
@@ -123,8 +123,8 @@ export default async function Page({ searchParams }: PageProps) {
               query.type === 'balance' && 'border-b-indigo-500',
             )}
           >
-            <h2 className=''>餘額</h2>
-            <p className='text-2xl'>¥ {balanceRes.data.toLocaleString()}</p>
+            <h2 className=''>大師幣</h2>
+            <p className='text-2xl'>{balanceRes.data.toLocaleString()}</p>
           </Link>
 
           <Link
@@ -135,13 +135,13 @@ export default async function Page({ searchParams }: PageProps) {
             )}
           >
             <h2 className=''>紅利</h2>
-            <p className='text-2xl'>Ⓑ {bonusRes.data.toLocaleString()}</p>
+            <p className='text-2xl'>{bonusRes.data.toLocaleString()}</p>
           </Link>
         </div>
 
         <div className='mt-8 flex justify-between gap-x-8'>
           <h2 className='text-2xl'>
-            {query.type === 'balance' ? '餘額紀錄' : '紅利紀錄'}
+            {query.type === 'balance' ? '大師幣紀錄' : '紅利紀錄'}
           </h2>
           {query.type === 'balance' && (
             <Button type='button' outline>
