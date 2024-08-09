@@ -56,7 +56,7 @@ export default function DateRangeFilter({
               }}
             >
               <XMarkIcon
-                className='size-9 -translate-x-2 -translate-y-2 p-2'
+                className='size-9 -translate-x-2 -translate-y-2 p-2 sm:size-5 sm:-translate-x-0.5 sm:-translate-y-0.5 sm:p-0'
                 data-slot=''
               />
               <span className='sr-only'>清除區間篩選</span>
