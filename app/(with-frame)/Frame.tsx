@@ -15,6 +15,7 @@ import { MobileMenu, MobileMenuProvider, MobileMenuToggle } from './components'
 
 const navigation = [
   { name: '我的物品', href: '/items' },
+  { name: '競標列表', href: '/auction-items' },
   { name: '帳戶紀錄', href: '/balance' },
 ]
 
