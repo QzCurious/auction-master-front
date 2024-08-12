@@ -392,7 +392,6 @@ function Form({ consignor }: { consignor: Consignor }) {
           render={({ field: { ref, onBlur, ...field }, fieldState }) => (
             <Field className='sm:col-span-2'>
               <Label>縣市</Label>
-              {/* @ts-ignore */}
               <Listbox
                 {...field}
                 onChange={(v) => {

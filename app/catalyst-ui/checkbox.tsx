@@ -25,7 +25,7 @@ export function CheckboxGroup({
 export function CheckboxField({
   className,
   ...props
-}: { className?: string } & Omit<Headless.FieldProps, 'className'>) {
+}: { className?: string } & Omit<Headless.FieldProps, 'as' | 'className'>) {
   return (
     <Headless.Field
       data-slot='field'
@@ -125,7 +125,7 @@ export function Checkbox<TTag extends ElementType = 'span', TType = string>({
 }: {
   color?: Color
   className?: string
-} & Omit<Headless.CheckboxProps<TTag, TType>, 'color'>) {
+} & Omit<Headless.CheckboxProps<TTag, TType>, 'color' | 'as' | 'className'>) {
   return (
     <Headless.Checkbox
       data-slot='control'

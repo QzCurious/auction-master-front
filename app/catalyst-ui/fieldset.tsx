@@ -5,7 +5,7 @@ import type React from 'react'
 export function Fieldset({
   className,
   ...props
-}: { className?: string } & Omit<Headless.FieldsetProps, 'className'>) {
+}: { className?: string } & Omit<Headless.FieldsetProps, 'as' | 'className'>) {
   return (
     <Headless.Fieldset
       {...props}
@@ -20,7 +20,7 @@ export function Fieldset({
 export function Legend({
   className,
   ...props
-}: { className?: string } & Omit<Headless.LegendProps, 'className'>) {
+}: { className?: string } & Omit<Headless.LegendProps, 'as' | 'className'>) {
   return (
     <Headless.Legend
       data-slot='legend'
@@ -45,7 +45,7 @@ export function FieldGroup({
 export function Field({
   className,
   ...props
-}: { className?: string } & Omit<Headless.FieldProps, 'className'>) {
+}: { className?: string } & Omit<Headless.FieldProps, 'as' | 'className'>) {
   return (
     <Headless.Field
       {...props}
@@ -65,14 +65,14 @@ export function Field({
 export function Label({
   className,
   ...props
-}: { className?: string } & Omit<Headless.LabelProps, 'className'>) {
+}: { className?: string } & Omit<Headless.LabelProps, 'as' | 'className'>) {
   return (
     <Headless.Label
       data-slot='label'
       {...props}
       className={clsx(
         className,
-        'text-base/6 text-zinc-950 data-[disabled]:opacity-50 sm:text-sm/6 dark:text-white',
+        'select-none text-base/6 text-zinc-950 data-[disabled]:opacity-50 sm:text-sm/6 dark:text-white',
       )}
     />
   )
@@ -81,7 +81,7 @@ export function Label({
 export function Description({
   className,
   ...props
-}: { className?: string } & Omit<Headless.DescriptionProps, 'className'>) {
+}: { className?: string } & Omit<Headless.DescriptionProps, 'as' | 'className'>) {
   return (
     <Headless.Description
       data-slot='description'
@@ -97,7 +97,7 @@ export function Description({
 export function ErrorMessage({
   className,
   ...props
-}: { className?: string } & Omit<Headless.DescriptionProps, 'className'>) {
+}: { className?: string } & Omit<Headless.DescriptionProps, 'as' | 'className'>) {
   return (
     <Headless.Description
       data-slot='error'

@@ -17,7 +17,7 @@ export function Listbox<T>({
   autoFocus?: boolean
   'aria-label'?: string
   children?: React.ReactNode
-} & Omit<Headless.ListboxProps<typeof Fragment, T>, 'multiple'>) {
+} & Omit<Headless.ListboxProps<typeof Fragment, T>, 'as' | 'multiple'>) {
   return (
     <Headless.Listbox {...props} multiple={false}>
       <Headless.ListboxButton
@@ -122,7 +122,7 @@ export function ListboxOption<T>({
   ...props
 }: { noIcon?: boolean; className?: string; children?: React.ReactNode } & Omit<
   Headless.ListboxOptionProps<'div', T>,
-  'className'
+  'as' | 'className'
 >) {
   let sharedClasses = clsx(
     // Base
@@ -170,7 +170,6 @@ export function ListboxOption<T>({
                 strokeLinejoin='round'
               />
             </svg>
-
             <span className={clsx(className, sharedClasses, 'col-start-2')}>
               {children}
             </span>

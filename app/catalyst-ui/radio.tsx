@@ -4,26 +4,29 @@ import clsx from 'clsx'
 export function RadioGroup({
   className,
   ...props
-}: { className?: string } & Omit<Headless.RadioGroupProps, 'className'>) {
+}: { className?: string } & Omit<Headless.RadioGroupProps, 'as' | 'className'>) {
   return (
     <Headless.RadioGroup
-      data-slot="control"
+      data-slot='control'
       {...props}
       className={clsx(
         className,
         // Basic groups
         'space-y-3 [&_[data-slot=label]]:font-normal',
         // With descriptions
-        'has-[[data-slot=description]]:space-y-6 [&_[data-slot=label]]:has-[[data-slot=description]]:font-medium'
+        'has-[[data-slot=description]]:space-y-6 [&_[data-slot=label]]:has-[[data-slot=description]]:font-medium',
       )}
     />
   )
 }
 
-export function RadioField({ className, ...props }: { className?: string } & Omit<Headless.FieldProps, 'className'>) {
+export function RadioField({
+  className,
+  ...props
+}: { className?: string } & Omit<Headless.FieldProps, 'as' | 'className'>) {
   return (
     <Headless.Field
-      data-slot="field"
+      data-slot='field'
       {...props}
       className={clsx(
         className,
@@ -36,7 +39,7 @@ export function RadioField({ className, ...props }: { className?: string } & Omi
         // Description layout
         '[&>[data-slot=description]]:col-start-2 [&>[data-slot=description]]:row-start-2',
         // With description
-        '[&_[data-slot=label]]:has-[[data-slot=description]]:font-medium'
+        '[&_[data-slot=label]]:has-[[data-slot=description]]:font-medium',
       )}
     />
   )
@@ -118,15 +121,22 @@ export function Radio({
   color = 'dark/zinc',
   className,
   ...props
-}: { color?: Color; className?: string } & Omit<Headless.RadioProps, 'className' | 'children'>) {
+}: { color?: Color; className?: string } & Omit<
+  Headless.RadioProps,
+  'as' | 'className' | 'children'
+>) {
   return (
-    <Headless.Radio data-slot="control" {...props} className={clsx(className, 'group inline-flex focus:outline-none')}>
+    <Headless.Radio
+      data-slot='control'
+      {...props}
+      className={clsx(className, 'group inline-flex focus:outline-none')}
+    >
       <span className={clsx([base, colors[color]])}>
         <span
           className={clsx(
             'size-full rounded-full border-[4.5px] border-transparent bg-[--radio-indicator] bg-clip-padding',
             // Forced colors mode
-            'forced-colors:border-[Canvas] forced-colors:group-data-[checked]:border-[Highlight]'
+            'forced-colors:border-[Canvas] forced-colors:group-data-[checked]:border-[Highlight]',
           )}
         />
       </span>
