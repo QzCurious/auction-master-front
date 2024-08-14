@@ -2,6 +2,7 @@ import {
   AuctionItem,
   GetConsignorAuctionItems,
 } from '@/app/api/frontend/auction-items/GetConsignorAuctionItems'
+import { AUCTION_ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import {
   Table,
   TableBody,
@@ -109,7 +110,15 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                   alt={row.name}
                 />
               </TableCell>
-              <TableCell>{row.name}</TableCell>
+              <TableCell>
+                <p>{row.name}</p>
+                {row.status ===
+                  AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus') && (
+                  <p className='italic text-indigo-500'>
+                    尚有日拍手續費未付，請聯絡客服
+                  </p>
+                )}
+              </TableCell>
               <TableCell
                 className={clsx(
                   'text-end',
