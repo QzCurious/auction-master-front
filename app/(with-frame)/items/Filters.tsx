@@ -1,7 +1,7 @@
 'use client'
 
-import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { StatusCounts } from '@/app/api/frontend/items/GetConsignorItems'
+import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { StatusFlow } from '@/app/StatusFlow'
 import {
   Dialog,
@@ -24,7 +24,7 @@ const filters = [
   {
     field: 'status',
     label: '狀態',
-    options: (
+    options: R.map(
       [
         ITEM_STATUS.data[0],
         ITEM_STATUS.data[2],
@@ -46,11 +46,9 @@ const filters = [
         ITEM_STATUS.data[16],
         ITEM_STATUS.data[17],
         ITEM_STATUS.data[18],
-      ] as const
-    ).map(({ value, message }) => ({
-      label: message,
-      value,
-    })),
+      ],
+      ({ value, message }) => ({ label: message, value }),
+    ),
     // options: ITEM_STATUS_DATA.map((x) => {
     //   const step = StatusFlow.flow[x.key]
     //   return {
@@ -66,9 +64,7 @@ const filters = [
   },
 ]
 
-if (filters[0].options.length !== ITEM_STATUS.data.length) {
-  throw new Error('Not up to date')
-}
+filters[0].options.length satisfies typeof ITEM_STATUS.data.length
 
 const showCountStatus = Object.values(StatusFlow.flow)
   .filter((v) => 'adjudicator' in v && v.adjudicator === side)
