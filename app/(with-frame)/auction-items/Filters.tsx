@@ -72,19 +72,15 @@ export function DesktopFilters({ selected }: StatusFilterProps) {
                     onChange={(e) => {
                       const { checked } = e.target
                       const newSearch = new URLSearchParams(searchParams)
-                      if (checked) {
-                        newSearch.append(section.field, option.value.toString())
-                        router.replace(`?${newSearch.toString()}`)
-                      } else {
-                        const values = newSearch
-                          .getAll(section.field)
-                          .filter((value) => value !== option.value.toString())
-                        newSearch.delete(section.field)
-                        for (const value of values) {
-                          newSearch.append(section.field, value)
-                        }
-                        router.replace(`?${newSearch.toString()}`)
+                      newSearch.delete(section.field)
+
+                      const newSelected = checked
+                        ? [...selected, option.value]
+                        : selected.filter((v) => v !== option.value)
+                      for (const v of newSelected) {
+                        newSearch.append(section.field, v.toString())
                       }
+                      router.replace(`?${newSearch}`)
                     }}
                   />
                   <label
@@ -195,24 +191,15 @@ export function MobileFilters({ selected }: StatusFilterProps) {
                                 onChange={(e) => {
                                   const { checked } = e.target
                                   const newSearch = new URLSearchParams(searchParams)
-                                  if (checked) {
-                                    newSearch.append(
-                                      section.field,
-                                      option.value.toString(),
-                                    )
-                                    router.replace(`?${newSearch.toString()}`)
-                                  } else {
-                                    const values = newSearch
-                                      .getAll(section.field)
-                                      .filter(
-                                        (value) => value !== option.value.toString(),
-                                      )
-                                    newSearch.delete(section.field)
-                                    for (const value of values) {
-                                      newSearch.append(section.field, value)
-                                    }
-                                    router.replace(`?${newSearch.toString()}`)
+                                  newSearch.delete(section.field)
+
+                                  const newSelected = checked
+                                    ? [...selected, option.value]
+                                    : selected.filter((v) => v !== option.value)
+                                  for (const v of newSelected) {
+                                    newSearch.append(section.field, v.toString())
                                   }
+                                  router.replace(`?${newSearch}`)
                                 }}
                               />
                               <label

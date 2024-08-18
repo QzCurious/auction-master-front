@@ -38,7 +38,15 @@ const filterSchema = z.object({
         .refine(R.isIncludedIn(AUCTION_ITEM_STATUS.data.map((item) => item.value)))
         .array(),
     )
-    .default([]),
+    .default([
+      AUCTION_ITEM_STATUS.enum('InitStatus'),
+      AUCTION_ITEM_STATUS.enum('StopBiddingStatus'),
+      AUCTION_ITEM_STATUS.enum('HighestBiddedStatus'),
+      AUCTION_ITEM_STATUS.enum('NotHighestBiddedStatus'),
+      AUCTION_ITEM_STATUS.enum('ClosedStatus'),
+      AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus'),
+      AUCTION_ITEM_STATUS.enum('ConsignorRequestCancellationStatus'),
+    ]),
 })
 
 interface PageProps {
@@ -51,18 +59,7 @@ export default async function Page({ searchParams }: PageProps) {
 
   const [auctionItemsRes] = await Promise.all([
     GetConsignorAuctionItems({
-      status: (() => {
-        if (filters.status.length) return filters.status
-        return [
-          AUCTION_ITEM_STATUS.enum('InitStatus'),
-          AUCTION_ITEM_STATUS.enum('StopBiddingStatus'),
-          AUCTION_ITEM_STATUS.enum('HighestBiddedStatus'),
-          AUCTION_ITEM_STATUS.enum('NotHighestBiddedStatus'),
-          AUCTION_ITEM_STATUS.enum('ClosedStatus'),
-          AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus'),
-          AUCTION_ITEM_STATUS.enum('ConsignorRequestCancellationStatus'),
-        ]
-      })(),
+      status: filters.status,
       limit: pagination[ROWS_PER_PAGE],
       offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
     }),
