@@ -28,7 +28,7 @@ const currencies = [
   'CNY',
 ] as const
 
-type Currency = (typeof currencies)[number]
+export type Currency = (typeof currencies)[number]
 
 export async function getExchangeRate(from: Currency, to: Currency) {
   const rate = await cache.fetch(`${from}-${to}`)

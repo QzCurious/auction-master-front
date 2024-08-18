@@ -17,7 +17,7 @@ export function CountdownTime({ until }: { until: Date }) {
   }, [forceRender, shouldCountdown])
 
   if (!shouldCountdown) {
-    return '已結束'
+    return '即將結束'
   }
 
   const remain = intervalToDuration({ start: now, end: until })

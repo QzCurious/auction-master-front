@@ -27,7 +27,10 @@ import clsx from 'clsx'
 import Image from 'next/image'
 import * as R from 'remeda'
 import { z } from 'zod'
+import CancelBiddingPopover from './CancelBiddingPopover'
 import { DesktopFilters, MobileFilters } from './Filters'
+import PayFeePopover from './PayFeePopover'
+import PreviewDealPopover from './PreviewDealPopover'
 
 const filterSchema = z.object({
   status: z
@@ -107,7 +110,7 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
             <TableHeader>商品圖片</TableHeader>
             <TableHeader>商品名稱</TableHeader>
             <TableHeader>當前金額</TableHeader>
-            <TableHeader>結標倒數</TableHeader>
+            <TableHeader>狀態</TableHeader>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -135,7 +138,15 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 />
               </TableCell>
               <TableCell>
-                <p>{row.name}</p>
+                <p
+                  title={
+                    process.env.NODE_ENV === 'development'
+                      ? row.id.toString()
+                      : undefined
+                  }
+                >
+                  {row.name}
+                </p>
                 {row.status ===
                   AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus') && (
                   <p className='italic text-indigo-500'>
@@ -143,18 +154,44 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                   </p>
                 )}
               </TableCell>
-              <TableCell
-                className={clsx(
-                  'text-end',
-                  row.currentPrice >= row.reservePrice
-                    ? 'text-emerald-500'
-                    : 'text-rose-600',
-                )}
-              >
-                {row.currentPrice.toLocaleString()}
+              <TableCell className='text-center'>
+                <span className='text-zinc-500'>¥ </span>
+                <span
+                  className={clsx(
+                    row.currentPrice >= row.reservePrice
+                      ? 'text-emerald-500'
+                      : 'text-rose-600',
+                  )}
+                >
+                  {row.currentPrice.toLocaleString()}
+                </span>{' '}
+                <span title='期望金額' className='text-zinc-500'>
+                  / {row.reservePrice.toLocaleString()}
+                </span>
               </TableCell>
               <TableCell className='text-center'>
-                <CountdownTime until={new Date(row.closeAt)} />
+                {R.isIncludedIn(row.status, [
+                  AUCTION_ITEM_STATUS.enum('InitStatus'),
+                  AUCTION_ITEM_STATUS.enum('StopBiddingStatus'),
+                  AUCTION_ITEM_STATUS.enum('HighestBiddedStatus'),
+                  AUCTION_ITEM_STATUS.enum('NotHighestBiddedStatus'),
+                ]) ? (
+                  <div className='flex flex-col items-center gap-y-1'>
+                    <CountdownTime until={new Date(row.closeAt)} />
+                    <CancelBiddingPopover auctionItemId={row.id} />
+                  </div>
+                ) : (
+                  <div className='flex flex-col items-center gap-y-1'>
+                    <div>{AUCTION_ITEM_STATUS.get('value', row.status).message}</div>
+                    {row.status === AUCTION_ITEM_STATUS.enum('ClosedStatus') && (
+                      <PreviewDealPopover auctionItemId={row.id} />
+                    )}
+                    {row.status ===
+                      AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus') && (
+                      <PayFeePopover auctionItemId={row.id} />
+                    )}
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ))}
