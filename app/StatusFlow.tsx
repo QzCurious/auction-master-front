@@ -1,7 +1,7 @@
 import type React from 'react'
 import { ITEM_STATUS, ITEM_TYPE } from './api/frontend/static-configs.data'
 
-type Adjudicator = 'admin' | 'consignor'
+type Adjudicator = 'admin' | 'consignor' | 'system'
 
 type Step = {
   allowTypes?: Array<ITEM_TYPE['key']>
@@ -179,7 +179,7 @@ export class StatusFlow {
       ],
       status: 'BiddingStatus',
       nexts: ['SoldStatus', 'CompanyRepurchasedStatus', 'ConsignorConfirmedStatus'],
-      adjudicator: 'admin',
+      adjudicator: 'system',
     },
     SoldStatus: {
       allowTypes: [
