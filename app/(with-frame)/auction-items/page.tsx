@@ -3,6 +3,7 @@ import {
   GetConsignorAuctionItems,
 } from '@/app/api/frontend/auction-items/GetConsignorAuctionItems'
 import { AUCTION_ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
+import { Heading } from '@/app/catalyst-ui/heading'
 import {
   Table,
   TableBody,
@@ -24,22 +25,44 @@ import {
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import Image from 'next/image'
+import * as R from 'remeda'
 import { z } from 'zod'
+import { DesktopFilters, MobileFilters } from './Filters'
 
-const querySchema = z.object({
-  status: z.coerce.number().optional(),
+const filterSchema = z.object({
+  status: z
+    .preprocess(
+      (v) => (typeof v === 'string' ? [v] : v),
+      z.coerce
+        .number()
+        .refine(R.isIncludedIn(AUCTION_ITEM_STATUS.data.map((item) => item.value)))
+        .array(),
+    )
+    .default([]),
 })
 
 interface PageProps {
-  searchParams: PaginationSearchParams & z.output<typeof querySchema>
+  searchParams: PaginationSearchParams & z.output<typeof filterSchema>
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const query = querySchema.parse(searchParams)
+  const filters = filterSchema.parse(searchParams)
   const pagination = PaginationSchema.parse(searchParams)
 
   const [auctionItemsRes] = await Promise.all([
     GetConsignorAuctionItems({
+      status: (() => {
+        if (filters.status.length) return filters.status
+        return [
+          AUCTION_ITEM_STATUS.enum('InitStatus'),
+          AUCTION_ITEM_STATUS.enum('StopBiddingStatus'),
+          AUCTION_ITEM_STATUS.enum('HighestBiddedStatus'),
+          AUCTION_ITEM_STATUS.enum('NotHighestBiddedStatus'),
+          AUCTION_ITEM_STATUS.enum('ClosedStatus'),
+          AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus'),
+          AUCTION_ITEM_STATUS.enum('ConsignorRequestCancellationStatus'),
+        ]
+      })(),
       limit: pagination[ROWS_PER_PAGE],
       offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
     }),
@@ -52,13 +75,17 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <AutoRefreshPage ms={10_000}>
       <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
-        <h1 className='sr-only'>競標列表</h1>
+        <Heading level={1} className='lg:sr-only'>
+          競標列表
+        </Heading>
 
-        <div className='mt-8 flex justify-between gap-x-8'>
-          <h2 className='text-2xl'></h2>
+        <div className='mt-2.5'>
+          <MobileFilters selected={filters.status} />
         </div>
 
-        <div className='mt-4'>
+        <div className='mt-6 sm:flex sm:gap-16'>
+          <DesktopFilters selected={filters.status} />
+
           <AuctionItemsTable
             rows={auctionItemsRes.data.auctionItems}
             count={auctionItemsRes.data.count}
@@ -76,7 +103,7 @@ interface AuctionItemsTableProps {
 
 function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
   return (
-    <div>
+    <div className='min-w-0 grow'>
       <Table>
         <TableHead>
           <TableRow className='text-center'>

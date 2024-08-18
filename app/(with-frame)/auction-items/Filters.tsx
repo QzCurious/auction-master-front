@@ -1,9 +1,7 @@
 'use client'
 
-import { StatusCounts } from '@/app/api/frontend/items/GetConsignorItems'
-import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
+import { AUCTION_ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { Text } from '@/app/catalyst-ui/text'
-import { StatusFlow } from '@/app/StatusFlow'
 import {
   Dialog,
   DialogBackdrop,
@@ -27,56 +25,29 @@ const filters = [
     label: '狀態',
     options: R.map(
       [
-        ITEM_STATUS.data[0],
-        ITEM_STATUS.data[2],
-        ITEM_STATUS.data[3],
-        ITEM_STATUS.data[5],
-        ITEM_STATUS.data[6],
-        ITEM_STATUS.data[7],
-        ITEM_STATUS.data[10],
-        ITEM_STATUS.data[11],
-        ITEM_STATUS.data[12],
-        ITEM_STATUS.data[13],
-        ITEM_STATUS.data[14],
-        ITEM_STATUS.data[15],
-
-        ITEM_STATUS.data[1],
-        ITEM_STATUS.data[4],
-        ITEM_STATUS.data[8],
-        ITEM_STATUS.data[9],
-        ITEM_STATUS.data[16],
-        ITEM_STATUS.data[17],
-        ITEM_STATUS.data[18],
+        AUCTION_ITEM_STATUS.data[0],
+        AUCTION_ITEM_STATUS.data[1],
+        AUCTION_ITEM_STATUS.data[2],
+        AUCTION_ITEM_STATUS.data[3],
+        AUCTION_ITEM_STATUS.data[4],
+        AUCTION_ITEM_STATUS.data[5],
+        AUCTION_ITEM_STATUS.data[6],
+        AUCTION_ITEM_STATUS.data[7],
+        AUCTION_ITEM_STATUS.data[8],
+        AUCTION_ITEM_STATUS.data[9],
       ],
       ({ value, message }) => ({ label: message, value }),
     ),
-    // options: ITEM_STATUS_DATA.map((x) => {
-    //   const step = StatusFlow.flow[x.key]
-    //   return {
-    //     ...x,
-    //     sort: 'adjudicator' in step && step.adjudicator === side ? 0 : 1,
-    //   }
-    // })
-    //   .sort((a, b) => a.sort - b.sort)
-    //   .map(({ value, message }) => ({
-    //     label: message,
-    //     value,
-    //   })),
   },
 ]
 
-filters[0].options.length satisfies typeof ITEM_STATUS.data.length
-
-const showCountStatus = Object.values(StatusFlow.flow)
-  .filter((v) => 'adjudicator' in v && v.adjudicator === side)
-  .map((v) => ITEM_STATUS.enum(v.status))
+filters[0].options.length satisfies typeof AUCTION_ITEM_STATUS.data.length
 
 interface StatusFilterProps {
-  selected: Array<ITEM_STATUS['value']>
-  statusCount: StatusCounts
+  selected: Array<AUCTION_ITEM_STATUS['value']>
 }
 
-export function DesktopFilters({ selected, statusCount }: StatusFilterProps) {
+export function DesktopFilters({ selected }: StatusFilterProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -118,17 +89,9 @@ export function DesktopFilters({ selected, statusCount }: StatusFilterProps) {
                   />
                   <label
                     htmlFor={`${section.field}-${optionIdx}`}
-                    className={clsx(
-                      'ml-3 text-sm',
-                      R.isIncludedIn(option.value, showCountStatus)
-                        ? 'text-gray-900'
-                        : 'text-gray-500',
-                    )}
+                    className={clsx('ml-3 text-sm')}
                   >
-                    {option.label}{' '}
-                    {R.isIncludedIn(option.value, showCountStatus) && (
-                      <span>({statusCount[option.value] ?? 0})</span>
-                    )}
+                    {option.label}
                   </label>
                 </div>
               ))}
@@ -140,7 +103,7 @@ export function DesktopFilters({ selected, statusCount }: StatusFilterProps) {
   )
 }
 
-export function MobileFilters({ selected, statusCount }: StatusFilterProps) {
+export function MobileFilters({ selected }: StatusFilterProps) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -254,17 +217,9 @@ export function MobileFilters({ selected, statusCount }: StatusFilterProps) {
                               />
                               <label
                                 htmlFor={`${section.field}-${optionIdx}-mobile`}
-                                className={clsx(
-                                  'ml-3 text-sm',
-                                  R.isIncludedIn(option.value, showCountStatus)
-                                    ? 'text-gray-900'
-                                    : 'text-gray-500',
-                                )}
+                                className={clsx('ml-3 text-sm')}
                               >
-                                {option.label}{' '}
-                                {R.isIncludedIn(option.value, showCountStatus) && (
-                                  <span>({statusCount[option.value] ?? 0})</span>
-                                )}
+                                {option.label}
                               </label>
                             </div>
                           ))}

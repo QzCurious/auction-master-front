@@ -18,6 +18,7 @@ import * as R from 'remeda'
 import { z } from 'zod'
 import AutoRefreshPage from '../../components/AutoRefreshPage'
 import { DesktopFilters, MobileFilters } from './Filters'
+import { Heading } from '@/app/catalyst-ui/heading'
 
 export const metadata = { title: `我的物品 | ${SITE_NAME}` }
 
@@ -57,7 +58,9 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <AutoRefreshPage ms={10_000}>
       <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
-        <h1 className='sr-only'>我的物品</h1>
+        <Heading level={1} className='lg:sr-only'>
+          我的物品
+        </Heading>
         <div className='flex gap-x-4'>
           <MobileFilters
             selected={filter.status}
