@@ -14,7 +14,11 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { UserContext } from '../UserContext'
 import { logout } from '../api/logout'
 
-export const navigation = [{ name: '我的物品', href: '/items' }]
+export const navigation = [
+  { name: '我的物品', href: '/items' },
+  { name: '競標列表', href: '/auction-items' },
+  { name: '帳戶紀錄', href: '/balance' },
+]
 
 const MobileMenuContext = createContext<[boolean, (open: boolean) => void]>([
   false,
@@ -42,7 +46,7 @@ export function MobileMenuToggle() {
       className='-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700'
       onClick={() => setMobileMenuOpen(true)}
     >
-      <span className='sr-only'>Open main menu</span>
+      <span className='sr-only'>開啟選單</span>
       <Bars3Icon className='h-6 w-6' aria-hidden='true' />
     </button>
   )
@@ -55,7 +59,10 @@ export function MobileMenu() {
   return (
     <Dialog className='lg:hidden' open={mobileMenuOpen} onClose={setMobileMenuOpen}>
       <div className='fixed inset-0 z-50' />
-      <DialogPanel className='fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10'>
+      <DialogPanel
+        transition
+        className='fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 transition duration-300 ease-out data-[closed]:translate-x-full sm:max-w-sm sm:ring-1 sm:ring-gray-900/10'
+      >
         <div className='flex items-center justify-between'>
           <a href='#' className='-m-1.5 p-1.5'>
             <span className='sr-only'>Auction Master</span>
