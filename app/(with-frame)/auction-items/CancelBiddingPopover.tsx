@@ -58,7 +58,12 @@ function PreviewDeal({
 
   return (
     <section>
-      <h3>取消競標須支付 ¥ {configsQuery.data.data.auctionItemCancellationFee}</h3>
+      <h3>
+        取消競標須支付
+        <span className='underline decoration-indigo-500 decoration-2 underline-offset-2'>
+          ¥{configsQuery.data.data.auctionItemCancellationFee}
+        </span>
+      </h3>
       <div className='mt-2 flex justify-end gap-x-2'>
         {canPayByWallet && (
           <Button

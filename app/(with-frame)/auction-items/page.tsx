@@ -129,30 +129,39 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
           {rows?.map((row) => (
             <TableRow key={row.id}>
               <TableCell>
-                <Image
-                  className='mx-auto h-20 w-20 rounded-md object-cover'
-                  src={row.photo}
-                  width={200}
-                  height={200}
-                  alt={row.name}
-                />
-              </TableCell>
-              <TableCell>
-                <p
+                <a
                   title={
                     process.env.NODE_ENV === 'development'
                       ? row.id.toString()
                       : undefined
                   }
+                  href={`https://page.auctions.yahoo.co.jp/jp/auction/${row.auctionID}`}
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  <Image
+                    className='mx-auto h-20 w-20 rounded-md object-cover'
+                    src={row.photo}
+                    width={200}
+                    height={200}
+                    alt={row.name}
+                  />
+                </a>
+              </TableCell>
+              <TableCell className='min-w-52 whitespace-normal'>
+                <a
+                  title={
+                    process.env.NODE_ENV === 'development'
+                      ? row.id.toString()
+                      : undefined
+                  }
+                  className='text-link'
+                  href={`https://page.auctions.yahoo.co.jp/jp/auction/${row.auctionID}`}
+                  target='_blank'
+                  rel='noreferrer'
                 >
                   {row.name}
-                </p>
-                {row.status ===
-                  AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus') && (
-                  <p className='italic text-indigo-500'>
-                    尚有日拍手續費未付，請聯絡客服
-                  </p>
-                )}
+                </a>
               </TableCell>
               <TableCell className='text-center'>
                 <span className='text-zinc-500'>¥ </span>
