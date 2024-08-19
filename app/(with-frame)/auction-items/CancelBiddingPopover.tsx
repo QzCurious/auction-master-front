@@ -9,14 +9,26 @@ import RedirectToHome from '@/app/RedirectToHome'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
-import { useTransition } from 'react'
+import { subDays } from 'date-fns'
+import { useEffect, useState, useTransition } from 'react'
 import toast from 'react-hot-toast'
 
 export default function CancelBiddingPopover({
-  auctionItemId,
+  auctionItem,
 }: {
-  auctionItemId: AuctionItem['id']
+  auctionItem: AuctionItem
 }) {
+  const canCancel = () => subDays(auctionItem.closeAt, 1) > new Date()
+  const [show, setShow] = useState(canCancel)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShow(canCancel)
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  if (!show) return null
+
   return (
     <Popover>
       <PopoverButton as={Button} outline>
@@ -29,17 +41,17 @@ export default function CancelBiddingPopover({
           'z-30 rounded border border-black/10 bg-white px-2 py-1.5 shadow-md transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:translate-y-1 data-[closed]:opacity-0',
         )}
       >
-        {({ close }) => <PreviewDeal auctionItemId={auctionItemId} close={close} />}
+        {({ close }) => <PreviewDeal auctionItem={auctionItem} close={close} />}
       </PopoverPanel>
     </Popover>
   )
 }
 
 function PreviewDeal({
-  auctionItemId,
+  auctionItem,
   close,
 }: {
-  auctionItemId: AuctionItem['id']
+  auctionItem: AuctionItem
   close: () => void
 }) {
   const configsQuery = useQuery(GetConfigsQueryOptions)
@@ -72,7 +84,7 @@ function PreviewDeal({
             disabled={isSubmitting}
             onClick={() =>
               startTransition(async () => {
-                const res = await ConsignorCancelAuctionItem(auctionItemId)
+                const res = await ConsignorCancelAuctionItem(auctionItem.id)
                 if (res.error) {
                   toast.error(`操作錯誤: ${res.error}`)
                   return
