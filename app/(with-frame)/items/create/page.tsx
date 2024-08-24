@@ -1,5 +1,5 @@
 import RedirectToHome from '@/app/RedirectToHome'
-import { getExchangeRate } from '@/app/api/getExchangeRate'
+import { GetJPYRates } from '@/app/api/frontend/GetJPYRates'
 import { getUser } from '@/app/api/helpers/getUser'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -28,11 +28,15 @@ async function Page() {
 export default Page
 
 async function Content() {
-  const user = await getUser()
+  const [user, jpyRatesRes] = await Promise.all([getUser(), GetJPYRates()])
 
   if (!user) {
     return <RedirectToHome />
   }
 
-  return <ItemForm yenToNtdRate={await getExchangeRate('JPY', 'NTD')} />
+  if (jpyRatesRes.error === '1003') {
+    return <RedirectToHome />
+  }
+
+  return <ItemForm jpyBuyingRate={jpyRatesRes.data.buying} />
 }

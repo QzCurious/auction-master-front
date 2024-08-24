@@ -1,11 +1,11 @@
 'use client'
 
-import { ITEM_TYPE } from '@/app/api/frontend/static-configs.data'
 import { ConsignorDeleteItemPhoto } from '@/app/api/frontend/items/ConsignorDeleteItemPhoto'
 import { ConsignorUpsertItemPhoto } from '@/app/api/frontend/items/ConsignorUpsertItemPhoto'
 import { CreateItem } from '@/app/api/frontend/items/CreateItem'
 import { Item } from '@/app/api/frontend/items/GetConsignorItems'
 import { UpdateConsignorItem } from '@/app/api/frontend/items/UpdateConsignorItem'
+import { ITEM_TYPE } from '@/app/api/frontend/static-configs.data'
 import { Button } from '@/app/catalyst-ui/button'
 import { Checkbox, CheckboxField } from '@/app/catalyst-ui/checkbox'
 import { Description, ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
@@ -57,10 +57,10 @@ const Schema = z.object({
 
 interface ItemFormProps {
   item?: Item
-  yenToNtdRate: number
+  jpyBuyingRate: number
 }
 
-export default function ItemForm({ item, yenToNtdRate }: ItemFormProps) {
+export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
   const defaultValues = useMemo(
     () =>
       ({
@@ -186,7 +186,7 @@ export default function ItemForm({ item, yenToNtdRate }: ItemFormProps) {
                 </InputGroup>
                 {field.value && !fieldState.invalid && (
                   <Description className='text-end'>
-                    約 {Number(field.value * yenToNtdRate).toLocaleString()} 台幣
+                    約 {Math.floor(field.value * jpyBuyingRate).toLocaleString()} 台幣
                   </Description>
                 )}
                 {fieldState.error && (

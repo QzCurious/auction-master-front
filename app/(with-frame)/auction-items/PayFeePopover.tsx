@@ -4,8 +4,8 @@ import { AuctionItemDealPreviewQueryOptions } from '@/app/api/frontend/auction-i
 import { ConsignorPayAuctionItemFee } from '@/app/api/frontend/auction-items/ConsignorPayAuctionItemFee'
 import { AuctionItem } from '@/app/api/frontend/auction-items/GetConsignorAuctionItems'
 import { GetConfigsQueryOptions } from '@/app/api/frontend/GetConfigs.query'
+import { GetJPYRatesQueryOptions } from '@/app/api/frontend/GetJPYRates.query'
 import { GetConsignorWalletBalanceQueryOptions } from '@/app/api/frontend/wallets/GetConsignorWalletBalance.query'
-import { getExchangeRateQueryOptions } from '@/app/api/getExchangeRate.query'
 import { Button } from '@/app/catalyst-ui/button'
 import RedirectToHome from '@/app/RedirectToHome'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
@@ -47,28 +47,29 @@ function PreviewDeal({
   const configsQuery = useQuery(GetConfigsQueryOptions)
   const previewQuery = useQuery(AuctionItemDealPreviewQueryOptions(auctionItemId))
   const walletQuery = useQuery(GetConsignorWalletBalanceQueryOptions)
-  const yenToNtdRate = useQuery(getExchangeRateQueryOptions('JPY', 'NTD'))
+  const jpyRatesQuery = useQuery(GetJPYRatesQueryOptions)
   const [isSubmitting, startTransition] = useTransition()
 
   if (
     configsQuery.error ||
     previewQuery.error ||
     walletQuery.error ||
-    yenToNtdRate.error
+    jpyRatesQuery.error
   )
     return null
   if (
     configsQuery.isPending ||
     previewQuery.isPending ||
     walletQuery.isPending ||
-    yenToNtdRate.isPending
+    jpyRatesQuery.isPending
   )
     return <section className='w-max'>載入中...</section>
 
   if (
     configsQuery.data.error === '1003' ||
     previewQuery.data.error === '1003' ||
-    walletQuery.data.error === '1003'
+    walletQuery.data.error === '1003' ||
+    jpyRatesQuery.data.error === '1003'
   ) {
     return <RedirectToHome />
   }
@@ -85,8 +86,8 @@ function PreviewDeal({
         </span>{' '}
         <span className='text-zinc-500'>
           (約
-          {Math.floor(
-            previewQuery.data.data.yahooAuctionFee * yenToNtdRate.data,
+          {Math.ceil(
+            previewQuery.data.data.yahooAuctionFee * jpyRatesQuery.data.data.selling,
           ).toLocaleString()}
           台幣)
         </span>{' '}

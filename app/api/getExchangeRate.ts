@@ -30,7 +30,8 @@ const currencies = [
 
 export type Currency = (typeof currencies)[number]
 
-export async function getExchangeRate(from: Currency, to: Currency) {
+// export
+async function getExchangeRate(from: Currency, to: Currency) {
   const rate = await cache.fetch(`${from}-${to}`)
   return rate!
 }

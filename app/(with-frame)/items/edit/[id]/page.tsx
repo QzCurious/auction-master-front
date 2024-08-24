@@ -1,6 +1,7 @@
-import { ITEM_STATUS, ITEM_TYPE } from '@/app/api/frontend/static-configs.data'
+import { GetConfigs } from '@/app/api/frontend/GetConfigs'
+import { GetJPYRates } from '@/app/api/frontend/GetJPYRates'
 import { GetConsignorItem } from '@/app/api/frontend/items/GetConsignorItem'
-import { getExchangeRate } from '@/app/api/getExchangeRate'
+import { ITEM_STATUS, ITEM_TYPE } from '@/app/api/frontend/static-configs.data'
 import { getUser } from '@/app/api/helpers/getUser'
 import {
   DescriptionDetails,
@@ -21,7 +22,6 @@ import ItemForm from '../../ItemForm'
 import ConsignmentApprovedStatusAlert from './ConsignmentApprovedStatusAlert'
 import PhotoListForm from './PhotoListForm'
 import { StatusFlowUI } from './StatusFlowSection'
-import { GetConfigs } from '@/app/api/frontend/GetConfigs'
 
 const QuillTextEditor = dynamic(
   () => import('@/app/components/QuillTextEditor/QuillTextEditor'),
@@ -57,17 +57,22 @@ async function Content({ params }: PageProps) {
   if (isNaN(id)) {
     notFound()
   }
-  const [user, itemRes, configsRes] = await Promise.all([
+  const [user, itemRes, configsRes, jpyRatesRes] = await Promise.all([
     getUser(),
     GetConsignorItem(id),
     GetConfigs(),
+    GetJPYRates(),
   ])
 
   if (!user) {
     return <RedirectToHome />
   }
 
-  if (configsRes.error === '1003' || itemRes.error === '1003') {
+  if (
+    configsRes.error === '1003' ||
+    itemRes.error === '1003' ||
+    jpyRatesRes.error === '1003'
+  ) {
     return <RedirectToHome />
   }
 
@@ -75,10 +80,8 @@ async function Content({ params }: PageProps) {
     notFound()
   }
 
-  const yenToNtdRate = await getExchangeRate('JPY', 'NTD')
-
   if (itemRes.data.status === ITEM_STATUS.enum('SubmitAppraisalStatus')) {
-    return <ItemForm item={itemRes.data} yenToNtdRate={yenToNtdRate} />
+    return <ItemForm item={itemRes.data} jpyBuyingRate={jpyRatesRes.data.buying} />
   }
 
   const flowPath = StatusFlow.flowPath({
@@ -176,7 +179,7 @@ async function Content({ params }: PageProps) {
                 <p className='whitespace-nowrap text-zinc-500'>
                   (約{' '}
                   {Math.floor(
-                    itemRes.data.reservePrice * yenToNtdRate,
+                    itemRes.data.reservePrice * jpyRatesRes.data.buying,
                   ).toLocaleString()}{' '}
                   台幣)
                 </p>
@@ -197,7 +200,7 @@ async function Content({ params }: PageProps) {
                     <p className='whitespace-nowrap text-zinc-500'>
                       (約{' '}
                       {Math.floor(
-                        itemRes.data.directPurchasePrice * yenToNtdRate,
+                        itemRes.data.directPurchasePrice * jpyRatesRes.data.buying,
                       ).toLocaleString()}{' '}
                       台幣)
                     </p>
@@ -220,7 +223,7 @@ async function Content({ params }: PageProps) {
                     <p className='whitespace-nowrap text-zinc-500'>
                       (約{' '}
                       {Math.floor(
-                        itemRes.data.minEstimatedPrice * yenToNtdRate,
+                        itemRes.data.minEstimatedPrice * jpyRatesRes.data.buying,
                       ).toLocaleString()}{' '}
                       台幣)
                     </p>
@@ -239,7 +242,7 @@ async function Content({ params }: PageProps) {
                     <p className='whitespace-nowrap text-zinc-500'>
                       (約{' '}
                       {Math.floor(
-                        itemRes.data.maxEstimatedPrice * yenToNtdRate,
+                        itemRes.data.maxEstimatedPrice * jpyRatesRes.data.buying,
                       ).toLocaleString()}{' '}
                       台幣)
                     </p>
