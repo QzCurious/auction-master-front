@@ -70,8 +70,8 @@ async function _exchangeRate(from: Currency, to: Currency) {
   const parsed = schema.parse(data)
 
   const fromExchange =
-    from === 'NTD' ? 1 : parsed.find((d) => d.Currency === from)?.Spot[0]
-  const toExchange = to === 'NTD' ? 1 : parsed.find((d) => d.Currency === to)?.Spot[0]
+    from === 'NTD' ? 1 : parsed.find((d) => d.Currency === from)?.Cash[0]
+  const toExchange = to === 'NTD' ? 1 : parsed.find((d) => d.Currency === to)?.Cash[0]
   if (!toExchange || !fromExchange) {
     throw new Error(`Invalid args: to: ${to}, from: ${from}`)
   }
