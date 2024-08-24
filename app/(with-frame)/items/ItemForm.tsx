@@ -186,7 +186,7 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
                 </InputGroup>
                 {field.value && !fieldState.invalid && (
                   <Description className='text-end'>
-                    約 {Math.floor(field.value * jpyBuyingRate).toLocaleString()} 台幣
+                    約 NT${Math.floor(field.value * jpyBuyingRate).toLocaleString()}
                   </Description>
                 )}
                 {fieldState.error && (

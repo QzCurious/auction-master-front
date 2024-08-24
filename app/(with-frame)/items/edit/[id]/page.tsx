@@ -175,13 +175,12 @@ async function Content({ params }: PageProps) {
                 </InfoPopover>
               </DescriptionTerm>
               <DescriptionDetails className='text-end'>
-                ¥ {itemRes.data.reservePrice.toLocaleString()}
+                ¥{itemRes.data.reservePrice.toLocaleString()}
                 <p className='whitespace-nowrap text-zinc-500'>
-                  (約{' '}
+                  (約{' '}NT$
                   {Math.floor(
                     itemRes.data.reservePrice * jpyRatesRes.data.buying,
-                  ).toLocaleString()}{' '}
-                  台幣)
+                  ).toLocaleString()})
                 </p>
               </DescriptionDetails>
 
@@ -196,13 +195,12 @@ async function Content({ params }: PageProps) {
                     </InfoPopover>
                   </DescriptionTerm>
                   <DescriptionDetails className='text-end'>
-                    ¥ {itemRes.data.directPurchasePrice.toLocaleString()}
+                    ¥{itemRes.data.directPurchasePrice.toLocaleString()}
                     <p className='whitespace-nowrap text-zinc-500'>
-                      (約{' '}
+                      (約{' '}NT$
                       {Math.floor(
                         itemRes.data.directPurchasePrice * jpyRatesRes.data.buying,
-                      ).toLocaleString()}{' '}
-                      台幣)
+                      ).toLocaleString()})
                     </p>
                   </DescriptionDetails>
                 </>
@@ -219,13 +217,12 @@ async function Content({ params }: PageProps) {
                     </InfoPopover>
                   </DescriptionTerm>
                   <DescriptionDetails className='text-end'>
-                    ¥ {itemRes.data.minEstimatedPrice.toLocaleString()}
+                    ¥{itemRes.data.minEstimatedPrice.toLocaleString()}
                     <p className='whitespace-nowrap text-zinc-500'>
-                      (約{' '}
+                      (約{' '}NT$
                       {Math.floor(
                         itemRes.data.minEstimatedPrice * jpyRatesRes.data.buying,
-                      ).toLocaleString()}{' '}
-                      台幣)
+                      ).toLocaleString()})
                     </p>
                   </DescriptionDetails>
 
@@ -238,13 +235,12 @@ async function Content({ params }: PageProps) {
                     </InfoPopover>
                   </DescriptionTerm>
                   <DescriptionDetails className='text-end'>
-                    ¥ {itemRes.data.maxEstimatedPrice.toLocaleString()}
+                    ¥{itemRes.data.maxEstimatedPrice.toLocaleString()}
                     <p className='whitespace-nowrap text-zinc-500'>
-                      (約{' '}
+                      (約{' '}NT$
                       {Math.floor(
                         itemRes.data.maxEstimatedPrice * jpyRatesRes.data.buying,
-                      ).toLocaleString()}{' '}
-                      台幣)
+                      ).toLocaleString()})
                     </p>
                   </DescriptionDetails>
                 </>

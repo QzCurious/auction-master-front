@@ -85,11 +85,11 @@ function PreviewDeal({
           手續費 ¥{previewQuery.data.data.yahooAuctionFee.toLocaleString()}
         </span>{' '}
         <span className='text-zinc-500'>
-          (約
+          (約 NT$
           {Math.ceil(
             previewQuery.data.data.yahooAuctionFee * jpyRatesQuery.data.data.selling,
           ).toLocaleString()}
-          台幣)
+          )
         </span>{' '}
         未支付
       </h3>

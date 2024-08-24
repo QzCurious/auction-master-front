@@ -164,7 +164,7 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 </a>
               </TableCell>
               <TableCell className='text-center'>
-                <span className='text-zinc-500'>¥ </span>
+                <span className='text-zinc-500'>¥</span>
                 <span
                   className={clsx(
                     row.currentPrice >= row.reservePrice
