@@ -321,9 +321,19 @@ export const STATIC_CONFIGS_DATA = {
       value: 1,
     },
     {
+      key: 'SubmitAppraisalStatus',
+      message: '已提交付款',
+      value: 2,
+    },
+    {
       key: 'PaidStatus',
       message: '已付款',
       value: 10,
+    },
+    {
+      key: 'CancelPaymentStatus',
+      message: '取消付款',
+      value: 11,
     },
   ],
 } as const

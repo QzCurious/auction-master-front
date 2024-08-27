@@ -1,6 +1,7 @@
 'use client'
 
 import { ConsignorCancelAuctionItem } from '@/app/api/frontend/auction-items/ConsignorCancelAuctionItem'
+import { ConsignorCancelAuctionItemByTransfer } from '@/app/api/frontend/auction-items/ConsignorCancelAuctionItemByTransfer'
 import { AuctionItem } from '@/app/api/frontend/auction-items/GetConsignorAuctionItems'
 import { GetConfigsQueryOptions } from '@/app/api/frontend/GetConfigs.query'
 import { GetConsignorWalletBalanceQueryOptions } from '@/app/api/frontend/wallets/GetConsignorWalletBalance.query'
@@ -10,7 +11,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { subDays } from 'date-fns'
-import { useEffect, useState, useTransition } from 'react'
+import { useCallback, useEffect, useState, useTransition } from 'react'
 import toast from 'react-hot-toast'
 
 export default function CancelBiddingPopover({
@@ -18,14 +19,17 @@ export default function CancelBiddingPopover({
 }: {
   auctionItem: AuctionItem
 }) {
-  const canCancel = () => subDays(auctionItem.closeAt, 1) > new Date()
+  const canCancel = useCallback(
+    () => subDays(auctionItem.closeAt, 1) > new Date(),
+    [auctionItem.closeAt],
+  )
   const [show, setShow] = useState(canCancel)
   useEffect(() => {
     const interval = setInterval(() => {
       setShow(canCancel)
     }, 1000)
     return () => clearInterval(interval)
-  }, [])
+  }, [canCancel])
 
   if (!show) return null
 
@@ -71,7 +75,7 @@ function PreviewDeal({
   return (
     <section>
       <h3>
-        取消競標須支付
+        取消競標須支付{' '}
         <span className='underline decoration-indigo-500 decoration-2 underline-offset-2'>
           ¥{configsQuery.data.data.auctionItemCancellationFee}
         </span>
@@ -97,14 +101,24 @@ function PreviewDeal({
             大師幣支付
           </Button>
         )}
+
         <Button
+          type='button'
           outline
-          href={configsQuery.data.data.lineURL}
-          target='_blank'
-          rel='noopener noreferrer'
-          onClick={close}
+          disabled={isSubmitting}
+          onClick={() => {
+            startTransition(async () => {
+              const res = await ConsignorCancelAuctionItemByTransfer(auctionItem.id)
+              if (res.error) {
+                toast.error(`操作錯誤: ${res.error}`)
+                return
+              }
+              toast.success('取消競標申請已送出')
+              close()
+            })
+          }}
         >
-          聯絡客服取消
+          匯款支付
         </Button>
       </div>
     </section>

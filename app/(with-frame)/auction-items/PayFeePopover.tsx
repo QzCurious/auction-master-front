@@ -2,6 +2,7 @@
 
 import { AuctionItemDealPreviewQueryOptions } from '@/app/api/frontend/auction-items/AuctionItemDealPreview.query'
 import { ConsignorPayAuctionItemFee } from '@/app/api/frontend/auction-items/ConsignorPayAuctionItemFee'
+import { ConsignorPayAuctionItemFeeTransfer } from '@/app/api/frontend/auction-items/ConsignorPayAuctionItemFeeTransfer'
 import { AuctionItem } from '@/app/api/frontend/auction-items/GetConsignorAuctionItems'
 import { GetConfigsQueryOptions } from '@/app/api/frontend/GetConfigs.query'
 import { GetJPYRatesQueryOptions } from '@/app/api/frontend/GetJPYRates.query'
@@ -106,7 +107,7 @@ function PreviewDeal({
                   toast.error(`操作錯誤: ${res.error}`)
                   return
                 }
-                toast.success('取消競標申請已送出')
+                toast.success('已結清手續費')
                 close()
               })
             }
@@ -115,13 +116,22 @@ function PreviewDeal({
           </Button>
         )}
         <Button
+          type='button'
           outline
-          href={configsQuery.data.data.lineURL}
-          target='_blank'
-          rel='noopener noreferrer'
-          onClick={close}
+          disabled={isSubmitting}
+          onClick={() => {
+            startTransition(async () => {
+              const res = await ConsignorPayAuctionItemFeeTransfer(auctionItemId)
+              if (res.error) {
+                toast.error(`操作錯誤: ${res.error}`)
+                return
+              }
+              toast.success('已申請會匯款結清手續費')
+              close()
+            })
+          }}
         >
-          聯絡客服
+          匯款支付
         </Button>
       </div>
     </section>
