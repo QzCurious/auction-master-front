@@ -17,6 +17,7 @@ const navigation = [
   { name: '我的物品', href: '/items' },
   { name: '競標列表', href: '/auction-items' },
   { name: '帳戶紀錄', href: '/balance' },
+  { name: '交易紀錄', href: '/records' },
 ]
 
 const footerNavigation = {
@@ -55,7 +56,7 @@ export default function Frame({ children }: { children: React.ReactNode }) {
       {/* Header */}
       <header className='relative z-30'>
         <nav
-          className='flex min-h-20 items-center justify-between gap-x-36 px-6 lg:px-8'
+          className='flex min-h-20 items-center justify-between gap-x-24 px-6 lg:px-8'
           aria-label='Global'
         >
           <div className='flex'>
@@ -71,7 +72,7 @@ export default function Frame({ children }: { children: React.ReactNode }) {
           <div className='flex lg:hidden'>
             <MobileMenuToggle />
           </div>
-          <div className='hidden grow justify-start lg:flex lg:gap-x-12'>
+          <div className='hidden grow justify-center lg:flex lg:gap-x-12'>
             {user &&
               navigation.map((item) => (
                 <Link

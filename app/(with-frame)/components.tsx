@@ -7,6 +7,7 @@ import {
   Bars3Icon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -18,6 +19,7 @@ export const navigation = [
   { name: '我的物品', href: '/items' },
   { name: '競標列表', href: '/auction-items' },
   { name: '帳戶紀錄', href: '/balance' },
+  { name: '交易紀錄', href: '/records' },
 ]
 
 const MobileMenuContext = createContext<[boolean, (open: boolean) => void]>([
@@ -54,6 +56,7 @@ export function MobileMenuToggle() {
 
 export function MobileMenu() {
   const [mobileMenuOpen, setMobileMenuOpen] = useContext(MobileMenuContext)
+  const pathname = usePathname()
   const user = useContext(UserContext)
 
   return (
@@ -89,7 +92,10 @@ export function MobileMenu() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
+                    className={clsx(
+                      '-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50',
+                      pathname.startsWith(item.href) && 'bg-indigo-50',
+                    )}
                   >
                     {item.name}
                   </Link>

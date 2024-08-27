@@ -449,3 +449,9 @@ export type SHIPPING_TYPE = (typeof SHIPPING_TYPE.data)[number]
 
 export const SHIPPING_STATUS = createMapper(STATIC_CONFIGS_DATA.shippingStatus)
 export type SHIPPING_STATUS = (typeof SHIPPING_STATUS.data)[number]
+
+export const RECORD_TYPE = createMapper(STATIC_CONFIGS_DATA.recordType)
+export type RECORD_TYPE = (typeof RECORD_TYPE.data)[number]
+
+export const RECORD_STATUS = createMapper(STATIC_CONFIGS_DATA.recordStatus)
+export type RECORD_STATUS = (typeof RECORD_STATUS.data)[number]
