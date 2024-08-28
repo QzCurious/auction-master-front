@@ -16,55 +16,29 @@ import AutoRefreshPage from '@/app/components/AutoRefreshPage'
 import { CountdownTime } from '@/app/components/CountdownTime'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
 import RedirectToHome from '@/app/RedirectToHome'
-import {
-  PAGE,
-  PaginationSchema,
-  PaginationSearchParams,
-  ROWS_PER_PAGE,
-} from '@/app/static'
+import { PAGE, parseSearchParams, ROWS_PER_PAGE } from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import Image from 'next/image'
 import * as R from 'remeda'
-import { z } from 'zod'
 import CancelBiddingPopover from './CancelBiddingPopover'
 import { DesktopFilters, MobileFilters } from './Filters'
 import PayFeePopover from './PayFeePopover'
 import PreviewDealPopover from './PreviewDealPopover'
-
-const filterSchema = z.object({
-  status: z
-    .preprocess(
-      (v) => (typeof v === 'string' ? [v] : v),
-      z.coerce
-        .number()
-        .refine(R.isIncludedIn(AUCTION_ITEM_STATUS.data.map((item) => item.value)))
-        .array(),
-    )
-    .default([
-      AUCTION_ITEM_STATUS.enum('InitStatus'),
-      AUCTION_ITEM_STATUS.enum('StopBiddingStatus'),
-      AUCTION_ITEM_STATUS.enum('HighestBiddedStatus'),
-      AUCTION_ITEM_STATUS.enum('NotHighestBiddedStatus'),
-      AUCTION_ITEM_STATUS.enum('ClosedStatus'),
-      AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus'),
-      AUCTION_ITEM_STATUS.enum('ConsignorRequestCancellationStatus'),
-    ]),
-})
+import { SearchParamsSchema } from './SearchParamsSchema'
 
 interface PageProps {
-  searchParams: PaginationSearchParams & z.output<typeof filterSchema>
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const filters = filterSchema.parse(searchParams)
-  const pagination = PaginationSchema.parse(searchParams)
+  const filters = parseSearchParams(SearchParamsSchema, searchParams)
 
   const [auctionItemsRes] = await Promise.all([
     GetConsignorAuctionItems({
       status: filters.status,
-      limit: pagination[ROWS_PER_PAGE],
-      offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
+      limit: filters[ROWS_PER_PAGE],
+      offset: filters[PAGE] * filters[ROWS_PER_PAGE],
     }),
   ])
 

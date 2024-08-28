@@ -17,8 +17,6 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import * as R from 'remeda'
 
-const side = 'consignor'
-
 const filters = [
   {
     field: 'status',

@@ -1,51 +1,29 @@
 import { GetConsignorItems } from '@/app/api/frontend/items/GetConsignorItems'
 import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { Button } from '@/app/catalyst-ui/button'
+import { Heading } from '@/app/catalyst-ui/heading'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
 import RedirectToHome from '@/app/RedirectToHome'
-import {
-  PAGE,
-  PaginationSchema,
-  PaginationSearchParams,
-  ROWS_PER_PAGE,
-  SITE_NAME,
-} from '@/app/static'
+import { PAGE, parseSearchParams, ROWS_PER_PAGE, SITE_NAME } from '@/app/static'
 import { PhotoIcon } from '@heroicons/react/20/solid'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import Link from 'next/link'
-import * as R from 'remeda'
-import { z } from 'zod'
 import AutoRefreshPage from '../../components/AutoRefreshPage'
 import { DesktopFilters, MobileFilters } from './Filters'
-import { Heading } from '@/app/catalyst-ui/heading'
+import { SearchParamsSchema } from './SearchParamsSchema'
 
 export const metadata = { title: `我的物品 | ${SITE_NAME}` }
 
-const filterSchema = z.object({
-  status: z
-    .preprocess(
-      (v) => (typeof v === 'string' ? [v] : v),
-      z.coerce
-        .number()
-        .array()
-        .transform(
-          R.filter(R.isIncludedIn(ITEM_STATUS.data.map((item) => item.value))),
-        ),
-    )
-    .default([]),
-})
-
 interface PageProps {
-  searchParams: PaginationSearchParams & z.input<typeof filterSchema>
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const filter = filterSchema.parse(searchParams)
-  const pagination = PaginationSchema.parse(searchParams)
+  const filter = parseSearchParams(SearchParamsSchema, searchParams)
   const itemsRes = await GetConsignorItems({
-    limit: pagination[ROWS_PER_PAGE],
-    offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
+    limit: filter[ROWS_PER_PAGE],
+    offset: filter[PAGE] * filter[ROWS_PER_PAGE],
     sort: 'createdAt',
     order: 'desc',
     status: filter.status,
