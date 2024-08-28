@@ -3,7 +3,6 @@
 import { parse } from 'csv-parse/sync'
 import { LRUCache } from 'lru-cache'
 import { z } from 'zod'
-import { combinations } from '../static'
 
 const currencies = [
   'NTD',
@@ -125,3 +124,28 @@ const ss =
   'MYR,Buying,5.96000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,Selling,7.48500,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,\r\n' +
   'CNY,Buying,4.38700,4.45400,4.45690,4.45070,4.44410,4.43720,4.43180,4.42400,4.42090,Selling,4.54900,4.51400,4.50820,4.50470,4.49960,4.49320,4.49080,4.48830,4.48590,\r\n' +
   ''
+
+/**
+ * Calculates the factorial of a number.
+ * @param num - The number to calculate the factorial for.
+ * @returns The factorial of the given number.
+ */
+function factorial(num: number): number {
+  if (num === 0 || num === 1) {
+    return 1
+  }
+  return num * factorial(num - 1)
+}
+
+/**
+ * Calculates the number of combinations (n choose p).
+ * @param n - The total number of items.
+ * @param p - The number of items to pick.
+ * @returns The number of combinations.
+ */
+function combinations(n: number, p: number): number {
+  if (p > n) {
+    throw new Error('p cannot be greater than n')
+  }
+  return factorial(n) / (factorial(p) * factorial(n - p))
+}
