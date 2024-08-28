@@ -14,17 +14,21 @@ import { DateRange, DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 
 export default function DateRangeFilter({
-  start,
-  end,
+  startAt,
+  endAt,
+  zIndex,
+  canCancel = false,
 }: {
-  start?: Date
-  end?: Date
+  startAt?: Date
+  endAt?: Date
+  zIndex?: number
+  canCancel?: boolean
 }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: start,
-    to: end,
+    from: startAt,
+    to: endAt,
   })
 
   return (
@@ -37,20 +41,20 @@ export default function DateRangeFilter({
             type='text'
             readOnly
             value={
-              start && end
-                ? format(start, DATE_FORMAT) + ' ~ ' + format(end, DATE_FORMAT)
+              startAt && endAt
+                ? format(startAt, DATE_FORMAT) + ' ~ ' + format(endAt, DATE_FORMAT)
                 : ''
             }
           />
-          {start && end && (
+          {canCancel && startAt && endAt && (
             <button
               type='button'
               data-slot='icon'
               className='!pointer-events-auto'
               onClick={() => {
                 const newSearchParams = new URLSearchParams(searchParams)
-                newSearchParams.delete('start')
-                newSearchParams.delete('end')
+                newSearchParams.delete('startAt')
+                newSearchParams.delete('endAt')
                 newSearchParams.delete(PAGE)
                 router.replace(`?${newSearchParams.toString()}`)
               }}
@@ -66,6 +70,7 @@ export default function DateRangeFilter({
         <PopoverPanel
           anchor='bottom start'
           transition
+          style={{ zIndex }}
           className={clsx(
             'mt-0.5 rounded-lg bg-white shadow-lg',
             'transition duration-100 data-[closed]:opacity-0 data-[enter]:ease-out data-[leave]:ease-in sm:data-[closed]:translate-y-0 sm:data-[closed]:data-[enter]:scale-95',
@@ -76,7 +81,7 @@ export default function DateRangeFilter({
               {
                 // HACK: Popover don't have onClose callback
                 <UnmountAction
-                  action={() => setDateRange({ from: start, to: end })}
+                  action={() => setDateRange({ from: startAt, to: endAt })}
                 />
               }
               <DayPicker
@@ -112,8 +117,8 @@ export default function DateRangeFilter({
                     return
                   }
                   const newSearchParams = new URLSearchParams(searchParams)
-                  newSearchParams.set('start', format(r.from, DATE_FORMAT))
-                  newSearchParams.set('end', format(r.to, DATE_FORMAT))
+                  newSearchParams.set('startAt', r.from.toISOString())
+                  newSearchParams.set('endAt', r.to.toISOString())
                   newSearchParams.delete(PAGE)
 
                   router.replace(`?${newSearchParams}`)

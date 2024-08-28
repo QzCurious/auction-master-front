@@ -1,7 +1,10 @@
 'use client'
 
 import { RECORD_STATUS, RECORD_TYPE } from '@/app/api/frontend/static-configs.data'
+import { Field, Label } from '@/app/catalyst-ui/fieldset'
+import { Input } from '@/app/catalyst-ui/input'
 import { Text } from '@/app/catalyst-ui/text'
+import { DATE_FORMAT } from '@/app/static'
 import {
   Dialog,
   DialogBackdrop,
@@ -9,13 +12,67 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
+  Popover,
+  PopoverButton,
+  PopoverPanel,
 } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
+import { format, startOfDay, subDays, subHours } from 'date-fns'
+import { zhTW } from 'date-fns/locale'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
+import { DayPicker } from 'react-day-picker'
+import 'react-day-picker/dist/style.css'
 import * as R from 'remeda'
+import { z } from 'zod'
+import DateRangeFilter from '../balance/DateRangeFilter'
+import { SearchParamsSchema } from './SearchParamsSchema'
+
+export function DateRange() {
+  const [endAt, setEndAt] = useState(() => subHours(new Date(), 1))
+  const [startAt, setStartAt] = useState(() => startOfDay(subDays(endAt, 7)))
+
+  return (
+    <Field className='sm:col-span-2'>
+      <Label>區間</Label>
+      <Popover as={Fragment}>
+        <PopoverButton
+          as={Input}
+          type='text'
+          readOnly
+          value={format(startAt, DATE_FORMAT) + ' - ' + format(endAt, DATE_FORMAT)}
+        />
+        <PopoverPanel
+          anchor='bottom start'
+          transition
+          className={clsx(
+            'mt-0.5 rounded-lg bg-white shadow-lg',
+            'transition duration-100 data-[closed]:opacity-0 data-[enter]:ease-out data-[leave]:ease-in sm:data-[closed]:translate-y-0 sm:data-[closed]:data-[enter]:scale-95',
+          )}
+        >
+          {({ close }) => (
+            <DayPicker
+              locale={zhTW}
+              weekStartsOn={0}
+              mode='range'
+              captionLayout='dropdown'
+              selected={{ from: startAt, to: endAt }}
+              onSelect={(v) => {
+                v?.from && setStartAt(v.from)
+                v?.to && setEndAt(v.to)
+                if (v?.from && v?.to) close()
+              }}
+              fromYear={new Date().getFullYear() - 100}
+              toYear={new Date().getFullYear()}
+            />
+          )}
+        </PopoverPanel>
+      </Popover>
+    </Field>
+  )
+}
 
 const filters = {
   type: {
@@ -51,10 +108,10 @@ const filters = {
 filters.type.options.length satisfies typeof RECORD_TYPE.data.length
 filters.status.options.length satisfies typeof RECORD_STATUS.data.length
 
-interface FilterProps {
-  type: Array<RECORD_TYPE['value']>
-  status: Array<RECORD_STATUS['value']>
-}
+type FilterProps = Pick<
+  z.output<typeof SearchParamsSchema>,
+  'startAt' | 'endAt' | 'type' | 'status'
+>
 
 function DesktopCheckboxGroup<T extends string | number>({
   label,
@@ -102,23 +159,26 @@ export function DesktopFilters(props: FilterProps) {
   const searchParams = useSearchParams()
 
   return (
-    <form className='hidden min-w-fit space-y-10 divide-y divide-gray-200 lg:block'>
-      {R.entries(filters).map(([field, section], sectionIdx) => (
-        <div key={section.label} className={clsx(sectionIdx !== 0 && 'pt-10')}>
-          <DesktopCheckboxGroup
-            label={section.label}
-            options={section.options}
-            selected={props[field]}
-            onChange={(value) => {
-              const newSearch = new URLSearchParams(searchParams)
-              newSearch.delete(field)
-              value.forEach((v) => newSearch.append(field, v.toString()))
-              router.replace(`?${newSearch.toString()}`)
-            }}
-          />
-        </div>
-      ))}
-    </form>
+    <div className='hidden min-w-fit lg:block'>
+      <DateRangeFilter startAt={props.startAt} endAt={props.endAt} />
+      <form className='mt-6 space-y-10 divide-y divide-gray-200'>
+        {R.entries(filters).map(([field, section], sectionIdx) => (
+          <div key={section.label} className={clsx(sectionIdx !== 0 && 'pt-10')}>
+            <DesktopCheckboxGroup
+              label={section.label}
+              options={section.options}
+              selected={props[field]}
+              onChange={(value) => {
+                const newSearch = new URLSearchParams(searchParams)
+                newSearch.delete(field)
+                value.forEach((v) => newSearch.append(field, v.toString()))
+                router.replace(`?${newSearch.toString()}`)
+              }}
+            />
+          </div>
+        ))}
+      </form>
+    </div>
   )
 }
 
@@ -237,6 +297,14 @@ export function MobileFilters(props: FilterProps) {
             </div>
 
             {/* Filters */}
+            <div className='my-4 px-4'>
+              <DateRangeFilter
+                zIndex={50}
+                startAt={props.startAt}
+                endAt={props.endAt}
+              />
+            </div>
+
             <form className='mt-4'>
               {R.entries(filters).map(([field, section]) => (
                 <MobileCheckboxGroup

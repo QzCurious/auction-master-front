@@ -9,58 +9,43 @@ import {
   TableHeader,
   TableRow,
 } from '@/app/catalyst-ui/table'
-import AutoRefreshPage from '@/app/components/AutoRefreshPage'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
 import RedirectToHome from '@/app/RedirectToHome'
 import {
   DATE_TIME_FORMAT,
   PAGE,
-  PaginationSchema,
-  PaginationSearchParams,
+  parseSearchParams,
   ROWS_PER_PAGE,
 } from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
-import { format } from 'date-fns'
+import { format, startOfDay, subDays, subHours } from 'date-fns'
 import Link from 'next/link'
 import * as R from 'remeda'
-import { z } from 'zod'
 import { DesktopFilters, MobileFilters } from './Filters'
-
-const filterSchema = z.object({
-  type: z
-    .preprocess(
-      (v) => (typeof v === 'string' ? [v] : v),
-      z.coerce
-        .number()
-        .refine(R.isIncludedIn(RECORD_TYPE.data.map((item) => item.value)))
-        .array(),
-    )
-    .default([]),
-  status: z
-    .preprocess(
-      (v) => (typeof v === 'string' ? [v] : v),
-      z.coerce
-        .number()
-        .refine(R.isIncludedIn(RECORD_STATUS.data.map((item) => item.value)))
-        .array(),
-    )
-    .default([]),
-})
+import { isValidInterval, SearchParamsSchema } from './SearchParamsSchema'
 
 interface PageProps {
-  searchParams: PaginationSearchParams & z.output<typeof filterSchema>
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const filters = filterSchema.parse(searchParams)
-  const pagination = PaginationSchema.parse(searchParams)
+  const filters = parseSearchParams(SearchParamsSchema, searchParams)
+
+  filters.endAt ??= subHours(new Date(), 1)
+  filters.startAt ??= startOfDay(subDays(filters.endAt, 7))
+  if (!isValidInterval(filters.startAt, filters.endAt)) {
+    filters.endAt = subHours(new Date(), 1)
+    filters.startAt = startOfDay(subDays(filters.endAt, 7))
+  }
 
   const [reportRecordsRes] = await Promise.all([
     GetRecords({
+      startAt: filters.startAt,
+      endAt: filters.endAt,
       status: filters.status,
       type: filters.type,
-      limit: pagination[ROWS_PER_PAGE],
-      offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
+      limit: filters[ROWS_PER_PAGE],
+      offset: filters[PAGE] * filters[ROWS_PER_PAGE],
     }),
   ])
 
@@ -69,28 +54,38 @@ export default async function Page({ searchParams }: PageProps) {
   }
 
   return (
-    <AutoRefreshPage ms={10_000}>
-      <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
-        <Heading level={1} className='lg:sr-only'>
-          交易紀錄
-        </Heading>
+    <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
+      <Heading level={1} className='lg:sr-only'>
+        交易紀錄
+      </Heading>
 
-        <div className='mt-2.5'>
-          <MobileFilters type={filters.type} status={filters.status} />
-        </div>
-
-        <div className='mt-6 sm:flex sm:gap-16'>
-          <DesktopFilters type={filters.type} status={filters.status} />
-
-          <ReportRecordTable
-            rows={reportRecordsRes.data.records}
-            count={reportRecordsRes.data.count}
-          />
-        </div>
+      <div className='mt-2.5'>
+        <MobileFilters
+          startAt={filters.startAt}
+          endAt={filters.endAt}
+          type={filters.type}
+          status={filters.status}
+        />
       </div>
-    </AutoRefreshPage>
+
+      <div className='mt-6 sm:flex sm:gap-16'>
+        <DesktopFilters
+          startAt={filters.startAt}
+          endAt={filters.endAt}
+          type={filters.type}
+          status={filters.status}
+        />
+
+        <ReportRecordTable
+          rows={reportRecordsRes.data.records}
+          count={reportRecordsRes.data.count}
+        />
+      </div>
+    </div>
   )
 }
+
+function ReportSummery() {}
 
 interface ReportRecordTableProps {
   rows: Record[]

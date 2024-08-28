@@ -32,8 +32,8 @@ import DateRangeFilter from './DateRangeFilter'
 
 const querySchema = z.intersection(
   z.object({
-    start: z.coerce.date().optional(),
-    end: z.coerce.date().optional(),
+    startAt: z.coerce.date().optional(),
+    endAt: z.coerce.date().optional(),
   }),
   z.preprocess(
     z.object({ type: z.enum(['balance', 'bonus']).default('balance') }).parse,
@@ -84,8 +84,8 @@ export default async function Page({ searchParams }: PageProps) {
     GetConsignorWalletBalance(),
     query.type === 'balance'
       ? GetWalletLogs({
-          startAt: query.start,
-          endAt: query.end,
+          startAt: query.startAt,
+          endAt: query.endAt,
           limit: pagination[ROWS_PER_PAGE],
           offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
         })
@@ -93,8 +93,8 @@ export default async function Page({ searchParams }: PageProps) {
     GetConsignorBonusBalance(),
     query.type === 'bonus'
       ? GetBonusLogs({
-          startAt: query.start,
-          endAt: query.end,
+          startAt: query.startAt,
+          endAt: query.endAt,
           limit: pagination[ROWS_PER_PAGE],
           offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
         })
@@ -152,7 +152,7 @@ export default async function Page({ searchParams }: PageProps) {
 
         <div>
           {/* {query.type === 'balance' && <AuctionFilter selected={query.action} />} */}
-          <DateRangeFilter start={query.start} end={query.end} />
+          <DateRangeFilter canCancel startAt={query.startAt} endAt={query.endAt} />
         </div>
 
         <div className='mt-4'>
