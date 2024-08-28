@@ -14,6 +14,8 @@ const options = [
   WALLET_ACTION.data[3],
   WALLET_ACTION.data[4],
   WALLET_ACTION.data[5],
+  WALLET_ACTION.data[6],
+  WALLET_ACTION.data[7],
 ] as const
 
 options.length satisfies typeof WALLET_ACTION.data.length

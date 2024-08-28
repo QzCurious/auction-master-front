@@ -29,6 +29,7 @@ const filters = {
         RECORD_TYPE.data[4],
         RECORD_TYPE.data[5],
         RECORD_TYPE.data[6],
+        RECORD_TYPE.data[7],
       ],
       ({ value, message }) => ({ label: message, value }),
     ),
