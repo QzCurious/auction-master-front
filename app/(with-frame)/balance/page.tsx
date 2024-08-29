@@ -24,11 +24,36 @@ import {
 } from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
-import { format } from 'date-fns'
+import { addDays, addMonths, format, startOfDay, subDays } from 'date-fns'
 import Link from 'next/link'
 import * as R from 'remeda'
 import { z } from 'zod'
 import DateRangeFilter from './DateRangeFilter'
+
+const MAX_MONTHS = 3
+
+function validRange(startAt?: Date, endAt?: Date) {
+  return Boolean(
+    startAt &&
+      endAt &&
+      startAt <= endAt &&
+      // let UI handle the max date, cause server can't calculate end of day on user's timezone
+      // endAt <= endOfDay(new Date()) &&
+      addMonths(startAt, MAX_MONTHS) >= startOfDay(endAt),
+  )
+}
+
+function fixRange(startAt?: Date, endAt?: Date) {
+  const wasValid = validRange(startAt, endAt)
+
+  if (wasValid) {
+    return { wasValid, startAt, endAt }
+  }
+
+  const defaultEndAt = startOfDay(addDays(new Date(), 1))
+  const defaultStartAt = startOfDay(subDays(defaultEndAt, 7))
+  return { wasValid, startAt: defaultStartAt, endAt: defaultEndAt }
+}
 
 const querySchema = z.intersection(
   z.object({
@@ -79,13 +104,14 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const query = querySchema.parse(searchParams)
   const pagination = PaginationSchema.parse(searchParams)
+  const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
 
   const [balanceRes, walletLogsRes, bonusRes, bonusLogsRes] = await Promise.all([
     GetConsignorWalletBalance(),
     query.type === 'balance'
       ? GetWalletLogs({
-          startAt: query.startAt,
-          endAt: query.endAt,
+          startAt,
+          endAt,
           limit: pagination[ROWS_PER_PAGE],
           offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
         })
@@ -93,8 +119,8 @@ export default async function Page({ searchParams }: PageProps) {
     GetConsignorBonusBalance(),
     query.type === 'bonus'
       ? GetBonusLogs({
-          startAt: query.startAt,
-          endAt: query.endAt,
+          startAt,
+          endAt,
           limit: pagination[ROWS_PER_PAGE],
           offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
         })
@@ -152,7 +178,11 @@ export default async function Page({ searchParams }: PageProps) {
 
         <div>
           {/* {query.type === 'balance' && <AuctionFilter selected={query.action} />} */}
-          <DateRangeFilter canCancel startAt={query.startAt} endAt={query.endAt} />
+          <DateRangeFilter
+            canCancel
+            startAt={wasValid ? startAt : undefined}
+            endAt={wasValid ? endAt : undefined}
+          />
         </div>
 
         <div className='mt-4'>

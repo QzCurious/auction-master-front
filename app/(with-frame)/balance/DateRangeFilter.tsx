@@ -6,7 +6,7 @@ import { DATE_FORMAT, PAGE } from '@/app/static'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import { addMonths, format, subMonths } from 'date-fns'
+import { addMonths, endOfDay, format, startOfDay, subMonths } from 'date-fns'
 import { zhTW } from 'date-fns/locale'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, useEffect, useRef, useState } from 'react'
@@ -117,8 +117,8 @@ export default function DateRangeFilter({
                     return
                   }
                   const newSearchParams = new URLSearchParams(searchParams)
-                  newSearchParams.set('startAt', r.from.toISOString())
-                  newSearchParams.set('endAt', r.to.toISOString())
+                  newSearchParams.set('startAt', startOfDay(r.from).toISOString())
+                  newSearchParams.set('endAt', endOfDay(r.to).toISOString())
                   newSearchParams.delete(PAGE)
 
                   router.replace(`?${newSearchParams}`)

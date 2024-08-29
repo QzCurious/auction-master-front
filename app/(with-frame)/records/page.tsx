@@ -18,11 +18,11 @@ import {
   ROWS_PER_PAGE,
 } from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
-import { format, startOfDay, subDays, subHours } from 'date-fns'
+import { format } from 'date-fns'
 import Link from 'next/link'
 import * as R from 'remeda'
 import { DesktopFilters, MobileFilters } from './Filters'
-import { isValidInterval, SearchParamsSchema } from './SearchParamsSchema'
+import { fixRange, SearchParamsSchema } from './SearchParamsSchema'
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -30,18 +30,12 @@ interface PageProps {
 
 export default async function Page({ searchParams }: PageProps) {
   const filters = parseSearchParams(SearchParamsSchema, searchParams)
-
-  filters.endAt ??= subHours(new Date(), 1)
-  filters.startAt ??= startOfDay(subDays(filters.endAt, 7))
-  if (!isValidInterval(filters.startAt, filters.endAt)) {
-    filters.endAt = subHours(new Date(), 1)
-    filters.startAt = startOfDay(subDays(filters.endAt, 7))
-  }
+  const { wasValid, startAt, endAt } = fixRange(filters.startAt, filters.endAt)
 
   const [reportRecordsRes] = await Promise.all([
     GetRecords({
-      startAt: filters.startAt,
-      endAt: filters.endAt,
+      startAt,
+      endAt,
       status: filters.status,
       type: filters.type,
       limit: filters[ROWS_PER_PAGE],
@@ -61,8 +55,8 @@ export default async function Page({ searchParams }: PageProps) {
 
       <div className='mt-2.5'>
         <MobileFilters
-          startAt={filters.startAt}
-          endAt={filters.endAt}
+          startAt={wasValid ? startAt : undefined}
+          endAt={wasValid ? endAt : undefined}
           type={filters.type}
           status={filters.status}
         />
@@ -70,8 +64,8 @@ export default async function Page({ searchParams }: PageProps) {
 
       <div className='mt-6 sm:flex sm:gap-16'>
         <DesktopFilters
-          startAt={filters.startAt}
-          endAt={filters.endAt}
+          startAt={wasValid ? startAt : undefined}
+          endAt={wasValid ? endAt : undefined}
           type={filters.type}
           status={filters.status}
         />
