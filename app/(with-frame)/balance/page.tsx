@@ -112,6 +112,8 @@ export default async function Page({ searchParams }: PageProps) {
       ? GetWalletLogs({
           startAt,
           endAt,
+          sort: 'createdAt',
+          order: 'desc',
           limit: pagination[ROWS_PER_PAGE],
           offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
         })
@@ -121,6 +123,8 @@ export default async function Page({ searchParams }: PageProps) {
       ? GetBonusLogs({
           startAt,
           endAt,
+          sort: 'createdAt',
+          order: 'desc',
           limit: pagination[ROWS_PER_PAGE],
           offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
         })

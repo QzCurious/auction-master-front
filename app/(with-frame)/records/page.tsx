@@ -38,6 +38,8 @@ export default async function Page({ searchParams }: PageProps) {
       endAt,
       status: filters.status,
       type: filters.type,
+      sort: 'createdAt',
+      order: 'desc',
       limit: filters[ROWS_PER_PAGE],
       offset: filters[PAGE] * filters[ROWS_PER_PAGE],
     }),

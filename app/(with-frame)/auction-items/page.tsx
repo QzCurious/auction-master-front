@@ -37,6 +37,8 @@ export default async function Page({ searchParams }: PageProps) {
   const [auctionItemsRes] = await Promise.all([
     GetConsignorAuctionItems({
       status: filters.status,
+      sort: 'createdAt',
+      order: 'desc',
       limit: filters[ROWS_PER_PAGE],
       offset: filters[PAGE] * filters[ROWS_PER_PAGE],
     }),

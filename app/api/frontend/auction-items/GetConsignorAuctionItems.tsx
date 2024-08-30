@@ -6,6 +6,8 @@ import { AUCTION_ITEM_STATUS } from '../static-configs.data'
 
 const ReqSchema = z.object({
   status: z.coerce.number().array().optional(),
+  sort: z.string().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
   limit: z.coerce.number().default(10),
   offset: z.coerce.number().default(0),
 })
@@ -56,6 +58,8 @@ export async function GetConsignorAuctionItems(payload: z.input<typeof ReqSchema
   for (const status of parsed.status ?? []) {
     query.append('status', status.toString())
   }
+  parsed.sort != null && query.append('sort', parsed.sort)
+  parsed.order != null && query.append('order', parsed.order)
   parsed.limit != null && query.append('limit', parsed.limit.toString())
   parsed.offset != null && query.append('offset', parsed.offset.toString())
 

@@ -8,8 +8,8 @@ const ReqSchema = z.object({
   startAt: z.coerce.date().optional(),
   endAt: z.coerce.date().optional(),
   status: z.coerce.number().array().optional(),
-  sort: z.string().optional().default('createdAt'),
-  order: z.enum(['asc', 'desc']).optional().default('desc'),
+  sort: z.string().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
   limit: z.coerce.number().default(10),
   offset: z.coerce.number().default(0),
 })
