@@ -170,9 +170,8 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                       <PreviewDealPopover auctionItemId={row.id} />
                     )}
                     {row.status ===
-                      AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus') && (
-                      <PayFeePopover auctionItemId={row.id} />
-                    )}
+                      AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus') &&
+                      !row.recordID && <PayFeePopover auctionItemId={row.id} />}
                   </div>
                 )}
               </TableCell>
