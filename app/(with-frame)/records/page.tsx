@@ -18,9 +18,8 @@ import {
   ROWS_PER_PAGE,
 } from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
+import clsx from 'clsx'
 import { format } from 'date-fns'
-import Link from 'next/link'
-import * as R from 'remeda'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { fixRange, SearchParamsSchema } from './SearchParamsSchema'
 
@@ -95,6 +94,7 @@ function ReportRecordTable({ rows, count }: ReportRecordTableProps) {
         <TableHead>
           <TableRow className='text-center'>
             <TableHeader>類型</TableHeader>
+            <TableHeader>幣別</TableHeader>
             <TableHeader>狀態</TableHeader>
             <TableHeader>細節</TableHeader>
           </TableRow>
@@ -117,36 +117,93 @@ function ReportRecordTable({ rows, count }: ReportRecordTableProps) {
               <TableCell className='text-center'>
                 {RECORD_TYPE.get('value', row.type).message}
               </TableCell>
-              <TableCell className='text-center'>
+              <TableCell className='text-center'>{row.currency}</TableCell>
+              <TableCell
+                className={clsx(
+                  'text-center',
+                  row.status === RECORD_STATUS.enum('UnpaidStatus') &&
+                    'text-rose-500',
+                )}
+              >
                 {RECORD_STATUS.get('value', row.status).message}
               </TableCell>
-              <TableCell>
+              <TableCell className='w-0'>
                 <Table dense>
-                  <TableBody>
-                    {R.entries(row).map(([k, v]) => (
-                      <TableRow key={k}>
-                        <TableCell>{k}</TableCell>
+                  <TableBody className='[&>tr:last-child>td]:border-0 [&_td:nth-child(2)]:text-end'>
+                    {row.jpyWithdrawal != null && (
+                      <TableRow>
+                        <TableCell>日幣提款金額</TableCell>
+                        <TableCell>{row.jpyWithdrawal.toLocaleString()}</TableCell>
+                      </TableRow>
+                    )}
+                    {row.withdrawal != null && (
+                      <TableRow>
+                        <TableCell>提款金額</TableCell>
+                        <TableCell>{row.withdrawal.toLocaleString()}</TableCell>
+                      </TableRow>
+                    )}
+                    {row.price != null && (
+                      <TableRow>
+                        <TableCell>計算金額</TableCell>
+                        <TableCell>{row.price.toLocaleString()}</TableCell>
+                      </TableRow>
+                    )}
+                    {row.directPurchasePrice != null && (
+                      <TableRow>
+                        <TableCell>直購金額</TableCell>
                         <TableCell>
-                          {k === 'type' ? (
-                            <>
-                              ({v}) {RECORD_TYPE.enum(v)}
-                            </>
-                          ) : k === 'status' ? (
-                            <>
-                              ({v}) {RECORD_STATUS.enum(v)}
-                            </>
-                          ) : k === 'createdAt' || k === 'updatedAt' ? (
-                            format(new Date(v), DATE_TIME_FORMAT)
-                          ) : k === 'itemID' ? (
-                            <Link href={`/dashboard/items/edit/${v}`} target='_blank'>
-                              {v}
-                            </Link>
-                          ) : (
-                            v
-                          )}
+                          {row.directPurchasePrice.toLocaleString()}
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )}
+                    {row.purchasedPrice != null && (
+                      <TableRow>
+                        <TableCell>最低買入金額</TableCell>
+                        <TableCell>{row.purchasedPrice.toLocaleString()}</TableCell>
+                      </TableRow>
+                    )}
+                    {row.yahooAuctionFee != null && (
+                      <TableRow>
+                        <TableCell>日拍手續費</TableCell>
+                        <TableCell>{row.yahooAuctionFee.toLocaleString()}</TableCell>
+                      </TableRow>
+                    )}
+                    {row.commission != null && (
+                      <TableRow>
+                        <TableCell>平台手續費</TableCell>
+                        <TableCell>{row.commission.toLocaleString()}</TableCell>
+                      </TableRow>
+                    )}
+                    {row.bonus != null && (
+                      <TableRow>
+                        <TableCell>回饋</TableCell>
+                        <TableCell>{row.bonus.toLocaleString()}</TableCell>
+                      </TableRow>
+                    )}
+                    {row.yahooCancellationFee != null && (
+                      <TableRow>
+                        <TableCell>日拍取消手續費</TableCell>
+                        <TableCell>
+                          {row.yahooCancellationFee.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                    {row.spaceFee != null && (
+                      <TableRow>
+                        <TableCell>留倉費</TableCell>
+                        <TableCell>{row.spaceFee.toLocaleString()}</TableCell>
+                      </TableRow>
+                    )}
+                    {row.shippingCost != null && (
+                      <TableRow>
+                        <TableCell>運費</TableCell>
+                        <TableCell>{row.shippingCost.toLocaleString()}</TableCell>
+                      </TableRow>
+                    )}
+                    <TableRow>
+                      <TableCell>時間</TableCell>
+                      <TableCell>{format(row.createdAt, DATE_TIME_FORMAT)}</TableCell>
+                    </TableRow>
                   </TableBody>
                 </Table>
               </TableCell>

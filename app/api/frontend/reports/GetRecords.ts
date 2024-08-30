@@ -23,25 +23,30 @@ export interface Record {
   type: RECORD_TYPE['value']
   consignorID: number
   consignorNickname: string
-  opCode?: string
-  itemID: number
-  currency: string
-  directPurchasePrice?: number
-  status: RECORD_STATUS['value']
-  createdAt: string
-  updatedAt: string
-  auctionID?: number
+  opCode: string
+  itemID?: number
+  auctionItemID?: number
+  currency?: string
+  exchangeRate?: number
+  jpyWithdrawal?: number
+  withdrawal?: number
   closedPrice?: number
   price?: number
-  yahooFeeRate?: number
-  yahooFee?: number
+  directPurchasePrice?: number
+  purchasedPrice?: number
+  yahooAuctionFeeRate?: number
+  yahooAuctionFee?: number
   commissionRate?: number
   commission?: number
   bonusRate?: number
   bonus?: number
   profit?: number
   yahooCancellationFee?: number
-  exchangeRate?: number
+  spaceFee?: number
+  shippingCost?: number
+  status: RECORD_STATUS['value']
+  createdAt: string
+  updatedAt: string
 }
 
 interface Data {
