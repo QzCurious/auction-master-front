@@ -161,7 +161,7 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 ]) ? (
                   <div className='flex flex-col items-center gap-y-1'>
                     <CountdownTime until={new Date(row.closeAt)} />
-                    <CancelBiddingPopover auctionItem={row} />
+                    {!row.recordID && <CancelBiddingPopover auctionItem={row} />}
                   </div>
                 ) : (
                   <div className='flex flex-col items-center gap-y-1'>
