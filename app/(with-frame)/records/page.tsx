@@ -1,4 +1,5 @@
 import { GetRecords, Record } from '@/app/api/frontend/reports/GetRecords'
+import { GetRecordsSummary } from '@/app/api/frontend/reports/GetRecordsSummary'
 import { RECORD_STATUS, RECORD_TYPE } from '@/app/api/frontend/static-configs.data'
 import { Heading } from '@/app/catalyst-ui/heading'
 import {
@@ -32,7 +33,13 @@ export default async function Page({ searchParams }: PageProps) {
   const filters = parseSearchParams(SearchParamsSchema, searchParams)
   const { wasValid, startAt, endAt } = fixRange(filters.startAt, filters.endAt)
 
-  const [reportRecordsRes] = await Promise.all([
+  const [reportsSummaryRes, reportRecordsRes] = await Promise.all([
+    GetRecordsSummary({
+      startAt,
+      endAt,
+      status: filters.status,
+      type: filters.type,
+    }),
     GetRecords({
       startAt,
       endAt,
@@ -45,7 +52,7 @@ export default async function Page({ searchParams }: PageProps) {
     }),
   ])
 
-  if (reportRecordsRes?.error === '1003') {
+  if (reportsSummaryRes.error === '1003' || reportRecordsRes.error === '1003') {
     return <RedirectToHome />
   }
 
@@ -72,16 +79,47 @@ export default async function Page({ searchParams }: PageProps) {
           status={filters.status}
         />
 
-        <ReportRecordTable
-          rows={reportRecordsRes.data.records}
-          count={reportRecordsRes.data.count}
-        />
+        <div className='min-w-0 grow'>
+          <section className='flex gap-x-4 overflow-auto'>
+            <div className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'>
+              <Heading level={2}>JPY</Heading>
+              <Table dense>
+                <TableBody>
+                  {Object.entries(reportsSummaryRes.data.JPY).map(([k, v]) => (
+                    <TableRow key={k}>
+                      <TableCell>{k}</TableCell>
+                      <TableCell className='text-end'>{v.toLocaleString()}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <div className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'>
+              <Heading level={2}>TWD</Heading>
+              <Table dense>
+                <TableBody>
+                  {Object.entries(reportsSummaryRes.data.TWD).map(([k, v]) => (
+                    <TableRow key={k}>
+                      <TableCell>{k}</TableCell>
+                      <TableCell className='text-end'>{v.toLocaleString()}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </section>
+
+          <div className='mt-10'>
+            <ReportRecordTable
+              rows={reportRecordsRes.data.records}
+              count={reportRecordsRes.data.count}
+            />
+          </div>
+        </div>
       </div>
     </div>
   )
 }
-
-function ReportSummery() {}
 
 interface ReportRecordTableProps {
   rows: Record[]
@@ -90,7 +128,7 @@ interface ReportRecordTableProps {
 
 function ReportRecordTable({ rows, count }: ReportRecordTableProps) {
   return (
-    <div className='min-w-0 grow'>
+    <div>
       <Table striped>
         <TableHead>
           <TableRow className='text-center'>

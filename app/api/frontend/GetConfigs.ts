@@ -10,6 +10,9 @@ export interface Configs {
   auctionItemCancellationFee: number
   costPerSpace: number
   lineURL: string
+  bankName: string
+  bankCode: string
+  bankAccount: string
   shippingInfo: {
     company: {
       address: string
