@@ -94,7 +94,6 @@ function ReportRecordTable({ rows, count }: ReportRecordTableProps) {
         <TableHead>
           <TableRow className='text-center'>
             <TableHeader>類型</TableHeader>
-            <TableHeader>幣別</TableHeader>
             <TableHeader>狀態</TableHeader>
             <TableHeader>細節</TableHeader>
           </TableRow>
@@ -112,103 +111,146 @@ function ReportRecordTable({ rows, count }: ReportRecordTableProps) {
               </TableCell>
             </TableRow>
           )}
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell className='text-center'>
-                {RECORD_TYPE.get('value', row.type).message}
-              </TableCell>
-              <TableCell className='text-center'>{row.currency}</TableCell>
-              <TableCell
-                className={clsx(
-                  'text-center',
-                  row.status === RECORD_STATUS.enum('UnpaidStatus') &&
-                    'text-rose-500',
-                )}
-              >
-                {RECORD_STATUS.get('value', row.status).message}
-              </TableCell>
-              <TableCell className='w-0'>
-                <Table dense>
-                  <TableBody className='[&>tr:last-child>td]:border-0 [&_td:nth-child(2)]:text-end'>
-                    {row.jpyWithdrawal != null && (
+          {rows.map((row) => {
+            const currencySign = (function () {
+              switch (row.currency) {
+                case 'JPY':
+                  return '¥'
+                case 'TWD':
+                  return 'NT$'
+                default:
+                  return '¥'
+              }
+            })()
+
+            return (
+              <TableRow key={row.id}>
+                <TableCell className='text-center'>
+                  {RECORD_TYPE.get('value', row.type).message}
+                </TableCell>
+                <TableCell
+                  className={clsx(
+                    'text-center',
+                    row.status === RECORD_STATUS.enum('UnpaidStatus') &&
+                      'text-rose-500',
+                  )}
+                >
+                  {RECORD_STATUS.get('value', row.status).message}
+                </TableCell>
+                <TableCell className='w-0'>
+                  <Table dense>
+                    <TableBody className='[&>tr:last-child>td]:border-0 [&_td:nth-child(2)]:text-end'>
+                      {row.jpyWithdrawal != null && (
+                        <TableRow>
+                          <TableCell>日幣提款金額</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.jpyWithdrawal.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {row.withdrawal != null && (
+                        <TableRow>
+                          <TableCell>提款金額</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.withdrawal.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {row.price != null && (
+                        <TableRow>
+                          <TableCell>計算金額</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.price.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {row.directPurchasePrice != null && (
+                        <TableRow>
+                          <TableCell>直購金額</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.directPurchasePrice.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {row.purchasedPrice != null && (
+                        <TableRow>
+                          <TableCell>最低買入金額</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.purchasedPrice.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {row.yahooAuctionFee != null && (
+                        <TableRow>
+                          <TableCell>日拍手續費</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.yahooAuctionFee.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {row.commission != null && (
+                        <TableRow>
+                          <TableCell>平台手續費</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.commission.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {row.bonus != null && (
+                        <TableRow>
+                          <TableCell>回饋</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.bonus.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {row.yahooCancellationFee != null && (
+                        <TableRow>
+                          <TableCell>日拍取消手續費</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.yahooCancellationFee.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {row.spaceFee != null && (
+                        <TableRow>
+                          <TableCell>留倉費</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.spaceFee.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {row.shippingCost != null && (
+                        <TableRow>
+                          <TableCell>運費</TableCell>
+                          <TableCell>
+                            {currencySign}
+                            {row.shippingCost.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )}
                       <TableRow>
-                        <TableCell>日幣提款金額</TableCell>
-                        <TableCell>{row.jpyWithdrawal.toLocaleString()}</TableCell>
-                      </TableRow>
-                    )}
-                    {row.withdrawal != null && (
-                      <TableRow>
-                        <TableCell>提款金額</TableCell>
-                        <TableCell>{row.withdrawal.toLocaleString()}</TableCell>
-                      </TableRow>
-                    )}
-                    {row.price != null && (
-                      <TableRow>
-                        <TableCell>計算金額</TableCell>
-                        <TableCell>{row.price.toLocaleString()}</TableCell>
-                      </TableRow>
-                    )}
-                    {row.directPurchasePrice != null && (
-                      <TableRow>
-                        <TableCell>直購金額</TableCell>
+                        <TableCell>時間</TableCell>
                         <TableCell>
-                          {row.directPurchasePrice.toLocaleString()}
+                          {format(row.createdAt, DATE_TIME_FORMAT)}
                         </TableCell>
                       </TableRow>
-                    )}
-                    {row.purchasedPrice != null && (
-                      <TableRow>
-                        <TableCell>最低買入金額</TableCell>
-                        <TableCell>{row.purchasedPrice.toLocaleString()}</TableCell>
-                      </TableRow>
-                    )}
-                    {row.yahooAuctionFee != null && (
-                      <TableRow>
-                        <TableCell>日拍手續費</TableCell>
-                        <TableCell>{row.yahooAuctionFee.toLocaleString()}</TableCell>
-                      </TableRow>
-                    )}
-                    {row.commission != null && (
-                      <TableRow>
-                        <TableCell>平台手續費</TableCell>
-                        <TableCell>{row.commission.toLocaleString()}</TableCell>
-                      </TableRow>
-                    )}
-                    {row.bonus != null && (
-                      <TableRow>
-                        <TableCell>回饋</TableCell>
-                        <TableCell>{row.bonus.toLocaleString()}</TableCell>
-                      </TableRow>
-                    )}
-                    {row.yahooCancellationFee != null && (
-                      <TableRow>
-                        <TableCell>日拍取消手續費</TableCell>
-                        <TableCell>
-                          {row.yahooCancellationFee.toLocaleString()}
-                        </TableCell>
-                      </TableRow>
-                    )}
-                    {row.spaceFee != null && (
-                      <TableRow>
-                        <TableCell>留倉費</TableCell>
-                        <TableCell>{row.spaceFee.toLocaleString()}</TableCell>
-                      </TableRow>
-                    )}
-                    {row.shippingCost != null && (
-                      <TableRow>
-                        <TableCell>運費</TableCell>
-                        <TableCell>{row.shippingCost.toLocaleString()}</TableCell>
-                      </TableRow>
-                    )}
-                    <TableRow>
-                      <TableCell>時間</TableCell>
-                      <TableCell>{format(row.createdAt, DATE_TIME_FORMAT)}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableCell>
-            </TableRow>
-          ))}
+                    </TableBody>
+                  </Table>
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
       <SearchParamsPagination count={count} />

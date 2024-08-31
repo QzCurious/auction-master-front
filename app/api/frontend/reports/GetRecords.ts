@@ -26,7 +26,7 @@ export interface Record {
   opCode: string
   itemID?: number
   auctionItemID?: number
-  currency?: string
+  currency?: 'TWD' | 'JPY'
   exchangeRate?: number
   jpyWithdrawal?: number
   withdrawal?: number
