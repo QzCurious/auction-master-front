@@ -1,3 +1,4 @@
+import { Configs, GetConfigs } from '@/app/api/frontend/GetConfigs'
 import { GetRecords, Record } from '@/app/api/frontend/reports/GetRecords'
 import { GetRecordsSummary } from '@/app/api/frontend/reports/GetRecordsSummary'
 import { RECORD_STATUS, RECORD_TYPE } from '@/app/api/frontend/static-configs.data'
@@ -22,8 +23,10 @@ import {
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { format } from 'date-fns'
+import CancelPayment from './CancelPayment'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { fixRange, SearchParamsSchema } from './SearchParamsSchema'
+import SubmitPayment from './SubmitPayment'
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -33,7 +36,7 @@ export default async function Page({ searchParams }: PageProps) {
   const filters = parseSearchParams(SearchParamsSchema, searchParams)
   const { wasValid, startAt, endAt } = fixRange(filters.startAt, filters.endAt)
 
-  const [reportsSummaryRes, reportRecordsRes] = await Promise.all([
+  const [reportsSummaryRes, reportRecordsRes, configsRes] = await Promise.all([
     GetRecordsSummary({
       startAt,
       endAt,
@@ -50,9 +53,14 @@ export default async function Page({ searchParams }: PageProps) {
       limit: filters[ROWS_PER_PAGE],
       offset: filters[PAGE] * filters[ROWS_PER_PAGE],
     }),
+    GetConfigs(),
   ])
 
-  if (reportsSummaryRes.error === '1003' || reportRecordsRes.error === '1003') {
+  if (
+    reportsSummaryRes.error === '1003' ||
+    reportRecordsRes.error === '1003' ||
+    configsRes.error === '1003'
+  ) {
     return <RedirectToHome />
   }
 
@@ -113,6 +121,7 @@ export default async function Page({ searchParams }: PageProps) {
             <ReportRecordTable
               rows={reportRecordsRes.data.records}
               count={reportRecordsRes.data.count}
+              configs={configsRes.data}
             />
           </div>
         </div>
@@ -124,9 +133,10 @@ export default async function Page({ searchParams }: PageProps) {
 interface ReportRecordTableProps {
   rows: Record[]
   count: number
+  configs: Configs
 }
 
-function ReportRecordTable({ rows, count }: ReportRecordTableProps) {
+function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
   return (
     <div>
       <Table striped>
@@ -163,6 +173,32 @@ function ReportRecordTable({ rows, count }: ReportRecordTableProps) {
                 )}
               >
                 {RECORD_STATUS.get('value', row.status).message}
+
+                {row.status === RECORD_STATUS.enum('UnpaidStatus') &&
+                  row.type === RECORD_TYPE.enum('PayYahooAuctionFeeType') && (
+                    <div className='mt-2'>
+                      <SubmitPayment
+                        recordId={row.id}
+                        yahooAuctionFee={row.yahooAuctionFee}
+                        bankName={configs.bankName}
+                        bankAccount={configs.bankAccount}
+                        bankCode={configs.bankCode}
+                      />
+                    </div>
+                  )}
+                {row.status === RECORD_STATUS.enum('UnpaidStatus') &&
+                  row.type ===
+                    RECORD_TYPE.enum('PayAuctionItemCancellationFeeType') && (
+                    <div className='mt-2'>
+                      <CancelPayment
+                        recordId={row.id}
+                        yahooCancellationFee={row.yahooCancellationFee}
+                        bankName={configs.bankName}
+                        bankAccount={configs.bankAccount}
+                        bankCode={configs.bankCode}
+                      />
+                    </div>
+                  )}
               </TableCell>
               <TableCell className='w-0'>
                 <Table dense>

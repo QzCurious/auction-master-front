@@ -68,7 +68,7 @@ export async function GetRecordsSummary(payload: z.input<typeof ReqSchema>) {
     {
       method: 'GET',
       next: {
-        tags: ['/frontend/reports/records/summary'],
+        tags: ['records'],
       },
     },
   )

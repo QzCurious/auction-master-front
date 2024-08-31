@@ -79,7 +79,7 @@ export async function GetRecords(payload: z.input<typeof ReqSchema>) {
     {
       method: 'GET',
       next: {
-        tags: ['/frontend/reports/records'],
+        tags: ['records'],
       },
     },
   )
