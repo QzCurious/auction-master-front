@@ -6,7 +6,7 @@ import { withAuth } from '../withAuth'
 export interface Configs {
   yahooAuctionFeeRate: number
   commissionRate: number
-  commissionBonusRate: number
+  defaultCommissionBonusRate: number
   auctionItemCancellationFee: number
   costPerSpace: number
   lineURL: string
