@@ -16,7 +16,7 @@ import AutoRefreshPage from '@/app/components/AutoRefreshPage'
 import { CountdownTime } from '@/app/components/CountdownTime'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
 import RedirectToHome from '@/app/RedirectToHome'
-import { PAGE, parseSearchParams, ROWS_PER_PAGE } from '@/app/static'
+import { currencySign, PAGE, parseSearchParams, ROWS_PER_PAGE } from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import Image from 'next/image'
@@ -140,7 +140,7 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 </a>
               </TableCell>
               <TableCell className='text-center'>
-                <span className='text-zinc-500'>¥</span>
+                <span className='text-zinc-500'>{currencySign('JPY')}</span>
                 <span
                   className={clsx(
                     row.currentPrice >= row.reservePrice

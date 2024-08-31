@@ -7,6 +7,7 @@ import { GetConfigsQueryOptions } from '@/app/api/frontend/GetConfigs.query'
 import { GetConsignorWalletBalanceQueryOptions } from '@/app/api/frontend/wallets/GetConsignorWalletBalance.query'
 import { Button } from '@/app/catalyst-ui/button'
 import RedirectToHome from '@/app/RedirectToHome'
+import { currencySign } from '@/app/static'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
@@ -77,7 +78,8 @@ function PreviewDeal({
       <h3>
         取消競標須支付{' '}
         <span className='underline decoration-indigo-500 decoration-2 underline-offset-2'>
-          ¥{configsQuery.data.data.auctionItemCancellationFee}
+          {currencySign('JPY')}
+          {configsQuery.data.data.auctionItemCancellationFee.toLocaleString()}
         </span>
       </h3>
       <div className='mt-2 flex justify-end gap-x-2'>

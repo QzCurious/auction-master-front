@@ -3,6 +3,7 @@
 import { AuctionItemDealPreviewQueryOptions } from '@/app/api/frontend/auction-items/AuctionItemDealPreview.query'
 import { AuctionItem } from '@/app/api/frontend/auction-items/GetConsignorAuctionItems'
 import { Button } from '@/app/catalyst-ui/button'
+import { currencySign } from '@/app/static'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
@@ -44,12 +45,16 @@ function PreviewDeal({ auctionItemId }: { auctionItemId: AuctionItem['id'] }) {
         <tr>
           <td>日拍手續費</td>
           <td className='pl-4 text-end'>
-            ¥{data.data.yahooAuctionFee.toLocaleString()}
+            {currencySign('JPY')}
+            {data.data.yahooAuctionFee.toLocaleString()}
           </td>
         </tr>
         <tr>
           <td>佣金</td>
-          <td className='pl-4 text-end'>¥{data.data.commission.toLocaleString()}</td>
+          <td className='pl-4 text-end'>
+            {currencySign('JPY')}
+            {data.data.commission.toLocaleString()}
+          </td>
         </tr>
         <tr>
           <td>紅利</td>

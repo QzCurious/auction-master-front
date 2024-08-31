@@ -12,6 +12,7 @@ import { Description, ErrorMessage, Field, Label } from '@/app/catalyst-ui/field
 import { Input, InputGroup } from '@/app/catalyst-ui/input'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
 import InfoPopover, { InfoPopoverPanel } from '@/app/components/InfoPopover'
+import { currencySign } from '@/app/static'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import dynamic from 'next/dynamic'
@@ -171,7 +172,7 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
                 </Label>
                 <InputGroup>
                   <div className='grid place-content-center' data-slot='icon'>
-                    ¥
+                    {currencySign('JPY')}
                   </div>
                   <Input
                     type='number'
@@ -186,7 +187,8 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
                 </InputGroup>
                 {field.value && !fieldState.invalid && (
                   <Description className='text-end'>
-                    約 NT${Math.floor(field.value * jpyBuyingRate).toLocaleString()}
+                    約 {currencySign('TWD')}
+                    {Math.floor(field.value * jpyBuyingRate).toLocaleString()}
                   </Description>
                 )}
                 {fieldState.error && (

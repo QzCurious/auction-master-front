@@ -66,7 +66,7 @@ export function parseSearchParams<T extends ZodTypeAny>(
   // undefined instead of null for convenience of setting default value for destructing assignment
   type Shaped = Record<keyof z.output<T>, string | undefined | string[]>
 
-  // 
+  //
   const unwrappedSchema = unwrapInnerType(schema) as SomeZodObject
   if (!(unwrappedSchema instanceof ZodObject))
     throw new Error('schema should compatible with ZodObject/SomeZodObject')
@@ -150,3 +150,13 @@ function unwrapInnerType<
   return schema as any
 }
 // >>> zod ---------
+
+export type Currency = 'JPY' | 'TWD'
+export function currencySign(currency: Currency) {
+  switch (currency) {
+    case 'JPY':
+      return '¥'
+    case 'TWD':
+      return 'NT$'
+  }
+}

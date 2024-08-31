@@ -11,6 +11,7 @@ import {
 import { Subheading } from '@/app/catalyst-ui/heading'
 import InfoPopover, { InfoPopoverPanel } from '@/app/components/InfoPopover'
 import RedirectToHome from '@/app/RedirectToHome'
+import { currencySign } from '@/app/static'
 import { StatusFlow } from '@/app/StatusFlow'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import dynamic from 'next/dynamic'
@@ -175,12 +176,14 @@ async function Content({ params }: PageProps) {
                 </InfoPopover>
               </DescriptionTerm>
               <DescriptionDetails className='text-end'>
-                ¥{itemRes.data.reservePrice.toLocaleString()}
+                {currencySign('JPY')}
+                {itemRes.data.reservePrice.toLocaleString()}
                 <p className='whitespace-nowrap text-zinc-500'>
-                  (約{' '}NT$
+                  (約 {currencySign('TWD')}
                   {Math.floor(
                     itemRes.data.reservePrice * jpyRatesRes.data.buying,
-                  ).toLocaleString()})
+                  ).toLocaleString()}
+                  )
                 </p>
               </DescriptionDetails>
 
@@ -195,12 +198,14 @@ async function Content({ params }: PageProps) {
                     </InfoPopover>
                   </DescriptionTerm>
                   <DescriptionDetails className='text-end'>
-                    ¥{itemRes.data.directPurchasePrice.toLocaleString()}
+                    {currencySign('JPY')}
+                    {itemRes.data.directPurchasePrice.toLocaleString()}
                     <p className='whitespace-nowrap text-zinc-500'>
-                      (約{' '}NT$
+                      (約 {currencySign('TWD')}
                       {Math.floor(
                         itemRes.data.directPurchasePrice * jpyRatesRes.data.buying,
-                      ).toLocaleString()})
+                      ).toLocaleString()}
+                      )
                     </p>
                   </DescriptionDetails>
                 </>
@@ -217,12 +222,14 @@ async function Content({ params }: PageProps) {
                     </InfoPopover>
                   </DescriptionTerm>
                   <DescriptionDetails className='text-end'>
-                    ¥{itemRes.data.minEstimatedPrice.toLocaleString()}
+                    {currencySign('JPY')}
+                    {itemRes.data.minEstimatedPrice.toLocaleString()}
                     <p className='whitespace-nowrap text-zinc-500'>
-                      (約{' '}NT$
+                      (約 {currencySign('TWD')}
                       {Math.floor(
                         itemRes.data.minEstimatedPrice * jpyRatesRes.data.buying,
-                      ).toLocaleString()})
+                      ).toLocaleString()}
+                      )
                     </p>
                   </DescriptionDetails>
 
@@ -235,12 +242,14 @@ async function Content({ params }: PageProps) {
                     </InfoPopover>
                   </DescriptionTerm>
                   <DescriptionDetails className='text-end'>
-                    ¥{itemRes.data.maxEstimatedPrice.toLocaleString()}
+                    {currencySign('JPY')}
+                    {itemRes.data.maxEstimatedPrice.toLocaleString()}
                     <p className='whitespace-nowrap text-zinc-500'>
-                      (約{' '}NT$
+                      (約 {currencySign('TWD')}
                       {Math.floor(
                         itemRes.data.maxEstimatedPrice * jpyRatesRes.data.buying,
-                      ).toLocaleString()})
+                      ).toLocaleString()}
+                      )
                     </p>
                   </DescriptionDetails>
                 </>

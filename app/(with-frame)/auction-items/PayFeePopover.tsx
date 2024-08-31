@@ -9,6 +9,7 @@ import { GetJPYRatesQueryOptions } from '@/app/api/frontend/GetJPYRates.query'
 import { GetConsignorWalletBalanceQueryOptions } from '@/app/api/frontend/wallets/GetConsignorWalletBalance.query'
 import { Button } from '@/app/catalyst-ui/button'
 import RedirectToHome from '@/app/RedirectToHome'
+import { currencySign } from '@/app/static'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
@@ -83,10 +84,11 @@ function PreviewDeal({
       <h3>
         尚有日拍{' '}
         <span className='underline decoration-indigo-500 decoration-2 underline-offset-2'>
-          手續費 ¥{previewQuery.data.data.yahooAuctionFee.toLocaleString()}
+          手續費 {currencySign('JPY')}
+          {previewQuery.data.data.yahooAuctionFee.toLocaleString()}
         </span>{' '}
         <span className='text-zinc-500'>
-          (約 NT$
+          (約 {currencySign('TWD')}
           {Math.ceil(
             previewQuery.data.data.yahooAuctionFee * jpyRatesQuery.data.data.selling,
           ).toLocaleString()}

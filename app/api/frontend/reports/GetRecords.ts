@@ -2,6 +2,7 @@
 
 import { z } from 'zod'
 
+import { Currency } from '@/app/static'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
@@ -26,7 +27,7 @@ export interface Record {
   opCode: string
   itemID?: number
   auctionItemID?: number
-  currency?: 'TWD' | 'JPY'
+  currency: Currency
   exchangeRate?: number
   jpyWithdrawal?: number
   withdrawal?: number
