@@ -57,7 +57,7 @@ export function DateRange() {
               locale={zhTW}
               weekStartsOn={0}
               mode='range'
-              captionLayout='dropdown'
+              captionLayout='dropdown-buttons'
               selected={{ from: startAt, to: endAt }}
               onSelect={(v) => {
                 v?.from && setStartAt(v.from)

@@ -89,7 +89,7 @@ export default function DateRangeFilter({
                 weekStartsOn={0}
                 defaultMonth={dateRange?.from}
                 mode='range'
-                captionLayout='dropdown'
+                captionLayout='dropdown-buttons'
                 disabled={(day) => {
                   let cond = false
                   if (day > new Date()) {

@@ -311,7 +311,7 @@ function Form({ consignor }: { consignor: Consignor }) {
                       locale={zhTW}
                       weekStartsOn={0}
                       mode='single'
-                      captionLayout='dropdown'
+                      captionLayout='dropdown-buttons'
                       selected={field.value}
                       onSelect={(v) => {
                         field.onChange(v)
