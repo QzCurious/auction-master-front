@@ -279,7 +279,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>日幣提款金額</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('JPY')}
                           {row.jpyWithdrawal.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -297,7 +297,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>計算金額</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('JPY')}
                           {row.price.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -306,7 +306,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>直購金額</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('JPY')}
                           {row.directPurchasePrice.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -315,7 +315,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>最低買入金額</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('JPY')}
                           {row.purchasedPrice.toLocaleString()}
                         </TableCell>
                       </TableRow>
