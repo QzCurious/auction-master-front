@@ -12,6 +12,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { subDays } from 'date-fns'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState, useTransition } from 'react'
 import toast from 'react-hot-toast'
 
@@ -46,19 +47,22 @@ export default function CancelBiddingPopover({
           'z-30 rounded border border-black/10 bg-white px-2 py-1.5 shadow-md transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:translate-y-1 data-[closed]:opacity-0',
         )}
       >
-        {({ close }) => <PreviewDeal auctionItem={auctionItem} close={close} />}
+        {({ close }) => (
+          <CancelBiddingDetail auctionItem={auctionItem} close={close} />
+        )}
       </PopoverPanel>
     </Popover>
   )
 }
 
-function PreviewDeal({
+function CancelBiddingDetail({
   auctionItem,
   close,
 }: {
   auctionItem: AuctionItem
   close: () => void
 }) {
+  const router = useRouter()
   const configsQuery = useQuery(GetConfigsQueryOptions)
   const walletQuery = useQuery(GetConsignorWalletBalanceQueryOptions)
   const [isSubmitting, startTransition] = useTransition()
@@ -117,6 +121,7 @@ function PreviewDeal({
               }
               toast.success('取消競標申請已送出')
               close()
+              router.push(`/records?cancel-payment=${res.data}`)
             })
           }}
         >

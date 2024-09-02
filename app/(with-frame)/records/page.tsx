@@ -1,4 +1,5 @@
 import { Configs, GetConfigs } from '@/app/api/frontend/GetConfigs'
+import { GetRecord } from '@/app/api/frontend/reports/GetRecord'
 import { GetRecords, Record } from '@/app/api/frontend/reports/GetRecords'
 import {
   GetRecordsSummary,
@@ -26,43 +27,53 @@ import {
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { format } from 'date-fns'
-import CancelPayment from './CancelPayment'
+import { CancelPayment, CancelPaymentDialog } from './CancelPayment'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { fixRange, SearchParamsSchema } from './SearchParamsSchema'
-import SubmitPayment from './SubmitPayment'
+import { SubmitPayment, SubmitPaymentDialog } from './SubmitPayment'
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const filters = parseSearchParams(SearchParamsSchema, searchParams)
-  const { wasValid, startAt, endAt } = fixRange(filters.startAt, filters.endAt)
+  const query = parseSearchParams(SearchParamsSchema, searchParams)
+  const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
 
-  const [reportsSummaryRes, reportRecordsRes, configsRes] = await Promise.all([
+  const [
+    reportsSummaryRes,
+    reportRecordsRes,
+    configsRes,
+    cancelPaymentRecordRes,
+    submitPaymentRecordRes,
+  ] = await Promise.all([
     GetRecordsSummary({
       startAt,
       endAt,
-      status: filters.status,
-      type: filters.type,
+      status: query.status,
+      type: query.type,
     }),
     GetRecords({
       startAt,
       endAt,
-      status: filters.status,
-      type: filters.type,
+      status: query.status,
+      type: query.type,
       sort: 'createdAt',
       order: 'desc',
-      limit: filters[ROWS_PER_PAGE],
-      offset: filters[PAGE] * filters[ROWS_PER_PAGE],
+      limit: query[ROWS_PER_PAGE],
+      offset: query[PAGE] * query[ROWS_PER_PAGE],
     }),
     GetConfigs(),
+    query['cancel-payment'] && GetRecord(query['cancel-payment']),
+    query['submit-payment'] && GetRecord(query['submit-payment']),
   ])
 
   if (
     reportsSummaryRes.error === '1003' ||
     reportRecordsRes.error === '1003' ||
-    configsRes.error === '1003'
+    configsRes.error === '1003' ||
+    (cancelPaymentRecordRes && cancelPaymentRecordRes.error === '1003') ||
+    (submitPaymentRecordRes && submitPaymentRecordRes.error === '1003')
   ) {
     return <RedirectToHome />
   }
@@ -77,8 +88,8 @@ export default async function Page({ searchParams }: PageProps) {
         <MobileFilters
           startAt={wasValid ? startAt : undefined}
           endAt={wasValid ? endAt : undefined}
-          type={filters.type}
-          status={filters.status}
+          type={query.type}
+          status={query.status}
         />
       </div>
 
@@ -86,8 +97,8 @@ export default async function Page({ searchParams }: PageProps) {
         <DesktopFilters
           startAt={wasValid ? startAt : undefined}
           endAt={wasValid ? endAt : undefined}
-          type={filters.type}
-          status={filters.status}
+          type={query.type}
+          status={query.status}
         />
 
         <div className='min-w-0 grow'>
@@ -111,6 +122,25 @@ export default async function Page({ searchParams }: PageProps) {
           </div>
         </div>
       </div>
+
+      {cancelPaymentRecordRes && (
+        <CancelPaymentDialog
+          recordId={cancelPaymentRecordRes.data.id}
+          yahooCancellationFee={cancelPaymentRecordRes.data.yahooCancellationFee}
+          bankName={configsRes.data.bankName}
+          bankAccount={configsRes.data.bankAccount}
+          bankCode={configsRes.data.bankCode}
+        />
+      )}
+      {submitPaymentRecordRes && (
+        <SubmitPaymentDialog
+          recordId={submitPaymentRecordRes.data.id}
+          yahooAuctionFee={submitPaymentRecordRes.data.yahooAuctionFee}
+          bankName={configsRes.data.bankName}
+          bankCode={configsRes.data.bankCode}
+          bankAccount={configsRes.data.bankAccount}
+        />
+      )}
     </div>
   )
 }

@@ -6,7 +6,7 @@ import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
 import { AuctionItem } from './GetConsignorAuctionItems'
 
-type Data = 'Success'
+type Data = string // report id
 
 type ErrorCode = never
 

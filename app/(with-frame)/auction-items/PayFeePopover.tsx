@@ -13,6 +13,7 @@ import { currencySign } from '@/app/static'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
+import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import toast from 'react-hot-toast'
 
@@ -33,19 +34,20 @@ export default function PayFeePopover({
           'z-30 rounded border border-black/10 bg-white px-2 py-1.5 shadow-md transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:translate-y-1 data-[closed]:opacity-0',
         )}
       >
-        {({ close }) => <PreviewDeal auctionItemId={auctionItemId} close={close} />}
+        {({ close }) => <PayFeeDetail auctionItemId={auctionItemId} close={close} />}
       </PopoverPanel>
     </Popover>
   )
 }
 
-function PreviewDeal({
+function PayFeeDetail({
   auctionItemId,
   close,
 }: {
   auctionItemId: AuctionItem['id']
   close: () => void
 }) {
+  const router = useRouter()
   const configsQuery = useQuery(GetConfigsQueryOptions)
   const previewQuery = useQuery(AuctionItemDealPreviewQueryOptions(auctionItemId))
   const walletQuery = useQuery(GetConsignorWalletBalanceQueryOptions)
@@ -130,6 +132,7 @@ function PreviewDeal({
               }
               toast.success('已申請會匯款結清手續費')
               close()
+              router.push(`/records?submit-payment=${res.data}`)
             })
           }}
         >

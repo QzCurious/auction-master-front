@@ -1,6 +1,6 @@
 import { RECORD_STATUS, RECORD_TYPE } from '@/app/api/frontend/static-configs.data'
 import { PaginationSchema } from '@/app/static'
-import { addDays, addMonths, endOfDay, startOfDay, subDays } from 'date-fns'
+import { addDays, addMonths, startOfDay, subDays } from 'date-fns'
 import * as R from 'remeda'
 import { z } from 'zod'
 
@@ -30,6 +30,8 @@ export function fixRange(startAt?: Date, endAt?: Date) {
 }
 
 export const SearchParamsSchema = PaginationSchema.extend({
+  'cancel-payment': z.string().optional().catch(undefined),
+  'submit-payment': z.string().optional().catch(undefined),
   startAt: z.coerce.date().optional().catch(undefined),
   endAt: z.coerce.date().optional().catch(undefined),
   consignorID: z.coerce.number().optional(),
@@ -43,4 +45,11 @@ export const SearchParamsSchema = PaginationSchema.extend({
     .array()
     .transform(R.filter(R.isIncludedIn(RECORD_STATUS.data.map((item) => item.value))))
     .default([]),
+}).transform((data) => {
+  if (data['cancel-payment'] && data['submit-payment']) {
+    data['cancel-payment'] = undefined
+    data['submit-payment'] = undefined
+  }
+
+  return data
 })
