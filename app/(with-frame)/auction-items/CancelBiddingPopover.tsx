@@ -4,6 +4,7 @@ import { ConsignorCancelAuctionItem } from '@/app/api/frontend/auction-items/Con
 import { ConsignorCancelAuctionItemByTransfer } from '@/app/api/frontend/auction-items/ConsignorCancelAuctionItemByTransfer'
 import { AuctionItem } from '@/app/api/frontend/auction-items/GetConsignorAuctionItems'
 import { GetConfigsQueryOptions } from '@/app/api/frontend/GetConfigs.query'
+import { GetJPYRatesQueryOptions } from '@/app/api/frontend/GetJPYRates.query'
 import { GetConsignorWalletBalanceQueryOptions } from '@/app/api/frontend/wallets/GetConsignorWalletBalance.query'
 import { Button } from '@/app/catalyst-ui/button'
 import RedirectToHome from '@/app/RedirectToHome'
@@ -65,12 +66,18 @@ function CancelBiddingDetail({
   const router = useRouter()
   const configsQuery = useQuery(GetConfigsQueryOptions)
   const walletQuery = useQuery(GetConsignorWalletBalanceQueryOptions)
+  const jpyRatesQuery = useQuery(GetJPYRatesQueryOptions)
   const [isSubmitting, startTransition] = useTransition()
 
-  if (configsQuery.error || walletQuery.error) return null
-  if (configsQuery.isPending || walletQuery.isPending) return '載入中...'
+  if (configsQuery.error || walletQuery.error || jpyRatesQuery.error) return null
+  if (configsQuery.isPending || walletQuery.isPending || jpyRatesQuery.isPending)
+    return '載入中...'
 
-  if (configsQuery.data.error === '1003' || walletQuery.data.error === '1003') {
+  if (
+    configsQuery.data.error === '1003' ||
+    walletQuery.data.error === '1003' ||
+    jpyRatesQuery.data.error === '1003'
+  ) {
     return <RedirectToHome />
   }
 
@@ -84,7 +91,15 @@ function CancelBiddingDetail({
         <span className='underline decoration-indigo-500 decoration-2 underline-offset-2'>
           {currencySign('JPY')}
           {configsQuery.data.data.auctionItemCancellationFee.toLocaleString()}
-        </span>
+        </span>{' '}
+        <span className='text-zinc-500'>
+          (約 {currencySign('TWD')}
+          {Math.ceil(
+            configsQuery.data.data.auctionItemCancellationFee *
+              jpyRatesQuery.data.data.selling,
+          ).toLocaleString()}
+          )
+        </span>{' '}
       </h3>
       <div className='mt-2 flex justify-end gap-x-2'>
         {canPayByWallet && (
