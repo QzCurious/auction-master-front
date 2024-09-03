@@ -28,6 +28,7 @@ import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { format } from 'date-fns'
 import * as R from 'remeda'
+import CancelPayment from './CancelPayment'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { fixRange, SearchParamsSchema } from './SearchParamsSchema'
 import { SubmitPayment, SubmitPaymentDialog } from './SubmitPayment'
@@ -282,9 +283,9 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
               >
                 {RECORD_STATUS.get('value', row.status).message}
 
-                {row.status === RECORD_STATUS.enum('UnpaidStatus') &&
-                  row.type === RECORD_TYPE.enum('PayYahooAuctionFeeType') && (
-                    <div className='mt-2'>
+                {row.status === RECORD_STATUS.enum('UnpaidStatus') && (
+                  <div className='mt-2 flex justify-center gap-x-2'>
+                    {row.type === RECORD_TYPE.enum('PayYahooAuctionFeeType') && (
                       <SubmitPayment
                         title='支付日拍手續費'
                         recordId={row.id}
@@ -293,12 +294,9 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                         bankAccount={configs.bankAccount}
                         bankCode={configs.bankCode}
                       />
-                    </div>
-                  )}
-                {row.status === RECORD_STATUS.enum('UnpaidStatus') &&
-                  row.type ===
-                    RECORD_TYPE.enum('PayAuctionItemCancellationFeeType') && (
-                    <div className='mt-2'>
+                    )}
+                    {row.type ===
+                      RECORD_TYPE.enum('PayAuctionItemCancellationFeeType') && (
                       <SubmitPayment
                         title='支付日拍取消手續費'
                         recordId={row.id}
@@ -307,8 +305,10 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                         bankAccount={configs.bankAccount}
                         bankCode={configs.bankCode}
                       />
-                    </div>
-                  )}
+                    )}
+                    <CancelPayment recordID={row.id} />
+                  </div>
+                )}
               </TableCell>
               <TableCell className='w-0'>
                 <Table dense>

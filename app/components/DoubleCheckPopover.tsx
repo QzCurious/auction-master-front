@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@/app/catalyst-ui/button'
 import { Subheading } from '@/app/catalyst-ui/heading'
 import { CloseButton, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
