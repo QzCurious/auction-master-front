@@ -4,6 +4,7 @@ import { User } from '@/app/UserContext'
 import { Consignor } from '@/app/api/frontend/consignor/GetConsignor'
 import { UpdateConsignorAvatar } from '@/app/api/frontend/consignor/UpdateConsignorAvatar'
 import { Button } from '@/app/catalyst-ui/button'
+import { toPercent } from '@/app/static'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import Image from 'next/image'
@@ -158,6 +159,17 @@ export default function AccountInfoForm({
             <div className='mt-2'>
               <p className='block text-sm font-medium leading-6 text-gray-700'>
                 {consignor.nickname}
+              </p>
+            </div>
+          </div>
+
+          <div className='sm:col-span-full'>
+            <p className='block text-sm font-medium leading-6 text-gray-900'>
+              回饋比例
+            </p>
+            <div className='mt-2'>
+              <p className='block text-sm font-medium leading-6 text-gray-700'>
+                {toPercent(consignor.commissionBonusRate)}
               </p>
             </div>
           </div>
