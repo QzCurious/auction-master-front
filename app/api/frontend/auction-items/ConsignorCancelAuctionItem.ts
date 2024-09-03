@@ -8,7 +8,9 @@ import { AuctionItem } from './GetConsignorAuctionItems'
 
 type Data = 'Success'
 
-type ErrorCode = never
+type ErrorCode =
+  // 大師幣不足
+  '1703'
 
 export async function ConsignorCancelAuctionItem(id: AuctionItem['id']) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(

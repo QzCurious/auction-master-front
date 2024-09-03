@@ -107,6 +107,10 @@ function PayFeeDetail({
             onClick={() =>
               startTransition(async () => {
                 const res = await ConsignorPayAuctionItemFee(auctionItemId)
+                if (res.error === '1703') {
+                  toast.error('大師幣不足')
+                  return
+                }
                 if (res.error) {
                   toast.error(`操作錯誤: ${res.error}`)
                   return
