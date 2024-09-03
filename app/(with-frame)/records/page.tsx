@@ -27,6 +27,7 @@ import {
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { format } from 'date-fns'
+import * as R from 'remeda'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { fixRange, SearchParamsSchema } from './SearchParamsSchema'
 import { SubmitPayment, SubmitPaymentDialog } from './SubmitPayment'
@@ -39,7 +40,7 @@ export default async function Page({ searchParams }: PageProps) {
   const query = parseSearchParams(SearchParamsSchema, searchParams)
   const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
 
-  const [reportsSummaryRes, reportRecordsRes, configsRes, submitPaymentRecordRes] =
+  const [recordsSummaryRes, recordsRes, configsRes, submitPaymentRecordRes] =
     await Promise.all([
       GetRecordsSummary({
         startAt,
@@ -62,8 +63,8 @@ export default async function Page({ searchParams }: PageProps) {
     ])
 
   if (
-    reportsSummaryRes.error === '1003' ||
-    reportRecordsRes.error === '1003' ||
+    recordsSummaryRes.error === '1003' ||
+    recordsRes.error === '1003' ||
     configsRes.error === '1003' ||
     (submitPaymentRecordRes && submitPaymentRecordRes.error === '1003')
   ) {
@@ -95,20 +96,24 @@ export default async function Page({ searchParams }: PageProps) {
 
         <div className='min-w-0 grow'>
           <section className='flex items-start gap-x-4 overflow-auto'>
-            <div className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'>
-              <Heading level={2}>JPY</Heading>
-              <RecordSummery report={reportsSummaryRes.data.JPY} />
-            </div>
-            <div className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'>
-              <Heading level={2}>TWD</Heading>
-              <RecordSummery report={reportsSummaryRes.data.TWD} />
-            </div>
+            {R.sum(Object.values(recordsSummaryRes.data.JPY)) > 0 && (
+              <div className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'>
+                <Heading level={2}>JPY</Heading>
+                <RecordSummery report={recordsSummaryRes.data.JPY} />
+              </div>
+            )}
+            {R.sum(Object.values(recordsSummaryRes.data.TWD)) > 0 && (
+              <div className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'>
+                <Heading level={2}>TWD</Heading>
+                <RecordSummery report={recordsSummaryRes.data.TWD} />
+              </div>
+            )}
           </section>
 
           <div className='mt-10'>
             <ReportRecordTable
-              rows={reportRecordsRes.data.records}
-              count={reportRecordsRes.data.count}
+              rows={recordsRes.data.records}
+              count={recordsRes.data.count}
               configs={configsRes.data}
             />
           </div>
