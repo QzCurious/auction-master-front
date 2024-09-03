@@ -136,7 +136,7 @@ function CancelBiddingDetail({
               }
               toast.success('取消競標申請已送出')
               close()
-              router.push(`/records?cancel-payment=${res.data}`)
+              router.push(`/records?submit-payment=${res.data}`)
             })
           }}
         >

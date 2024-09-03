@@ -154,7 +154,14 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                   / {row.reservePrice.toLocaleString()}
                 </span>
               </TableCell>
-              <TableCell className='text-center'>
+              <TableCell
+                className='text-center'
+                title={
+                  process.env.NODE_ENV === 'development'
+                    ? `id:${row.id} status:${AUCTION_ITEM_STATUS.enum(row.status)} recordID:${row.recordID}`
+                    : undefined
+                }
+              >
                 {R.isIncludedIn(row.status, [
                   AUCTION_ITEM_STATUS.enum('InitStatus'),
                   AUCTION_ITEM_STATUS.enum('StopBiddingStatus'),

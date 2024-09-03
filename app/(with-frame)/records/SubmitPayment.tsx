@@ -2,7 +2,6 @@
 
 import { Configs } from '@/app/api/frontend/GetConfigs'
 import { ConsignorSubmitPayment } from '@/app/api/frontend/reports/ConsignorSubmitPayment'
-import { Record } from '@/app/api/frontend/reports/GetRecords'
 import { Button } from '@/app/catalyst-ui/button'
 import {
   DescriptionDetails,
@@ -24,8 +23,9 @@ import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 
 export function SubmitPayment({
+  title,
   recordId,
-  yahooAuctionFee,
+  amount,
   bankName,
   bankCode,
   bankAccount,
@@ -38,8 +38,9 @@ export function SubmitPayment({
         提交付款
       </Button>
       <SubmitPaymentDialog
+        title={title}
         recordId={recordId}
-        yahooAuctionFee={yahooAuctionFee}
+        amount={amount}
         bankName={bankName}
         bankCode={bankCode}
         bankAccount={bankAccount}
@@ -51,14 +52,16 @@ export function SubmitPayment({
 }
 
 type SubmitPaymentDialogProps = {
+  title: string
   recordId: string
-} & Pick<Record, 'yahooAuctionFee'> &
-  Pick<Configs, 'bankName' | 'bankCode' | 'bankAccount'> &
+  amount?: number
+} & Pick<Configs, 'bankName' | 'bankCode' | 'bankAccount'> &
   ({ isOpen: boolean; onClose: () => void } | { isOpen?: never; onClose?: never })
 
 export function SubmitPaymentDialog({
+  title,
   recordId,
-  yahooAuctionFee,
+  amount,
   bankName,
   bankCode,
   bankAccount,
@@ -84,7 +87,7 @@ export function SubmitPaymentDialog({
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>支付日拍手續費</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <form
         id='withdrawal-form'
         onSubmit={handleSubmit(async (data) => {
@@ -102,10 +105,14 @@ export function SubmitPaymentDialog({
         <DialogBody>
           <DescriptionList>
             <DescriptionTerm>手續費</DescriptionTerm>
-            <DescriptionDetails>
-              {currencySign('TWD')}
-              {yahooAuctionFee?.toLocaleString()}
-            </DescriptionDetails>
+            {amount === undefined ? (
+              <DescriptionDetails>發生錯誤，請聯繫客服</DescriptionDetails>
+            ) : (
+              <DescriptionDetails>
+                {currencySign('TWD')}
+                {amount.toLocaleString()}
+              </DescriptionDetails>
+            )}
 
             <DescriptionTerm>銀行名稱</DescriptionTerm>
             <DescriptionDetails>{bankName}</DescriptionDetails>
@@ -143,12 +150,7 @@ export function SubmitPaymentDialog({
           </DescriptionList>
         </DialogBody>
         <DialogActions>
-          <Button
-            type='button'
-            disabled={isSubmitting}
-            plain
-            onClick={onClose}
-          >
+          <Button type='button' disabled={isSubmitting} plain onClick={onClose}>
             取消
           </Button>
           <Button

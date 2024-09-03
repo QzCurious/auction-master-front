@@ -27,7 +27,6 @@ import {
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { format } from 'date-fns'
-import { CancelPayment, CancelPaymentDialog } from './CancelPayment'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { fixRange, SearchParamsSchema } from './SearchParamsSchema'
 import { SubmitPayment, SubmitPaymentDialog } from './SubmitPayment'
@@ -40,39 +39,32 @@ export default async function Page({ searchParams }: PageProps) {
   const query = parseSearchParams(SearchParamsSchema, searchParams)
   const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
 
-  const [
-    reportsSummaryRes,
-    reportRecordsRes,
-    configsRes,
-    cancelPaymentRecordRes,
-    submitPaymentRecordRes,
-  ] = await Promise.all([
-    GetRecordsSummary({
-      startAt,
-      endAt,
-      status: query.status,
-      type: query.type,
-    }),
-    GetRecords({
-      startAt,
-      endAt,
-      status: query.status,
-      type: query.type,
-      sort: 'createdAt',
-      order: 'desc',
-      limit: query[ROWS_PER_PAGE],
-      offset: query[PAGE] * query[ROWS_PER_PAGE],
-    }),
-    GetConfigs(),
-    query['cancel-payment'] && GetRecord(query['cancel-payment']),
-    query['submit-payment'] && GetRecord(query['submit-payment']),
-  ])
+  const [reportsSummaryRes, reportRecordsRes, configsRes, submitPaymentRecordRes] =
+    await Promise.all([
+      GetRecordsSummary({
+        startAt,
+        endAt,
+        status: query.status,
+        type: query.type,
+      }),
+      GetRecords({
+        startAt,
+        endAt,
+        status: query.status,
+        type: query.type,
+        sort: 'createdAt',
+        order: 'desc',
+        limit: query[ROWS_PER_PAGE],
+        offset: query[PAGE] * query[ROWS_PER_PAGE],
+      }),
+      GetConfigs(),
+      query['submit-payment'] && GetRecord(query['submit-payment']),
+    ])
 
   if (
     reportsSummaryRes.error === '1003' ||
     reportRecordsRes.error === '1003' ||
     configsRes.error === '1003' ||
-    (cancelPaymentRecordRes && cancelPaymentRecordRes.error === '1003') ||
     (submitPaymentRecordRes && submitPaymentRecordRes.error === '1003')
   ) {
     return <RedirectToHome />
@@ -123,24 +115,33 @@ export default async function Page({ searchParams }: PageProps) {
         </div>
       </div>
 
-      {cancelPaymentRecordRes && (
-        <CancelPaymentDialog
-          recordId={cancelPaymentRecordRes.data.id}
-          yahooCancellationFee={cancelPaymentRecordRes.data.yahooCancellationFee}
-          bankName={configsRes.data.bankName}
-          bankAccount={configsRes.data.bankAccount}
-          bankCode={configsRes.data.bankCode}
-        />
-      )}
-      {submitPaymentRecordRes && (
-        <SubmitPaymentDialog
-          recordId={submitPaymentRecordRes.data.id}
-          yahooAuctionFee={submitPaymentRecordRes.data.yahooAuctionFee}
-          bankName={configsRes.data.bankName}
-          bankCode={configsRes.data.bankCode}
-          bankAccount={configsRes.data.bankAccount}
-        />
-      )}
+      {submitPaymentRecordRes &&
+        submitPaymentRecordRes.data.status === RECORD_STATUS.enum('UnpaidStatus') && (
+          <SubmitPaymentDialog
+            title={
+              submitPaymentRecordRes.data.type ===
+              RECORD_TYPE.enum('PayYahooAuctionFeeType')
+                ? '支付日拍手續費'
+                : submitPaymentRecordRes.data.type ===
+                    RECORD_TYPE.enum('PayAuctionItemCancellationFeeType')
+                  ? '支付日拍取消手續費'
+                  : '發生錯誤'
+            }
+            recordId={submitPaymentRecordRes.data.id}
+            amount={
+              submitPaymentRecordRes.data.type ===
+              RECORD_TYPE.enum('PayYahooAuctionFeeType')
+                ? submitPaymentRecordRes.data.yahooAuctionFee
+                : submitPaymentRecordRes.data.type ===
+                    RECORD_TYPE.enum('PayAuctionItemCancellationFeeType')
+                  ? submitPaymentRecordRes.data.yahooCancellationFee
+                  : undefined
+            }
+            bankName={configsRes.data.bankName}
+            bankCode={configsRes.data.bankCode}
+            bankAccount={configsRes.data.bankAccount}
+          />
+        )}
     </div>
   )
 }
@@ -280,8 +281,9 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                   row.type === RECORD_TYPE.enum('PayYahooAuctionFeeType') && (
                     <div className='mt-2'>
                       <SubmitPayment
+                        title='支付日拍手續費'
                         recordId={row.id}
-                        yahooAuctionFee={row.yahooAuctionFee}
+                        amount={row.yahooAuctionFee}
                         bankName={configs.bankName}
                         bankAccount={configs.bankAccount}
                         bankCode={configs.bankCode}
@@ -292,9 +294,10 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                   row.type ===
                     RECORD_TYPE.enum('PayAuctionItemCancellationFeeType') && (
                     <div className='mt-2'>
-                      <CancelPayment
+                      <SubmitPayment
+                        title='支付日拍取消手續費'
                         recordId={row.id}
-                        yahooCancellationFee={row.yahooCancellationFee}
+                        amount={row.yahooCancellationFee}
                         bankName={configs.bankName}
                         bankAccount={configs.bankAccount}
                         bankCode={configs.bankCode}
