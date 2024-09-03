@@ -44,14 +44,14 @@ function PreviewDeal({ auctionItemId }: { auctionItemId: AuctionItem['id'] }) {
       <tbody>
         <tr>
           <td>日拍手續費</td>
-          <td className='pl-4 text-end'>
+          <td className='pl-4 text-end text-rose-600'>
             {currencySign('JPY')}
             {data.data.yahooAuctionFee.toLocaleString()}
           </td>
         </tr>
         <tr>
           <td>佣金</td>
-          <td className='pl-4 text-end'>
+          <td className='pl-4 text-end text-rose-600'>
             {currencySign('JPY')}
             {data.data.commission.toLocaleString()}
           </td>
