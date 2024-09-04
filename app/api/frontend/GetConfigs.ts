@@ -10,6 +10,7 @@ export interface Configs {
   auctionItemCancellationFee: number
   costPerSpace: number
   lineURL: string
+  withdrawalTransferFee: number
   bankName: string
   bankCode: string
   bankAccount: string

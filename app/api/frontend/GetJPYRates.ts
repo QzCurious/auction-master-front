@@ -3,10 +3,12 @@
 import { apiClient } from '../apiClient'
 import { withAuth } from '../withAuth'
 
-interface Data {
+export interface ExchangeRate {
   buying: number
   selling: number
 }
+
+interface Data extends ExchangeRate {}
 
 type ErrorCode = never
 

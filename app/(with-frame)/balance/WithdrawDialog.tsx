@@ -1,5 +1,7 @@
 'use client'
 
+import { Configs } from '@/app/api/frontend/GetConfigs'
+import { ExchangeRate } from '@/app/api/frontend/GetJPYRates'
 import { ConsignorWalletWithdrawal } from '@/app/api/frontend/wallets/ConsignorWalletWithdrawal'
 import { Button } from '@/app/catalyst-ui/button'
 import {
@@ -8,15 +10,27 @@ import {
   DialogBody,
   DialogTitle,
 } from '@/app/catalyst-ui/dialog'
-import { ErrorMessage, Field, FieldGroup, Label } from '@/app/catalyst-ui/fieldset'
-import { Input } from '@/app/catalyst-ui/input'
+import {
+  Description,
+  ErrorMessage,
+  Field,
+  FieldGroup,
+  Label,
+} from '@/app/catalyst-ui/fieldset'
+import { Input, InputGroup } from '@/app/catalyst-ui/input'
+import { currencySign } from '@/app/static'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 
-const WITHDRAW_FEE = 5
-
-export default function WithdrawDialogButton({ balance }: { balance: number }) {
+export default function WithdrawDialogButton({
+  balance,
+  jpyExchangeRate,
+  withdrawalTransferFee,
+}: {
+  balance: number
+  jpyExchangeRate: ExchangeRate
+} & Pick<Configs, 'withdrawalTransferFee'>) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -28,6 +42,8 @@ export default function WithdrawDialogButton({ balance }: { balance: number }) {
       <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
         <WithdrawForm
           balance={balance}
+          jpyExchangeRate={jpyExchangeRate}
+          withdrawalTransferFee={withdrawalTransferFee}
           onSuccess={() => setIsOpen(false)}
           onCancel={() => setIsOpen(false)}
         />
@@ -38,20 +54,27 @@ export default function WithdrawDialogButton({ balance }: { balance: number }) {
 
 function WithdrawForm({
   balance,
+  jpyExchangeRate,
+  withdrawalTransferFee,
   onSuccess,
   onCancel,
 }: {
   balance: number
+  jpyExchangeRate: ExchangeRate
   onSuccess: () => void
   onCancel: () => void
-}) {
+} & Pick<Configs, 'withdrawalTransferFee'>) {
   const { control, watch, handleSubmit } = useForm<{ amount: number }>({
+    reValidateMode: 'onChange',
+    mode: 'onChange',
     defaultValues: {
       amount: '' as any,
     },
   })
 
   const amount = watch('amount')
+  const feeInJpy = Math.ceil(withdrawalTransferFee / jpyExchangeRate.buying)
+  const amountInTwd = Math.floor(amount * jpyExchangeRate.buying)
 
   return (
     <form
@@ -74,19 +97,28 @@ function WithdrawForm({
         <FieldGroup>
           <Field>
             <Label>手續費</Label>
-            <div data-slot='control'>{WITHDRAW_FEE.toLocaleString()}</div>
+            <p className='text-zinc-950'>
+              {currencySign('TWD')}
+              {withdrawalTransferFee.toLocaleString()}
+              {/* <span className='italic text-zinc-400'>
+                (約 {currencySign('JPY')}
+                {feeInJpy.toLocaleString()})
+              </span> */}
+            </p>
           </Field>
 
           <Field>
             <Label>餘額</Label>
-            <div data-slot='control'>
+            <p className='text-zinc-950'>
+              {currencySign('JPY')}
               {balance.toLocaleString()}
               {!!amount && balance >= amount && (
                 <span className='italic text-zinc-400'>
-                  {` - ${WITHDRAW_FEE.toLocaleString()} - ${amount.toLocaleString()} = ${(balance - WITHDRAW_FEE - amount).toLocaleString()}`}
+                  <> - {amount.toLocaleString()}</>
+                  <> = {(balance - amount).toLocaleString()}</>
                 </span>
               )}
-            </div>
+            </p>
           </Field>
 
           <Controller
@@ -94,24 +126,47 @@ function WithdrawForm({
             name='amount'
             rules={{
               required: '請輸入提領金額',
-              min: { value: 0, message: '請輸入正確金額' },
-              max: { value: balance - WITHDRAW_FEE, message: '餘額不足' },
+              validate: (value) => {
+                const atLeast = feeInJpy + Math.ceil(1 / jpyExchangeRate.buying)
+                if (value <= atLeast) {
+                  return '最少需大於 ' + atLeast
+                }
+                if (value > balance - feeInJpy) {
+                  return '餘額不足'
+                }
+                if (value > 100_000) {
+                  return '最大提領金額為 100,000'
+                }
+              },
             }}
             render={({ field, fieldState }) => (
               <Field>
                 <Label>提領金額</Label>
-                <Input
-                  type='number'
-                  autoComplete='off'
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(
-                      e.target.value === '' ? '' : parseFloat(e.target.value),
-                    )
-                  }}
-                />
+                <InputGroup>
+                  <div className='grid place-content-center' data-slot='icon'>
+                    {currencySign('JPY')}
+                  </div>
+                  <Input
+                    type='number'
+                    autoComplete='off'
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(
+                        e.target.value === '' ? '' : parseFloat(e.target.value),
+                      )
+                    }}
+                  />
+                </InputGroup>
                 {fieldState.error && (
                   <ErrorMessage>{fieldState.error.message}</ErrorMessage>
+                )}
+                {field.value && !fieldState.invalid && (
+                  <Description className='text-end'>
+                    約 {currencySign('TWD')}
+                    {/* {amountInTwd.toLocaleString()} -{' '} */}
+                    {/* {withdrawalTransferFee.toLocaleString()} ={' '} */}
+                    {(amountInTwd - withdrawalTransferFee).toLocaleString()}
+                  </Description>
                 )}
               </Field>
             )}
