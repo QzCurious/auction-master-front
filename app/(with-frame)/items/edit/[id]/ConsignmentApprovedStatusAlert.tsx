@@ -8,7 +8,11 @@ import { Button } from '@/app/catalyst-ui/button'
 import { UserContext } from '@/app/UserContext'
 import { Select } from '@headlessui/react'
 import { InformationCircleIcon } from '@heroicons/react/20/solid'
-import { ChevronUpDownIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline'
+import {
+  CheckIcon,
+  ChevronUpDownIcon,
+  DocumentDuplicateIcon,
+} from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import copy from 'copy-to-clipboard'
 import 'quill/dist/quill.snow.css'
@@ -175,12 +179,11 @@ function CopyBtn({ text }: { text: string }) {
       }
     >
       <span className='sr-only'>複製文字: {text}</span>
-      <DocumentDuplicateIcon
-        className={clsx(
-          '-mb-0.5 h-3.5 w-3.5',
-          isPending && 'fill-current stroke-blue-100',
-        )}
-      />
+      {!isPending ? (
+        <DocumentDuplicateIcon className={clsx('-mb-0.5 h-3.5 w-3.5')} />
+      ) : (
+        <CheckIcon className={clsx('h-3.5 w-3.5 stroke-emerald-700')} />
+      )}
     </button>
   )
 }
