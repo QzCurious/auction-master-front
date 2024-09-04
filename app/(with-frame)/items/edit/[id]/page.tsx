@@ -211,7 +211,7 @@ async function Content({ params }: PageProps) {
                 </>
               )}
 
-              {flowMightOfType('AppraisableAuctionItemType') && (
+              {itemRes.data.type === ITEM_TYPE.enum('AppraisableAuctionItemType') && (
                 <>
                   <DescriptionTerm>
                     最低估值
