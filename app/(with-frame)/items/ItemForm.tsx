@@ -1,6 +1,7 @@
 'use client'
 
 import { ConsignorDeleteItemPhoto } from '@/app/api/frontend/items/ConsignorDeleteItemPhoto'
+import { ConsignorReorderItemPhoto } from '@/app/api/frontend/items/ConsignorReorderItemPhoto'
 import { ConsignorUpsertItemPhoto } from '@/app/api/frontend/items/ConsignorUpsertItemPhoto'
 import { CreateItem } from '@/app/api/frontend/items/CreateItem'
 import { Item } from '@/app/api/frontend/items/GetConsignorItems'
@@ -11,10 +12,17 @@ import { Checkbox, CheckboxField } from '@/app/catalyst-ui/checkbox'
 import { Description, ErrorMessage, Field, Label } from '@/app/catalyst-ui/fieldset'
 import { Input, InputGroup } from '@/app/catalyst-ui/input'
 import ErrorAlert from '@/app/components/alerts/ErrorAlert'
+import {
+  DraggableHandler,
+  DraggableList,
+  DraggableListItem,
+} from '@/app/components/DraggableList'
 import InfoPopover, { InfoPopoverPanel } from '@/app/components/InfoPopover'
 import { currencySign } from '@/app/static'
-import { PlusIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { PhotoIcon } from '@heroicons/react/24/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ArrowsOutLineHorizontal } from '@phosphor-icons/react/dist/ssr/ArrowsOutLineHorizontal'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState, useTransition } from 'react'
@@ -27,7 +35,6 @@ import {
 } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { z } from 'zod'
-import SortablePhotoList from './SortablePhotoList'
 
 const QuillTextEditor = dynamic(
   () => import('@/app/components/QuillTextEditor/QuillTextEditor'),
@@ -266,7 +273,7 @@ function UploadImage({
   return (
     <div className='relative'>
       {isPending && (
-        <div className='pointer-events-none absolute inset-0 z-10 animate-pulse rounded bg-black opacity-40' />
+        <div className='absolute inset-0 z-30 animate-pulse rounded bg-black opacity-40' />
       )}
       <input
         type='file'
@@ -294,8 +301,8 @@ function UploadImage({
                   }
                   startTransition(async () => {
                     await ConsignorUpsertItemPhoto(item.id, formData)
-                    for (const file of Array.from(files)) {
-                      append({ file })
+                    for (let i = 0; i < files.length; i++) {
+                      append({ file: files[i] })
                     }
                   })
                 }
@@ -312,33 +319,82 @@ function UploadImage({
           </button>
         </Label>
 
-        <div className='relative overflow-hidden' data-slot='control'>
-          <SortablePhotoList
-            photos={field.value.map((f, i) => ({
-              photo: 'file' in f ? createUrl(f.file) : f.photo,
-              sorted: i + 1,
-            }))}
-            onMove={move}
-            onDelete={
-              !item
-                ? (i) => {
-                    const f = field.value[i]
-                    if ('file' in f) {
-                      remove(i)
-                      revokeUrl(f.file)
-                    }
-                  }
-                : (i) => {
-                    const f = field.value[i]
-                    if ('sorted' in f) {
+        <div data-slot='control'>
+          {fields.length === 0 ? (
+            <div className='flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
+              <div className='text-center'>
+                <PhotoIcon
+                  className='mx-auto h-12 w-12 text-gray-300'
+                  aria-hidden='true'
+                />
+                <p className='mt-2 text-xs leading-5 text-gray-600'>
+                  支援 PNG, JPG, JPEG
+                </p>
+              </div>
+            </div>
+          ) : (
+            <DraggableList
+              onSwap={
+                !item
+                  ? move
+                  : (from, to) => {
+                      move(from, to)
                       startTransition(async () => {
-                        await ConsignorDeleteItemPhoto(item.id, f.sorted)
-                        remove(i)
+                        await ConsignorReorderItemPhoto(item.id, {
+                          originalSorted: from + 1,
+                          newSorted: to + 1,
+                        })
                       })
                     }
-                  }
-            }
-          />
+              }
+            >
+              {fields.map((f, i) => (
+                <DraggableListItem key={f.id} className='relative'>
+                  <article className='aspect-h-7 aspect-w-10 relative block w-60 overflow-hidden rounded-lg bg-gray-100'>
+                    <img
+                      src={'file' in f ? createUrl(f.file) : f.photo}
+                      className='pointer-events-none object-contain'
+                      alt=''
+                    />
+                  </article>
+                  {/* {error && <p className='text-end text-sm text-red-600'>{error}</p>} */}
+
+                  <div className='absolute right-0 top-0 z-20 flex w-fit items-center gap-x-2 pr-3 pt-1'>
+                    <DraggableHandler>
+                      <span className='sr-only'>Drag to move</span>
+                      <ArrowsOutLineHorizontal className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+                    </DraggableHandler>
+                    <button
+                      type='button'
+                      onClick={
+                        !item
+                          ? () => {
+                              const f = field.value[i]
+                              if ('file' in f) {
+                                remove(i)
+                                revokeUrl(f.file)
+                              }
+                            }
+                          : () => {
+                              const f = field.value[i]
+                              if ('file' in f) {
+                                revokeUrl(f.file)
+                              }
+                              startTransition(async () => {
+                                await ConsignorDeleteItemPhoto(item.id, i + 1)
+                                remove(i)
+                              })
+                            }
+                      }
+                    >
+                      <span className='sr-only'>Delete</span>
+                      <XMarkIcon className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+                    </button>
+                  </div>
+                </DraggableListItem>
+              ))}
+            </DraggableList>
+          )}
         </div>
         {formState.errors.photos?.message && (
           <ErrorMessage>{formState.errors.photos?.message}</ErrorMessage>

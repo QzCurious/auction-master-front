@@ -1,15 +1,21 @@
 'use client'
 
-import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { ConsignorDeleteItemPhoto } from '@/app/api/frontend/items/ConsignorDeleteItemPhoto'
 import { ConsignorReorderItemPhoto } from '@/app/api/frontend/items/ConsignorReorderItemPhoto'
 import { ConsignorUpsertItemPhoto } from '@/app/api/frontend/items/ConsignorUpsertItemPhoto'
 import { Item } from '@/app/api/frontend/items/GetConsignorItems'
+import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { Field, Label } from '@/app/catalyst-ui/fieldset'
-import { PlusIcon } from '@heroicons/react/24/outline'
-import { useState, useTransition } from 'react'
+import {
+  DraggableHandler,
+  DraggableList,
+  DraggableListItem,
+} from '@/app/components/DraggableList'
+import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { PhotoIcon } from '@heroicons/react/24/solid'
+import { ArrowsOutLineHorizontal } from '@phosphor-icons/react/dist/ssr/ArrowsOutLineHorizontal'
+import { useTransition } from 'react'
 import * as R from 'remeda'
-import SortablePhotoList from '../../SortablePhotoList'
 
 interface PhotoListFormProps {
   item: Item
@@ -25,7 +31,6 @@ export default function PhotoListForm({ item }: PhotoListFormProps) {
     ITEM_STATUS.enum('WarehouseArrivalStatus'),
   ])
 
-  const [photos, setPhotos] = useState(item.photos)
   const [isPending, startTransition] = useTransition()
 
   return (
@@ -51,13 +56,6 @@ export default function PhotoListForm({ item }: PhotoListFormProps) {
             }
             startTransition(async () => {
               await ConsignorUpsertItemPhoto(item.id, formData)
-              setPhotos([
-                ...photos,
-                ...Array.from(files, (f) => ({
-                  photo: URL.createObjectURL(f),
-                  sorted: item.photos.length + 1,
-                })),
-              ])
             })
           }}
         />
@@ -75,30 +73,61 @@ export default function PhotoListForm({ item }: PhotoListFormProps) {
         </Label>
 
         <div className='isolate' data-slot='control'>
-          <SortablePhotoList
-            photos={item.photos}
-            onDelete={(i) => {
-              startTransition(async () => {
-                await ConsignorDeleteItemPhoto(item.id, i + 1)
-                URL.revokeObjectURL(photos[i].photo)
-                setPhotos([...photos.splice(i, 1)])
-              })
-            }}
-            onMove={(from, to) => {
-              startTransition(async () => {
-                await ConsignorReorderItemPhoto(item.id, {
-                  originalSorted: item.photos[from].sorted,
-                  newSorted: item.photos[to].sorted,
+          {item.photos.length === 0 ? (
+            <div className='flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
+              <div className='text-center'>
+                <PhotoIcon
+                  className='mx-auto h-12 w-12 text-gray-300'
+                  aria-hidden='true'
+                />
+                <p className='mt-2 text-xs leading-5 text-gray-600'>
+                  支援 PNG, JPG, JPEG
+                </p>
+              </div>
+            </div>
+          ) : (
+            <DraggableList
+              onSwap={(from, to) => {
+                startTransition(async () => {
+                  await ConsignorReorderItemPhoto(item.id, {
+                    originalSorted: item.photos[from].sorted,
+                    newSorted: item.photos[to].sorted,
+                  })
                 })
-                setPhotos([
-                  ...photos.slice(0, from),
-                  ...photos.slice(from + 1, to + 1),
-                  photos[from],
-                  ...photos.slice(to + 1),
-                ])
-              })
-            }}
-          />
+              }}
+            >
+              {item.photos.map((f, i) => (
+                <DraggableListItem key={f.sorted} className='relative'>
+                  <article className='aspect-h-7 aspect-w-10 relative block w-60 overflow-hidden rounded-lg bg-gray-100'>
+                    <img
+                      src={f.photo}
+                      className='pointer-events-none object-contain'
+                      alt=''
+                    />
+                  </article>
+                  {/* {error && <p className='text-end text-sm text-red-600'>{error}</p>} */}
+
+                  <div className='absolute right-0 top-0 z-20 flex w-fit items-center gap-x-2 pr-3 pt-1'>
+                    <DraggableHandler>
+                      <span className='sr-only'>Drag to move</span>
+                      <ArrowsOutLineHorizontal className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+                    </DraggableHandler>
+                    <button
+                      type='button'
+                      onClick={() => {
+                        startTransition(async () => {
+                          await ConsignorDeleteItemPhoto(item.id, i + 1)
+                        })
+                      }}
+                    >
+                      <span className='sr-only'>Delete</span>
+                      <XMarkIcon className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+                    </button>
+                  </div>
+                </DraggableListItem>
+              ))}
+            </DraggableList>
+          )}
         </div>
       </Field>
     </div>
