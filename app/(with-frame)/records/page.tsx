@@ -3,7 +3,7 @@ import { GetRecord } from '@/app/api/frontend/reports/GetRecord'
 import { GetRecords, Record } from '@/app/api/frontend/reports/GetRecords'
 import {
   GetRecordsSummary,
-  Report,
+  type RecordSummary,
 } from '@/app/api/frontend/reports/GetRecordsSummary'
 import { RECORD_STATUS, RECORD_TYPE } from '@/app/api/frontend/static-configs.data'
 import { Heading } from '@/app/catalyst-ui/heading'
@@ -100,13 +100,13 @@ export default async function Page({ searchParams }: PageProps) {
             {R.sum(Object.values(recordsSummaryRes.data.JPY)) > 0 && (
               <div className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'>
                 <Heading level={2}>JPY</Heading>
-                <RecordSummery report={recordsSummaryRes.data.JPY} />
+                <RecordSummary report={recordsSummaryRes.data.JPY} />
               </div>
             )}
             {R.sum(Object.values(recordsSummaryRes.data.TWD)) > 0 && (
               <div className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'>
                 <Heading level={2}>TWD</Heading>
-                <RecordSummery report={recordsSummaryRes.data.TWD} />
+                <RecordSummary report={recordsSummaryRes.data.TWD} />
               </div>
             )}
           </section>
@@ -152,26 +152,21 @@ export default async function Page({ searchParams }: PageProps) {
   )
 }
 
-function RecordSummery({ report }: { report: Report }) {
+function RecordSummary({ report }: { report: RecordSummary }) {
   return (
     <Table dense>
+      {/* v4 https://docs.google.com/spreadsheets/d/1S2-9S-AOAJG5a_hHFlA1N6YN1W5LZjpZzptL2UgBj5w/edit?usp=sharing */}
       <TableBody className='[&>tr>td:last-child]:text-end'>
         {report.totalJpyWithdrawal != 0 && (
           <TableRow>
-            <TableCell>總提取日幣</TableCell>
+            <TableCell>總提款日幣</TableCell>
             <TableCell>{report.totalJpyWithdrawal.toLocaleString()}</TableCell>
           </TableRow>
         )}
         {report.totalWithdrawal != 0 && (
           <TableRow>
-            <TableCell>總匯出台幣</TableCell>
+            <TableCell>總提款台幣</TableCell>
             <TableCell>{report.totalWithdrawal.toLocaleString()}</TableCell>
-          </TableRow>
-        )}
-        {report.totalClosedPrice != 0 && (
-          <TableRow>
-            <TableCell>總結標金額</TableCell>
-            <TableCell>{report.totalClosedPrice.toLocaleString()}</TableCell>
           </TableRow>
         )}
         {report.totalPrice != 0 && (
@@ -311,6 +306,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                 )}
               </TableCell>
               <TableCell className='w-0'>
+                {/* v4 https://docs.google.com/spreadsheets/d/1S2-9S-AOAJG5a_hHFlA1N6YN1W5LZjpZzptL2UgBj5w/edit?usp=sharing */}
                 <Table dense>
                   <TableBody className='[&>tr:last-child>td]:border-0 [&_td:nth-child(2)]:text-end'>
                     {row.jpyWithdrawal != null && (
@@ -328,6 +324,15 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                         <TableCell>
                           {currencySign(row.currency)}
                           {row.withdrawal.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                    {row.withdrawalTransferFee != null && (
+                      <TableRow>
+                        <TableCell>提款手續費</TableCell>
+                        <TableCell>
+                          {currencySign(row.currency)}
+                          {row.withdrawalTransferFee.toLocaleString()}
                         </TableCell>
                       </TableRow>
                     )}

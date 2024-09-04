@@ -6,7 +6,7 @@ import { Currency } from '@/app/static'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
-import { type RECORD_STATUS, type RECORD_TYPE } from '../static-configs.data'
+import { RECORD_TYPE, type RECORD_STATUS } from '../static-configs.data'
 
 const ReqSchema = z.object({
   type: z.number().array().optional(),
@@ -31,6 +31,9 @@ export interface Record {
   exchangeRate?: number
   jpyWithdrawal?: number
   withdrawal?: number
+  withdrawalTransferFee?: number
+  bankCode?: string
+  bankAccount?: string
   closedPrice?: number
   price?: number
   directPurchasePrice?: number
