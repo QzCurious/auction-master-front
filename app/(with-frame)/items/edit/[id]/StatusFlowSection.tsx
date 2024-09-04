@@ -1,16 +1,16 @@
 'use client'
 
-import {
-  CONSIGNOR_STATUS,
-  ITEM_STATUS,
-  ITEM_TYPE,
-} from '@/app/api/frontend/static-configs.data'
 import { Item } from '@/app/api/frontend/items/GetConsignorItem'
 import { ItemChoosesCompanyDirectPurchase } from '@/app/api/frontend/items/ItemChoosesCompanyDirectPurchase'
 import { ItemCompanyDirectPurchase } from '@/app/api/frontend/items/ItemCompanyDirectPurchase'
 import { ItemConsignmentReview } from '@/app/api/frontend/items/ItemConsignmentReview'
 import { ItemReady } from '@/app/api/frontend/items/ItemReady'
 import { ItemReturn } from '@/app/api/frontend/items/ItemReturn'
+import {
+  CONSIGNOR_STATUS,
+  ITEM_STATUS,
+  ITEM_TYPE,
+} from '@/app/api/frontend/static-configs.data'
 import { Button } from '@/app/catalyst-ui/button'
 import {
   Dialog,
@@ -305,6 +305,7 @@ function ApproveConsignmentBtn({ item, user }: { item: Item; user: User }) {
               }
               toast.success('已申請託售')
               setOpen(false)
+              window.scrollTo({ top: 0 })
             }}
           >
             確認託售

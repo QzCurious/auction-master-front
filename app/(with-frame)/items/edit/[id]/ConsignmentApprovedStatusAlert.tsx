@@ -26,7 +26,7 @@ export default function ConsignmentApprovedStatusAlert({
   const user = useContext(UserContext)
 
   return (
-    <div className='rounded-md bg-blue-50 p-4 sm:text-sm'>
+    <section className='rounded-md bg-blue-50 p-4 sm:text-sm'>
       <div className='flex shrink-0 items-center gap-x-3'>
         <InformationCircleIcon
           aria-hidden='true'
@@ -154,7 +154,7 @@ export default function ConsignmentApprovedStatusAlert({
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 
