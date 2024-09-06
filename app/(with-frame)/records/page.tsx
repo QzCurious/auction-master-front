@@ -306,7 +306,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                 )}
               </TableCell>
               <TableCell className='w-0'>
-                {/* v4 https://docs.google.com/spreadsheets/d/1S2-9S-AOAJG5a_hHFlA1N6YN1W5LZjpZzptL2UgBj5w/edit?usp=sharing */}
+                {/* v5 https://docs.google.com/spreadsheets/d/1S2-9S-AOAJG5a_hHFlA1N6YN1W5LZjpZzptL2UgBj5w/edit?gid=1734093702#gid=1734093702 */}
                 <Table dense>
                   <TableBody className='[&>tr:last-child>td]:border-0 [&_td:nth-child(2)]:text-end'>
                     {row.jpyWithdrawal != null && (
@@ -322,7 +322,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>提款金額</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('TWD')}
                           {row.withdrawal.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -331,7 +331,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>提款手續費</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('TWD')}
                           {row.withdrawalTransferFee.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -363,11 +363,20 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                         </TableCell>
                       </TableRow>
                     )}
+                    {row.yahooAuctionFeeJpy != null && (
+                      <TableRow>
+                        <TableCell>日拍手續費</TableCell>
+                        <TableCell>
+                          {currencySign('JPY')}
+                          {row.yahooAuctionFeeJpy.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    )}
                     {row.yahooAuctionFee != null && (
                       <TableRow>
                         <TableCell>日拍手續費</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('TWD')}
                           {row.yahooAuctionFee.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -376,7 +385,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>平台手續費</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('JPY')}
                           {row.commission.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -385,8 +394,17 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>回饋</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('JPY')}
                           {row.bonus.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                    {row.yahooCancellationFeeJpy != null && (
+                      <TableRow>
+                        <TableCell>日拍取消手續費</TableCell>
+                        <TableCell>
+                          {currencySign('JPY')}
+                          {row.yahooCancellationFeeJpy.toLocaleString()}
                         </TableCell>
                       </TableRow>
                     )}
@@ -394,8 +412,17 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>日拍取消手續費</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('TWD')}
                           {row.yahooCancellationFee.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                    {row.spaceFeeJpy != null && (
+                      <TableRow>
+                        <TableCell>留倉費</TableCell>
+                        <TableCell>
+                          {currencySign('JPY')}
+                          {row.spaceFeeJpy.toLocaleString()}
                         </TableCell>
                       </TableRow>
                     )}
@@ -403,7 +430,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>留倉費</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('JPY')}
                           {row.spaceFee.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -412,7 +439,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>運費</TableCell>
                         <TableCell>
-                          {currencySign(row.currency)}
+                          {currencySign('TWD')}
                           {row.shippingCost.toLocaleString()}
                         </TableCell>
                       </TableRow>
