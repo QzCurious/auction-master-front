@@ -18,6 +18,7 @@ import {
 } from '@/app/catalyst-ui/fieldset'
 import { Input, InputGroup } from '@/app/catalyst-ui/input'
 import { currencySign } from '@/app/static'
+import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -173,6 +174,22 @@ function WithdrawForm({
             )}
           />
         </FieldGroup>
+
+        <div className='mt-3 rounded-md bg-blue-50 p-4'>
+          <div className='flex'>
+            <div className='flex-shrink-0'>
+              <InformationCircleIcon
+                aria-hidden='true'
+                className='h-5 w-5 text-blue-400'
+              />
+            </div>
+            <div className='ml-3 flex-1 md:flex md:justify-between'>
+              <p className='text-sm text-blue-700'>
+                提領需經過換匯處理，顯示之金額僅為試算參考，實際提領金額以匯款之金額為準。
+              </p>
+            </div>
+          </div>
+        </div>
       </DialogBody>
       <DialogActions>
         <Button type='button' plain onClick={onCancel}>
