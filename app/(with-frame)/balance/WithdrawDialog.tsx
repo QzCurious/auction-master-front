@@ -131,7 +131,7 @@ function WithdrawForm({
                 if (value <= atLeast) {
                   return '最少需大於 ' + atLeast
                 }
-                if (value > balance - feeInJpy) {
+                if (value > balance) {
                   return '餘額不足'
                 }
                 if (value > 100_000) {
