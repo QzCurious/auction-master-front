@@ -1,5 +1,6 @@
 import { BonusLog, GetBonusLogs } from '@/app/api/frontend/bonuses/GetBonusLogs'
 import { GetConsignorBonusBalance } from '@/app/api/frontend/bonuses/GetConsignorBonusBalance'
+import { GetConsignor } from '@/app/api/frontend/consignor/GetConsignor'
 import { GetConfigs } from '@/app/api/frontend/GetConfigs'
 import { GetJPYRates } from '@/app/api/frontend/GetJPYRates'
 import { BONUS_ACTION, WALLET_ACTION } from '@/app/api/frontend/static-configs.data'
@@ -107,35 +108,44 @@ export default async function Page({ searchParams }: PageProps) {
   const pagination = PaginationSchema.parse(searchParams)
   const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
 
-  const [configsRes, jpyRatesRes, balanceRes, walletLogsRes, bonusRes, bonusLogsRes] =
-    await Promise.all([
-      GetConfigs(),
-      GetJPYRates(),
-      GetConsignorWalletBalance(),
-      query.type === 'balance'
-        ? GetWalletLogs({
-            startAt,
-            endAt,
-            sort: 'createdAt',
-            order: 'desc',
-            limit: pagination[ROWS_PER_PAGE],
-            offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
-          })
-        : null,
-      GetConsignorBonusBalance(),
-      query.type === 'bonus'
-        ? GetBonusLogs({
-            startAt,
-            endAt,
-            sort: 'createdAt',
-            order: 'desc',
-            limit: pagination[ROWS_PER_PAGE],
-            offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
-          })
-        : null,
-    ])
+  const [
+    consignorRes,
+    configsRes,
+    jpyRatesRes,
+    balanceRes,
+    walletLogsRes,
+    bonusRes,
+    bonusLogsRes,
+  ] = await Promise.all([
+    GetConsignor(),
+    GetConfigs(),
+    GetJPYRates(),
+    GetConsignorWalletBalance(),
+    query.type === 'balance'
+      ? GetWalletLogs({
+          startAt,
+          endAt,
+          sort: 'createdAt',
+          order: 'desc',
+          limit: pagination[ROWS_PER_PAGE],
+          offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
+        })
+      : null,
+    GetConsignorBonusBalance(),
+    query.type === 'bonus'
+      ? GetBonusLogs({
+          startAt,
+          endAt,
+          sort: 'createdAt',
+          order: 'desc',
+          limit: pagination[ROWS_PER_PAGE],
+          offset: pagination[PAGE] * pagination[ROWS_PER_PAGE],
+        })
+      : null,
+  ])
 
   if (
+    consignorRes.error === '1003' ||
     configsRes.error === '1003' ||
     jpyRatesRes.error === '1003' ||
     balanceRes.error === '1003' ||
@@ -182,7 +192,11 @@ export default async function Page({ searchParams }: PageProps) {
         {query.type === 'balance' && (
           <WithdrawDialog
             balance={balanceRes.data}
-            withdrawalTransferFee={configsRes.data.withdrawalTransferFee}
+            withdrawalTransferFee={
+              consignorRes.data.bankCode === configsRes.data.bankCode
+                ? 0
+                : configsRes.data.withdrawalTransferFee
+            }
             jpyExchangeRate={jpyRatesRes.data}
           />
         )}

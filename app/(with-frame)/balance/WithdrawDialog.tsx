@@ -1,6 +1,5 @@
 'use client'
 
-import { Configs } from '@/app/api/frontend/GetConfigs'
 import { ExchangeRate } from '@/app/api/frontend/GetJPYRates'
 import { ConsignorWalletWithdrawal } from '@/app/api/frontend/wallets/ConsignorWalletWithdrawal'
 import { Button } from '@/app/catalyst-ui/button'
@@ -30,7 +29,8 @@ export default function WithdrawDialogButton({
 }: {
   balance: number
   jpyExchangeRate: ExchangeRate
-} & Pick<Configs, 'withdrawalTransferFee'>) {
+  withdrawalTransferFee: number
+}) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -61,9 +61,10 @@ function WithdrawForm({
 }: {
   balance: number
   jpyExchangeRate: ExchangeRate
+  withdrawalTransferFee: number
   onSuccess: () => void
   onCancel: () => void
-} & Pick<Configs, 'withdrawalTransferFee'>) {
+}) {
   const { control, watch, handleSubmit } = useForm<{ amount: number }>({
     reValidateMode: 'onChange',
     mode: 'onChange',
