@@ -253,38 +253,60 @@ export const STATIC_CONFIGS_DATA = {
       value: 13,
     },
   ],
-  shippingType: [
+  actionType: [
     {
-      key: 'AddressType',
+      key: 'YahooDispatchActionType',
+      message: '日拍出貨',
+      value: 1,
+    },
+    {
+      key: 'ReturnActionType',
+      message: '退貨',
+      value: 2,
+    },
+  ],
+  shipmentType: [
+    {
+      key: 'AddressShipmentType',
       message: '地址寄出',
       value: 1,
     },
     {
-      key: 'SevenElevenType',
+      key: 'SevenElevenShipmentType',
       message: '7-11寄出',
       value: 2,
     },
     {
-      key: 'FamilyType',
+      key: 'FamilyShipmentType',
       message: '全家寄出',
       value: 3,
     },
   ],
   shippingStatus: [
     {
+      key: 'AwaitingConsignorPayFeeStatus',
+      message: '等待寄售人付費',
+      value: 1,
+    },
+    {
       key: 'SubmitAppraisalStatus',
       message: '已提交出貨',
-      value: 1,
+      value: 2,
     },
     {
       key: 'ProcessingStatus',
       message: '理貨中',
-      value: 2,
+      value: 3,
     },
     {
       key: 'ShippedStatus',
       message: '已寄出',
-      value: 3,
+      value: 4,
+    },
+    {
+      key: 'CanceledStatus',
+      message: '取消',
+      value: 99,
     },
   ],
   recordType: [
@@ -324,9 +346,14 @@ export const STATIC_CONFIGS_DATA = {
       value: 2002,
     },
     {
-      key: 'PayShippingCostType',
-      message: '支付運費',
+      key: 'PayReturnItemFeeType',
+      message: '支付退貨費用',
       value: 2003,
+    },
+    {
+      key: 'InternationalShippingCostsType',
+      message: '國際運費',
+      value: 3000,
     },
   ],
   recordStatus: [
@@ -459,8 +486,11 @@ export const CONSIGNOR_VERIFICATION_STATUS = createMapper(
 export type CONSIGNOR_VERIFICATION_STATUS =
   (typeof CONSIGNOR_VERIFICATION_STATUS.data)[number]
 
-export const SHIPPING_TYPE = createMapper(STATIC_CONFIGS_DATA.shippingType)
-export type SHIPPING_TYPE = (typeof SHIPPING_TYPE.data)[number]
+export const ACTION_TYPE = createMapper(STATIC_CONFIGS_DATA.actionType)
+export type ACTION_TYPE = (typeof ACTION_TYPE.data)[number]
+
+export const SHIPMENT_TYPE = createMapper(STATIC_CONFIGS_DATA.shipmentType)
+export type SHIPMENT_TYPE = (typeof SHIPMENT_TYPE.data)[number]
 
 export const SHIPPING_STATUS = createMapper(STATIC_CONFIGS_DATA.shippingStatus)
 export type SHIPPING_STATUS = (typeof SHIPPING_STATUS.data)[number]

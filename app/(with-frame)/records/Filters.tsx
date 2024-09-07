@@ -87,6 +87,7 @@ const filters = {
         RECORD_TYPE.data[5],
         RECORD_TYPE.data[6],
         RECORD_TYPE.data[7],
+        RECORD_TYPE.data[8],
       ],
       ({ value, message }) => ({ label: message, value }),
     ),
