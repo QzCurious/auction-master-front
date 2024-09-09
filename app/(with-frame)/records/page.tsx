@@ -118,6 +118,8 @@ export default async function Page({ searchParams }: PageProps) {
                   return '支付日拍取消手續費'
                 case RECORD_TYPE.enum('PaySpaceFeeType'):
                   return '支付留倉費'
+                case RECORD_TYPE.enum('PayReturnItemFeeType'):
+                  return '支付退貨費'
                 default:
                   return '發生錯誤'
               }
@@ -131,6 +133,8 @@ export default async function Page({ searchParams }: PageProps) {
                   return submitPaymentRecordRes.data.yahooCancellationFee
                 case RECORD_TYPE.enum('PaySpaceFeeType'):
                   return submitPaymentRecordRes.data.spaceFee
+                case RECORD_TYPE.enum('PayReturnItemFeeType'):
+                  return submitPaymentRecordRes.data.shippingCost
                 default:
                   return undefined
               }
@@ -298,7 +302,14 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
           )}
           {rows.map((row) => (
             <TableRow key={row.id}>
-              <TableCell className='text-center'>
+              <TableCell
+                className='text-center'
+                title={
+                  process.env.NODE_ENV === 'development'
+                    ? `${row.type} ${RECORD_TYPE.enum(row.type)}`
+                    : undefined
+                }
+              >
                 {RECORD_TYPE.get('value', row.type).message}
               </TableCell>
               <TableCell
@@ -307,6 +318,11 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                   row.status === RECORD_STATUS.enum('UnpaidStatus') &&
                     'text-rose-500',
                 )}
+                title={
+                  process.env.NODE_ENV === 'development'
+                    ? `${row.status} ${RECORD_STATUS.enum(row.status)}`
+                    : undefined
+                }
               >
                 {RECORD_STATUS.get('value', row.status).message}
 
@@ -321,6 +337,8 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                             return '支付日拍取消手續費'
                           case RECORD_TYPE.enum('PaySpaceFeeType'):
                             return '支付留倉費'
+                          case RECORD_TYPE.enum('PayReturnItemFeeType'):
+                            return '支付退貨費'
                           default:
                             return '發生錯誤'
                         }
@@ -334,6 +352,10 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                             return row.yahooCancellationFee
                           case RECORD_TYPE.enum('PaySpaceFeeType'):
                             return row.spaceFee
+                          case RECORD_TYPE.enum('PayReturnItemFeeType'): {
+                            if (!row.shippingCost || !row.spaceFee) return undefined
+                            return row.shippingCost + row.spaceFee
+                          }
                           default:
                             return undefined
                         }
@@ -472,7 +494,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       <TableRow>
                         <TableCell>留倉費</TableCell>
                         <TableCell>
-                          {currencySign('JPY')}
+                          {currencySign('TWD')}
                           {row.spaceFee.toLocaleString()}
                         </TableCell>
                       </TableRow>
