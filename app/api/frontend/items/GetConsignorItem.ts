@@ -5,17 +5,10 @@ import { ITEM_STATUS, ITEM_TYPE } from '../static-configs.data'
 export interface Item {
   id: number
   consignorID: number
-  nickname: string
   type: 0 | ITEM_TYPE['value']
+  isNew: boolean
   name: string
   description: string
-  photos: Array<{
-    sorted: number
-    photo: string
-    createdAt: string
-    updatedAt: string
-  }>
-  pastStatuses: { [k in ITEM_STATUS['value']]?: string }
   directPurchasePrice: number
   minEstimatedPrice: number
   maxEstimatedPrice: number
@@ -23,11 +16,22 @@ export interface Item {
   expireAt: string
   warehouseID: string
   space: number
+  shippingCostsWithinJapan: number
   grossWeight: number
   volumetricWeight: number
   status: ITEM_STATUS['value']
   createdAt: string
   updatedAt: string
+  nickname: string
+  photos: Array<{
+    sorted: number
+    photo: string
+    createdAt: string
+    updatedAt: string
+  }>
+  pastStatuses: { [k in ITEM_STATUS['value']]?: string }
+  auctionItemID: number
+  recordID: string
 }
 
 interface Data extends Item {}

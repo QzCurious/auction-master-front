@@ -52,7 +52,7 @@ function PayFeeDetail({
   const previewQuery = useQuery(AuctionItemDealPreviewQueryOptions(auctionItemId))
   const walletQuery = useQuery(GetConsignorWalletBalanceQueryOptions)
   const jpyRatesQuery = useQuery(GetJPYRatesQueryOptions)
-  const [isSubmitting, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition()
 
   if (
     configsQuery.error ||
@@ -103,7 +103,7 @@ function PayFeeDetail({
           <Button
             type='button'
             color='indigo'
-            disabled={isSubmitting}
+            disabled={isPending}
             onClick={() =>
               startTransition(async () => {
                 const res = await ConsignorPayAuctionItemFee(auctionItemId)
@@ -126,7 +126,7 @@ function PayFeeDetail({
         <Button
           type='button'
           outline
-          disabled={isSubmitting}
+          disabled={isPending}
           onClick={() => {
             startTransition(async () => {
               const res = await ConsignorPayAuctionItemFeeTransfer(auctionItemId)

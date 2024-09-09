@@ -2,6 +2,7 @@ import { GetConfigs } from '@/app/api/frontend/GetConfigs'
 import { GetJPYRates } from '@/app/api/frontend/GetJPYRates'
 import { GetConsignorItem } from '@/app/api/frontend/items/GetConsignorItem'
 import { ITEM_STATUS, ITEM_TYPE } from '@/app/api/frontend/static-configs.data'
+import { GetConsignorWalletBalance } from '@/app/api/frontend/wallets/GetConsignorWalletBalance'
 import { getUser } from '@/app/api/helpers/getUser'
 import {
   DescriptionDetails,
@@ -17,10 +18,10 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import 'quill/dist/quill.snow.css'
 import * as R from 'remeda'
 import ItemForm from '../../ItemForm'
 import ConsignmentApprovedStatusAlert from './ConsignmentApprovedStatusAlert'
+import PaySpaceFeeAlert from './PaySpaceFeeAlert'
 import PhotoListForm from './PhotoListForm'
 import { StatusFlowUI } from './StatusFlowSection'
 
@@ -116,6 +117,25 @@ async function Content({ params }: PageProps) {
           />
         </div>
       )}
+
+      {(async function iife() {
+        const balanceRes = await GetConsignorWalletBalance()
+
+        if (balanceRes.error === '1003') {
+          return <RedirectToHome />
+        }
+
+        return (
+          <div className='mb-6'>
+            <PaySpaceFeeAlert
+              configs={configsRes.data}
+              walletBalance={balanceRes.data}
+              jpyExchangeRate={jpyRatesRes.data}
+              item={itemRes.data}
+            />
+          </div>
+        )
+      })()}
 
       <div className='flex flex-col gap-x-10 gap-y-8 sm:flex-row'>
         <div className='min-w-0 flex-1'>

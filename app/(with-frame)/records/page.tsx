@@ -16,14 +16,9 @@ import {
   TableRow,
 } from '@/app/catalyst-ui/table'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
+import { parseSearchParams } from '@/app/helper/parseSearchParams'
 import RedirectToHome from '@/app/RedirectToHome'
-import {
-  currencySign,
-  DATE_TIME_FORMAT,
-  PAGE,
-  parseSearchParams,
-  ROWS_PER_PAGE,
-} from '@/app/static'
+import { currencySign, DATE_TIME_FORMAT, PAGE, ROWS_PER_PAGE } from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { format } from 'date-fns'
@@ -125,15 +120,18 @@ export default async function Page({ searchParams }: PageProps) {
                   : '發生錯誤'
             }
             recordId={submitPaymentRecordRes.data.id}
-            amount={
-              submitPaymentRecordRes.data.type ===
-              RECORD_TYPE.enum('PayYahooAuctionFeeType')
-                ? submitPaymentRecordRes.data.yahooAuctionFee
-                : submitPaymentRecordRes.data.type ===
-                    RECORD_TYPE.enum('PayAuctionItemCancellationFeeType')
-                  ? submitPaymentRecordRes.data.yahooCancellationFee
-                  : undefined
-            }
+            amount={(function iife() {
+              switch (submitPaymentRecordRes.data.type) {
+                case RECORD_TYPE.enum('PayYahooAuctionFeeType'):
+                  return submitPaymentRecordRes.data.yahooAuctionFee
+                case RECORD_TYPE.enum('PayAuctionItemCancellationFeeType'):
+                  return submitPaymentRecordRes.data.yahooCancellationFee
+                case RECORD_TYPE.enum('PaySpaceFeeType'):
+                  return submitPaymentRecordRes.data.spaceFee
+                default:
+                  return undefined
+              }
+            })()}
             bankName={configsRes.data.bankName}
             bankCode={configsRes.data.bankCode}
             bankAccount={configsRes.data.bankAccount}

@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
-import { ITEM_STATUS } from '../static-configs.data'
+import { ITEM_STATUS, ITEM_TYPE } from '../static-configs.data'
 
 export const ReqSchema = z.object({
   status: z.coerce.number().array().optional(),
@@ -14,22 +14,34 @@ export const ReqSchema = z.object({
 
 export interface Item {
   id: number
-  nickname: string
-  type: number
+  consignorID: number
+  type: 0 | ITEM_TYPE['value']
+  isNew: boolean
   name: string
   description: string
-  photos: Array<{
-    sorted: number
-    photo: string
-  }>
-  space: number
+  directPurchasePrice: number
   minEstimatedPrice: number
   maxEstimatedPrice: number
   reservePrice: number
-  expireAt: string
+  expireAt: string | null
+  warehouseID: string
+  space: number
+  shippingCostsWithinJapan: number
+  grossWeight: number
+  volumetricWeight: number
   status: ITEM_STATUS['value']
   createdAt: string
   updatedAt: string
+  nickname: string
+  photos: Array<{
+    sorted: number
+    photo: string
+    createdAt: string
+    updatedAt: string
+  }>
+  pastStatuses: { [k in ITEM_STATUS['value']]?: string }
+  auctionItemID: number
+  recordID: string
 }
 
 export type StatusCounts = {

@@ -15,7 +15,6 @@ import {
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import copy from 'copy-to-clipboard'
-import 'quill/dist/quill.snow.css'
 import { useContext, useState, useTransition } from 'react'
 
 export default function ConsignmentApprovedStatusAlert({

@@ -3,8 +3,10 @@ import { ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
 import { Button } from '@/app/catalyst-ui/button'
 import { Heading } from '@/app/catalyst-ui/heading'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
+import { parseSearchParams } from '@/app/helper/parseSearchParams'
+import { Until } from '@/app/helper/useUntil'
 import RedirectToHome from '@/app/RedirectToHome'
-import { PAGE, parseSearchParams, ROWS_PER_PAGE, SITE_NAME } from '@/app/static'
+import { PAGE, ROWS_PER_PAGE, SITE_NAME } from '@/app/static'
 import { PhotoIcon } from '@heroicons/react/20/solid'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
@@ -83,6 +85,16 @@ export default async function Page({ searchParams }: PageProps) {
                     </div>
                   </div>
                 </Link>
+
+                {!!item.expireAt && !item.recordID && (
+                  <Until date={new Date(item.expireAt)}>
+                    <div className='absolute right-2 top-2'>
+                      <p className='inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10'>
+                        待繳留倉費
+                      </p>
+                    </div>
+                  </Until>
+                )}
 
                 <div className='mt-2 flex items-center gap-x-2'>
                   <h2

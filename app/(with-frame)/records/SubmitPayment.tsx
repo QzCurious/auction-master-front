@@ -106,7 +106,9 @@ export function SubmitPaymentDialog({
           <DescriptionList>
             <DescriptionTerm>手續費</DescriptionTerm>
             {amount === undefined ? (
-              <DescriptionDetails>發生錯誤，請聯繫客服</DescriptionDetails>
+              <DescriptionDetails>
+                <p className='text-rose-600'>發生錯誤，請聯繫客服</p>
+              </DescriptionDetails>
             ) : (
               <DescriptionDetails>
                 {currencySign('TWD')}
