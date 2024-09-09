@@ -195,7 +195,9 @@ function WithdrawForm({
         <Button type='button' plain onClick={onCancel}>
           取消
         </Button>
-        <Button type='submit'>送出申請</Button>
+        <Button type='submit' color='indigo'>
+          送出申請
+        </Button>
       </DialogActions>
     </form>
   )

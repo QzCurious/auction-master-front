@@ -110,15 +110,18 @@ export default async function Page({ searchParams }: PageProps) {
       {submitPaymentRecordRes &&
         submitPaymentRecordRes.data.status === RECORD_STATUS.enum('UnpaidStatus') && (
           <SubmitPaymentDialog
-            title={
-              submitPaymentRecordRes.data.type ===
-              RECORD_TYPE.enum('PayYahooAuctionFeeType')
-                ? '支付日拍手續費'
-                : submitPaymentRecordRes.data.type ===
-                    RECORD_TYPE.enum('PayAuctionItemCancellationFeeType')
-                  ? '支付日拍取消手續費'
-                  : '發生錯誤'
-            }
+            title={(function iife() {
+              switch (submitPaymentRecordRes.data.type) {
+                case RECORD_TYPE.enum('PayYahooAuctionFeeType'):
+                  return '支付日拍手續費'
+                case RECORD_TYPE.enum('PayAuctionItemCancellationFeeType'):
+                  return '支付日拍取消手續費'
+                case RECORD_TYPE.enum('PaySpaceFeeType'):
+                  return '支付留倉費'
+                default:
+                  return '發生錯誤'
+              }
+            })()}
             recordId={submitPaymentRecordRes.data.id}
             amount={(function iife() {
               switch (submitPaymentRecordRes.data.type) {
@@ -309,27 +312,37 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
 
                 {row.status === RECORD_STATUS.enum('UnpaidStatus') && (
                   <div className='mt-2 flex justify-center gap-x-2'>
-                    {row.type === RECORD_TYPE.enum('PayYahooAuctionFeeType') && (
-                      <SubmitPayment
-                        title='支付日拍手續費'
-                        recordId={row.id}
-                        amount={row.yahooAuctionFee}
-                        bankName={configs.bankName}
-                        bankAccount={configs.bankAccount}
-                        bankCode={configs.bankCode}
-                      />
-                    )}
-                    {row.type ===
-                      RECORD_TYPE.enum('PayAuctionItemCancellationFeeType') && (
-                      <SubmitPayment
-                        title='支付日拍取消手續費'
-                        recordId={row.id}
-                        amount={row.yahooCancellationFee}
-                        bankName={configs.bankName}
-                        bankAccount={configs.bankAccount}
-                        bankCode={configs.bankCode}
-                      />
-                    )}
+                    <SubmitPayment
+                      title={(function iife() {
+                        switch (row.type) {
+                          case RECORD_TYPE.enum('PayYahooAuctionFeeType'):
+                            return '支付日拍手續費'
+                          case RECORD_TYPE.enum('PayAuctionItemCancellationFeeType'):
+                            return '支付日拍取消手續費'
+                          case RECORD_TYPE.enum('PaySpaceFeeType'):
+                            return '支付留倉費'
+                          default:
+                            return '發生錯誤'
+                        }
+                      })()}
+                      recordId={row.id}
+                      amount={(function iife() {
+                        switch (row.type) {
+                          case RECORD_TYPE.enum('PayYahooAuctionFeeType'):
+                            return row.yahooAuctionFee
+                          case RECORD_TYPE.enum('PayAuctionItemCancellationFeeType'):
+                            return row.yahooCancellationFee
+                          case RECORD_TYPE.enum('PaySpaceFeeType'):
+                            return row.spaceFee
+                          default:
+                            return undefined
+                        }
+                      })()}
+                      bankName={configs.bankName}
+                      bankAccount={configs.bankAccount}
+                      bankCode={configs.bankCode}
+                    />
+
                     <CancelPayment recordID={row.id} />
                   </div>
                 )}

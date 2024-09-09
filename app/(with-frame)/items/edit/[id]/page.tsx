@@ -23,6 +23,7 @@ import ItemForm from '../../ItemForm'
 import ConsignmentApprovedStatusAlert from './ConsignmentApprovedStatusAlert'
 import PaySpaceFeeAlert from './PaySpaceFeeAlert'
 import PhotoListForm from './PhotoListForm'
+import ReturnItemDialog from './ReturnItemDialog'
 import { StatusFlowUI } from './StatusFlowSection'
 
 const QuillTextEditor = dynamic(
@@ -278,6 +279,17 @@ async function Content({ params }: PageProps) {
           </section>
 
           <div className='mt-10'>
+            {R.isIncludedIn(itemRes.data.status, [
+              ITEM_STATUS.enum('WarehouseArrivalStatus'),
+              ITEM_STATUS.enum('WarehousePersonnelConfirmedStatus'),
+              ITEM_STATUS.enum('AppraiserConfirmedStatus'),
+              ITEM_STATUS.enum('ConsignorConfirmedStatus'),
+            ]) && (
+              <div className='mb-4 flex justify-end'>
+                <ReturnItemDialog item={itemRes.data} />
+              </div>
+            )}
+
             <Subheading level={2}>物品進度</Subheading>
             <div className='mt-3'>
               <StatusFlowUI item={itemRes.data} user={user} />
