@@ -29,7 +29,7 @@ export default function ReturnItemDialog({ item }: { item: Item }) {
 
       <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
         <DialogTitle>申請退貨</DialogTitle>
-        <DialogBody>請聯繫客服</DialogBody>
+        <DialogBody>後續退貨細節請聯繫客服 (可一次退多個物品)</DialogBody>
         <DialogActions>
           <Button
             type='button'
