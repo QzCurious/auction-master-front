@@ -14,6 +14,7 @@ import InfoPopover, { InfoPopoverPanel } from '@/app/components/InfoPopover'
 import RedirectToHome from '@/app/RedirectToHome'
 import { currencySign } from '@/app/static'
 import { StatusFlow } from '@/app/StatusFlow'
+import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
@@ -116,6 +117,27 @@ async function Content({ params }: PageProps) {
             configs={configsRes.data}
             item={itemRes.data}
           />
+        </div>
+      )}
+
+      {itemRes.data.status === ITEM_STATUS.enum('WarehouseReturnPendingStatus') && (
+        <div className='rounded-md bg-blue-50 p-4'>
+          <div className='flex'>
+            <div className='flex-shrink-0'>
+              <InformationCircleIcon
+                aria-hidden='true'
+                className='h-5 w-5 text-blue-400'
+              />
+            </div>
+            <div className='ml-3'>
+              <h3 className='text-sm font-medium text-blue-800'>
+                {ITEM_STATUS.get('value', itemRes.data.status).message}
+              </h3>
+              <div className='mt-2 text-sm text-blue-800'>
+                <p>請聯繫客服已完成後續退貨手續</p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
