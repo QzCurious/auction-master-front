@@ -353,7 +353,8 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                           case RECORD_TYPE.enum('PaySpaceFeeType'):
                             return row.spaceFee
                           case RECORD_TYPE.enum('PayReturnItemFeeType'): {
-                            if (!row.shippingCost || !row.spaceFee) return undefined
+                            if (row.shippingCost == null || row.spaceFee == null)
+                              return undefined
                             return row.shippingCost + row.spaceFee
                           }
                           default:
