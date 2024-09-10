@@ -1,5 +1,6 @@
 'use server'
 
+import { appendEntries } from '@/app/static'
 import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
@@ -12,16 +13,17 @@ const ReqSchema = z.object({
 
 type Data = 'Success'
 
-// 11: password cannot be same as old password
-// 1004: old password incorrect
-type ErrorCode = '11' | '1004'
+type ErrorCode =
+  // password cannot be same as old password
+  | '11'
+  // old password incorrect
+  | '1004'
 
 export async function UpdateConsignorPassword(payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()
-  formData.append('oldPassword', data.oldPassword)
-  formData.append('password', data.password)
+  appendEntries(formData, data)
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     '/frontend/consignor/password',

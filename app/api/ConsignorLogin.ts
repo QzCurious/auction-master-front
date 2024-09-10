@@ -3,7 +3,7 @@
 import { apiClient } from '@/app/api/apiClient'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
-import { cookieConfigs } from '../static'
+import { appendEntries, cookieConfigs } from '../static'
 import { throwIfInvalid } from './helpers/throwIfInvalid'
 
 const ReqSchema = z.object({
@@ -25,11 +25,10 @@ type ErrorCode =
   | '1602'
 
 export async function ConsignorLogin(payload: z.input<typeof ReqSchema>) {
-  throwIfInvalid(payload, ReqSchema)
+  const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()
-  formData.append('account', payload.account)
-  formData.append('password', payload.password)
+  appendEntries(formData, data)
 
   const res = await apiClient<Data, ErrorCode>('/session', {
     method: 'POST',

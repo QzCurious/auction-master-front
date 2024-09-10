@@ -2,6 +2,7 @@
 
 import { revalidateTag } from 'next/cache'
 
+import { appendEntries } from '@/app/static'
 import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
@@ -23,7 +24,7 @@ export async function ConsignorSubmitPayment(
   const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()
-  formData.append('opCode', data.opCode)
+  appendEntries(formData, data)
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/reports/records/${id}/submit-payment`,

@@ -1,3 +1,5 @@
+'use server'
+
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
 import { ITEM_STATUS, ITEM_TYPE } from '../static-configs.data'
@@ -39,8 +41,6 @@ interface Data extends Item {}
 type ErrorCode = '1801'
 
 export async function GetConsignorItem(id: number) {
-  'use server'
-
   const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}`, {
     method: 'GET',
     next: { tags: ['items'] },

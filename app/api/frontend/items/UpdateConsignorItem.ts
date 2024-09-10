@@ -1,5 +1,6 @@
 'use server'
 
+import { appendEntries } from '@/app/static'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 import { apiClient } from '../../apiClient'
@@ -29,10 +30,7 @@ export async function UpdateConsignorItem(
   const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()
-  formData.append('name', data.name)
-  formData.append('type', data.type.toString())
-  formData.append('reservePrice', data.reservePrice.toString())
-  data.description && formData.append('description', data.description)
+  appendEntries(formData, data)
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}`, {
     method: 'PATCH',

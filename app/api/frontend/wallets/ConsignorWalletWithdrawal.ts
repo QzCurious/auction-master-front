@@ -2,6 +2,7 @@
 
 import { revalidateTag } from 'next/cache'
 
+import { appendEntries } from '@/app/static'
 import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
@@ -21,7 +22,7 @@ export async function ConsignorWalletWithdrawal(payload: z.input<typeof ReqSchem
   const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()
-  formData.append('amount', data.amount.toString())
+  appendEntries(formData, data)
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     '/frontend/wallets/withdrawal',

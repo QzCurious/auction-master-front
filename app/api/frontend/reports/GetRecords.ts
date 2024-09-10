@@ -2,6 +2,7 @@
 
 import { z } from 'zod'
 
+import { appendEntries } from '@/app/static'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
@@ -67,18 +68,7 @@ export async function GetRecords(payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const query = new URLSearchParams()
-  for (const type of data.type ?? []) {
-    query.append('type', type.toString())
-  }
-  for (const status of data.status ?? []) {
-    query.append('status', status.toString())
-  }
-  data.startAt && query.append('startAt', data.startAt.toISOString())
-  data.endAt && query.append('endAt', data.endAt.toISOString())
-  data.sort != null && query.append('sort', data.sort)
-  data.order != null && query.append('order', data.order)
-  data.limit != null && query.append('limit', data.limit.toString())
-  data.offset != null && query.append('offset', data.offset.toString())
+  appendEntries(query, data)
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/reports/records?${query}`,

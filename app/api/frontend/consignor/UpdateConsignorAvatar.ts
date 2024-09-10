@@ -2,14 +2,9 @@
 
 import { cookieConfigs } from '@/app/static'
 import { cookies } from 'next/headers'
-import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { getToken } from '../../getToken'
 import { withAuth } from '../../withAuth'
-
-const ReqSchema = z.object({
-  nickname: z.string(),
-})
 
 type Data = 'Success'
 

@@ -2,8 +2,9 @@
 
 import { apiClient } from '@/app/api/apiClient'
 import { z } from 'zod'
-import { throwIfInvalid } from './helpers/throwIfInvalid'
+import { appendEntries } from '../static'
 import { ConsignorLogin } from './ConsignorLogin'
+import { throwIfInvalid } from './helpers/throwIfInvalid'
 
 const ReqSchema = z.object({
   account: z.string(),
@@ -18,12 +19,10 @@ type ErrorCode =
   '1028'
 
 export async function CreateConsignor(payload: z.input<typeof ReqSchema>) {
-  throwIfInvalid(payload, ReqSchema)
+  const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()
-  formData.append('account', payload.account)
-  formData.append('password', payload.password)
-  formData.append('nickname', payload.nickname)
+  appendEntries(formData, data)
 
   const res = await apiClient<Data, ErrorCode>('/consignor', {
     method: 'POST',

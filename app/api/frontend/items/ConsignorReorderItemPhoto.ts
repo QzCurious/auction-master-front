@@ -1,5 +1,6 @@
 'use server'
 
+import { appendEntries } from '@/app/static'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 import { apiClient } from '../../apiClient'
@@ -22,8 +23,7 @@ export async function ConsignorReorderItemPhoto(
   const data = throwIfInvalid(payload, ReqSchema)
 
   const formData = new FormData()
-  formData.append('originalSorted', data.originalSorted.toString())
-  formData.append('newSorted', data.newSorted.toString())
+  appendEntries(formData, data)
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/items/${id}/photos`,

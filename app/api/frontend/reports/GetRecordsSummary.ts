@@ -1,5 +1,6 @@
 'use server'
 
+import { appendEntries } from '@/app/static'
 import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
@@ -43,14 +44,7 @@ export async function GetRecordsSummary(payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const query = new URLSearchParams()
-  for (const type of data.type ?? []) {
-    query.append('type', type.toString())
-  }
-  for (const status of data.status ?? []) {
-    query.append('status', status.toString())
-  }
-  data.startAt && query.append('startAt', data.startAt.toISOString())
-  data.endAt && query.append('endAt', data.endAt.toISOString())
+  appendEntries(query, data)
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/reports/records/summary?${query}`,

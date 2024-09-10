@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { appendEntries } from '../static'
 import { apiClient } from './apiClient'
 import { throwIfInvalid } from './helpers/throwIfInvalid'
 
@@ -17,11 +18,10 @@ type ErrorCode =
   '1003'
 
 export async function RefreshToken(payload: z.input<typeof ReqSchema>) {
-  throwIfInvalid(payload, ReqSchema)
+  const { token, refreshToken } = throwIfInvalid(payload, ReqSchema)
 
-  const { token, refreshToken } = payload
   const formData = new FormData()
-  formData.append('refreshToken', refreshToken)
+  appendEntries(formData, { refreshToken })
 
   const res = await apiClient<Data, ErrorCode>('/session/refresh', {
     method: 'POST',
