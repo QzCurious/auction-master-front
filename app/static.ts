@@ -70,6 +70,8 @@ export function appendEntries(
       continue
     } else if (v === undefined) {
       continue
+    } else if (typeof v === 'number' && isNaN(v)) {
+      continue
     } else {
       x.append(k, convertToString(v))
     }
@@ -78,8 +80,8 @@ export function appendEntries(
 }
 
 function convertToString(v: Value): string {
-  if (v === true) return 'true'
-  if (v === false) return 'false'
+  if (v === true) return '1'
+  if (v === false) return '0'
   if (typeof v === 'string') return v
   if (typeof v === 'number') return v.toString()
   if (v instanceof Date) return v.toISOString()

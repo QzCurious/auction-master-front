@@ -8,16 +8,18 @@ import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
 import { ITEM_TYPE } from '../static-configs.data'
 
-const ReqSchema = z.object({
-  name: z.string(),
-  type: z
-    .number()
-    .refine((i) =>
-      i === 0 ? true : !!ITEM_TYPE.data.find(({ value }) => i === value),
-    ),
-  reservePrice: z.number(),
-  description: z.string().optional(),
-})
+const ReqSchema = z
+  .object({
+    name: z.string(),
+    type: z
+      .number()
+      .refine((i) =>
+        i === 0 ? true : !!ITEM_TYPE.data.find(({ value }) => i === value),
+      ),
+    reservePrice: z.number(),
+    description: z.string(),
+  })
+  .partial()
 
 type Data = 'Success'
 

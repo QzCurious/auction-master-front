@@ -18,14 +18,15 @@ import {
   DraggableListItem,
 } from '@/app/components/DraggableList'
 import InfoPopover, { InfoPopoverPanel } from '@/app/components/InfoPopover'
-import { currencySign } from '@/app/static'
+import { getDirtyFields } from '@/app/helper/getDirtyFields'
+import { appendEntries, currencySign } from '@/app/static'
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowsOutLineHorizontal } from '@phosphor-icons/react/dist/ssr/ArrowsOutLineHorizontal'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import { useCallback, useMemo, useState, useTransition } from 'react'
+import { useCallback, useState, useTransition } from 'react'
 import {
   Control,
   Controller,
@@ -69,26 +70,20 @@ interface ItemFormProps {
 }
 
 export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
-  const defaultValues = useMemo(
-    () =>
-      ({
-        name: item?.name || '',
-        type: item?.type || 0,
-        reservePrice: item?.reservePrice || ('' as any),
-        photos: item?.photos || [],
-        description: item?.description || '',
-      }) as z.output<typeof Schema>,
-    [item?.description, item?.name, item?.photos, item?.reservePrice, item?.type],
-  )
   const {
     control,
     handleSubmit,
     getValues,
     setError,
-    formState: { isSubmitting, errors, isDirty },
-    reset,
+    formState: { isSubmitting, errors, dirtyFields, defaultValues },
   } = useForm<z.output<typeof Schema>>({
-    defaultValues,
+    values: {
+      name: item?.name || '',
+      type: item?.type || 0,
+      reservePrice: item?.reservePrice || ('' as any),
+      photos: item?.photos || [],
+      description: item?.description || '',
+    },
     resolver: zodResolver(Schema),
   })
   const router = useRouter()
@@ -100,14 +95,11 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
         className='col-span-7 mt-10'
         onSubmit={handleSubmit(
           !item
-            ? async (data) => {
+            ? async ({ photos, ...data }) => {
                 const formData = new FormData()
-                formData.append('name', data.name)
-                formData.append('type', data.type.toString())
-                formData.append('reservePrice', data.reservePrice.toString())
-                formData.append('description', data.description.toString())
-                for (let i = 0; i < data.photos.length; i++) {
-                  const f = data.photos[i]
+                appendEntries(formData, data)
+                for (let i = 0; i < photos.length; i++) {
+                  const f = photos[i]
                   if ('file' in f) {
                     formData.append('photo', f.file)
                     formData.append('sorted', `${i + 1}`)
@@ -122,8 +114,11 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
                 toast.success('新增成功')
                 router.push('/items')
               }
-            : async (data) => {
-                const res = await UpdateConsignorItem(item.id, data)
+            : async ({ photos, ...data }) => {
+                const dirtyValues = getDirtyFields(data, dirtyFields)
+                if (Object.keys(dirtyValues).length === 0) return
+
+                const res = await UpdateConsignorItem(item.id, dirtyValues)
                 if (res.error) {
                   setError('root', { message: `操作失敗: ${res.error}` })
                   return
@@ -232,7 +227,20 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
           <div className='mx-auto'></div>
 
           {process.env.NODE_ENV === 'development' && (
-            <Button outline onClick={() => console.log(getValues())}>
+            <Button outline onClick={() => router.refresh()}>
+              Refetch
+            </Button>
+          )}
+
+          {process.env.NODE_ENV === 'development' && (
+            <Button
+              outline
+              onClick={() => {
+                console.log('values', getValues())
+                console.log('dirtyFields', dirtyFields)
+                console.log('defaultValues', defaultValues)
+              }}
+            >
               Log values
             </Button>
           )}
