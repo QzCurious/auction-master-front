@@ -2,7 +2,11 @@ import {
   AuctionItem,
   GetConsignorAuctionItems,
 } from '@/app/api/frontend/auction-items/GetConsignorAuctionItems'
-import { AUCTION_ITEM_STATUS } from '@/app/api/frontend/static-configs.data'
+import {
+  AUCTION_ITEM_STATUS,
+  CONSIGNOR_STATUS,
+} from '@/app/api/frontend/static-configs.data'
+import { getUser } from '@/app/api/helpers/getUser'
 import { Heading } from '@/app/catalyst-ui/heading'
 import {
   Table,
@@ -21,6 +25,7 @@ import { currencySign, PAGE, ROWS_PER_PAGE } from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import Image from 'next/image'
+import { redirect, RedirectType } from 'next/navigation'
 import * as R from 'remeda'
 import CancelBiddingPopover from './CancelBiddingPopover'
 import { DesktopFilters, MobileFilters } from './Filters'
@@ -33,6 +38,13 @@ interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
+  const user = await getUser()
+  if (
+    user?.status === CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
+  ) {
+    redirect('/me?alert#identity-form-alert', RedirectType.replace)
+  }
+
   const filters = parseSearchParams(SearchParamsSchema, searchParams)
 
   const [auctionItemsRes] = await Promise.all([

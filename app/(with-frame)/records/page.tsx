@@ -5,7 +5,12 @@ import {
   GetRecordsSummary,
   type RecordSummary,
 } from '@/app/api/frontend/reports/GetRecordsSummary'
-import { RECORD_STATUS, RECORD_TYPE } from '@/app/api/frontend/static-configs.data'
+import {
+  CONSIGNOR_STATUS,
+  RECORD_STATUS,
+  RECORD_TYPE,
+} from '@/app/api/frontend/static-configs.data'
+import { getUser } from '@/app/api/helpers/getUser'
 import { Heading } from '@/app/catalyst-ui/heading'
 import {
   Table,
@@ -22,6 +27,7 @@ import { currencySign, DATE_TIME_FORMAT, PAGE, ROWS_PER_PAGE } from '@/app/stati
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { format } from 'date-fns'
+import { redirect, RedirectType } from 'next/navigation'
 import CancelPayment from './CancelPayment'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { fixRange, SearchParamsSchema } from './SearchParamsSchema'
@@ -32,6 +38,13 @@ interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
+  const user = await getUser()
+  if (
+    user?.status === CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
+  ) {
+    redirect('/me?alert#identity-form-alert', RedirectType.replace)
+  }
+
   const query = parseSearchParams(SearchParamsSchema, searchParams)
   const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
 

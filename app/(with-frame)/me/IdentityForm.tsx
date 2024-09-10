@@ -15,6 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
 import { format } from 'date-fns'
 import { zhTW } from 'date-fns/locale'
+import { useSearchParams } from 'next/navigation'
 import { Fragment } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
@@ -22,54 +23,82 @@ import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
 
-export default function IdentityForm({ consignor }: { consignor: Consignor }) {
+export default function IdentityForm({
+  consignor,
+  alert,
+}: {
+  consignor: Consignor
+  alert: boolean
+}) {
+  const searchParams = useSearchParams()
+
   return (
-    <div
-      id='identity-form'
-      className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3'
-    >
-      <div>
-        <h2 className='flex items-center gap-x-2 font-medium leading-6 text-gray-900'>
-          身份認證
-          {consignor.status === CONSIGNOR_STATUS.enum('EnabledStatus') && (
-            <span className='inline-block rounded-md bg-green-100 py-1 pl-1 pr-2 text-xs font-medium text-green-700'>
-              已完成
-            </span>
-          )}
-        </h2>
-        {consignor.status !== CONSIGNOR_STATUS.enum('EnabledStatus') && (
-          <p className='mt-1 text-sm leading-6 text-gray-400'>
-            完成身份認證即可開始托售物品
-          </p>
-        )}
-      </div>
-
-      <div className='md:col-span-2'>
-        {consignor.status === CONSIGNOR_STATUS.enum('EnabledStatus') ? (
-          <ConsignorInfoDescriptionList data={consignor} />
-        ) : consignor.verification ? (
-          <div>
-            <div className='rounded-md bg-blue-50 p-4'>
-              <div className='flex'>
-                <div className='flex-shrink-0'>
-                  <InformationCircleIcon
-                    className='h-5 w-5 text-blue-400'
-                    aria-hidden='true'
-                  />
-                </div>
-                <div className='ml-3 flex-1 md:flex md:justify-between'>
-                  <p className='text-sm text-blue-700'>身份認證審核中，請耐心等候</p>
-                </div>
-              </div>
+    <div>
+      {alert && (
+        <div id='identity-form-alert' className='mb-4 rounded-md bg-blue-50 p-4'>
+          <div className='flex'>
+            <div className='flex-shrink-0'>
+              <InformationCircleIcon
+                aria-hidden='true'
+                className='h-5 w-5 text-blue-400'
+              />
             </div>
-
-            <div className='mt-6'>
-              <ConsignorInfoDescriptionList data={consignor.verification} />
+            <div className='ml-3'>
+              <h3 className='text-sm font-medium text-blue-800'>請先完成身份認證</h3>
             </div>
           </div>
-        ) : (
-          <Form consignor={consignor} />
-        )}
+        </div>
+      )}
+
+      <div
+        id='identity-form'
+        className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3'
+      >
+        <div>
+          <h2 className='flex items-center gap-x-2 font-medium leading-6 text-gray-900'>
+            身份認證
+            {consignor.status === CONSIGNOR_STATUS.enum('EnabledStatus') && (
+              <span className='inline-block rounded-md bg-green-100 py-1 pl-1 pr-2 text-xs font-medium text-green-700'>
+                已完成
+              </span>
+            )}
+          </h2>
+          {consignor.status !== CONSIGNOR_STATUS.enum('EnabledStatus') && (
+            <p className='mt-1 text-sm leading-6 text-gray-400'>
+              完成身份認證即可開始托售物品
+            </p>
+          )}
+        </div>
+
+        <div className='md:col-span-2'>
+          {consignor.status === CONSIGNOR_STATUS.enum('EnabledStatus') ? (
+            <ConsignorInfoDescriptionList data={consignor} />
+          ) : consignor.verification ? (
+            <div>
+              <div className='rounded-md bg-blue-50 p-4'>
+                <div className='flex'>
+                  <div className='flex-shrink-0'>
+                    <InformationCircleIcon
+                      className='h-5 w-5 text-blue-400'
+                      aria-hidden='true'
+                    />
+                  </div>
+                  <div className='ml-3 flex-1 md:flex md:justify-between'>
+                    <p className='text-sm text-blue-700'>
+                      身份認證審核中，請耐心等候
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className='mt-6'>
+                <ConsignorInfoDescriptionList data={consignor.verification} />
+              </div>
+            </div>
+          ) : (
+            <Form consignor={consignor} />
+          )}
+        </div>
       </div>
     </div>
   )

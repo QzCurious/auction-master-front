@@ -4,6 +4,7 @@ import { getUser } from '@/app/api/helpers/getUser'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
 import IdentityForm from './IdentityForm'
+import { CONSIGNOR_STATUS } from '@/app/api/frontend/static-configs.data'
 
 export default async function Example() {
   const [user, consignorRes] = await Promise.all([getUser(), GetConsignor()])
@@ -25,7 +26,13 @@ export default async function Example() {
             <ChangePasswordForm />
             <div className='h-px bg-gray-200'></div>
 
-            <IdentityForm consignor={consignorRes.data} />
+            <IdentityForm
+              consignor={consignorRes.data}
+              alert={
+                user.status ===
+                CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
+              }
+            />
 
             {/* <DeleteAccountForm /> */}
           </div>

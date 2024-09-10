@@ -3,9 +3,14 @@ import { GetConsignorBonusBalance } from '@/app/api/frontend/bonuses/GetConsigno
 import { GetConsignor } from '@/app/api/frontend/consignor/GetConsignor'
 import { GetConfigs } from '@/app/api/frontend/GetConfigs'
 import { GetJPYRates } from '@/app/api/frontend/GetJPYRates'
-import { BONUS_ACTION, WALLET_ACTION } from '@/app/api/frontend/static-configs.data'
+import {
+  BONUS_ACTION,
+  CONSIGNOR_STATUS,
+  WALLET_ACTION,
+} from '@/app/api/frontend/static-configs.data'
 import { GetConsignorWalletBalance } from '@/app/api/frontend/wallets/GetConsignorWalletBalance'
 import { GetWalletLogs, WalletLog } from '@/app/api/frontend/wallets/GetWalletLogs'
+import { getUser } from '@/app/api/helpers/getUser'
 import {
   Table,
   TableBody,
@@ -27,6 +32,7 @@ import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { addDays, addMonths, format, startOfDay, subDays } from 'date-fns'
 import Link from 'next/link'
+import { redirect, RedirectType } from 'next/navigation'
 import * as R from 'remeda'
 import { z } from 'zod'
 import DateRangeFilter from './DateRangeFilter'
@@ -104,6 +110,13 @@ interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
+  const user = await getUser()
+  if (
+    user?.status === CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
+  ) {
+    redirect('/me?alert#identity-form-alert', RedirectType.replace)
+  }
+
   const query = querySchema.parse(searchParams)
   const pagination = PaginationSchema.parse(searchParams)
   const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
