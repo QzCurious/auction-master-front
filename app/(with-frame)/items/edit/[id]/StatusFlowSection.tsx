@@ -5,7 +5,6 @@ import { ItemChoosesCompanyDirectPurchase } from '@/app/api/frontend/items/ItemC
 import { ItemCompanyDirectPurchase } from '@/app/api/frontend/items/ItemCompanyDirectPurchase'
 import { ItemConsignmentReview } from '@/app/api/frontend/items/ItemConsignmentReview'
 import { ItemReady } from '@/app/api/frontend/items/ItemReady'
-import { ItemReturn } from '@/app/api/frontend/items/ItemReturn'
 import {
   CONSIGNOR_STATUS,
   ITEM_STATUS,
@@ -80,21 +79,6 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
     ConsignorChoosesCompanyDirectPurchaseStatus: null,
     AppraiserConfirmedStatus: (
       <>
-        <DoubleCheckPopover
-          title='申請物品退回'
-          onConfirm={async () => {
-            const res = await ItemReturn(item.id)
-            if (res.error) {
-              toast.error(`操作錯誤: ${res.error}`)
-              return
-            }
-            toast.success('物品已申請退回')
-          }}
-        >
-          <DoubleCheckPopoverButton as={Button} outline color='zinc' className='h-9'>
-            申請退回
-          </DoubleCheckPopoverButton>
-        </DoubleCheckPopover>
         {item.type === ITEM_TYPE.enum('CompanyDirectPurchaseType') ? (
           <DoubleCheckPopover
             title='確認公司直購'
