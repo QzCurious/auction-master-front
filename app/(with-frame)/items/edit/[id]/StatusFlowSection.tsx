@@ -182,8 +182,8 @@ function StatusStep({
       <div className='flex grow flex-col gap-y-2'>
         <Text
           className={clsx(active && '!text-zinc-950')}
-          title={_statusKey}
-          onClick={() => process.env.NODE_ENV !== 'production' && copy(_statusKey)}
+          title={process.env.NODE_ENV === 'development' ? _statusKey : undefined}
+          onClick={() => process.env.NODE_ENV === 'development' && copy(_statusKey)}
         >
           {text}
         </Text>
