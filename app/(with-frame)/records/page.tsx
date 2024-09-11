@@ -237,13 +237,6 @@ function RecordSummary({ report }: { report: RecordSummary }) {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>收益</TableCell>
-          <TableCell>
-            {currencySign('JPY')}
-            {report.totalProfit.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
           <TableCell>日拍取消手續費</TableCell>
           <TableCell>
             {currencySign('JPY')}
