@@ -334,6 +334,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
 
                 {row.status === RECORD_STATUS.enum('UnpaidStatus') && (
                   <div className='mt-2 flex justify-center gap-x-2'>
+                    <CancelPayment recordID={row.id} />
                     <SubmitPayment
                       title={(function iife() {
                         switch (row.type) {
@@ -371,8 +372,6 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                       bankAccount={configs.bankAccount}
                       bankCode={configs.bankCode}
                     />
-
-                    <CancelPayment recordID={row.id} />
                   </div>
                 )}
               </TableCell>

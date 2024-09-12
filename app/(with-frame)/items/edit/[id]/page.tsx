@@ -1,7 +1,12 @@
 import { GetConfigs } from '@/app/api/frontend/GetConfigs'
 import { GetJPYRates } from '@/app/api/frontend/GetJPYRates'
 import { GetConsignorItem } from '@/app/api/frontend/items/GetConsignorItem'
-import { ITEM_STATUS, ITEM_TYPE } from '@/app/api/frontend/static-configs.data'
+import { GetRecord } from '@/app/api/frontend/reports/GetRecord'
+import {
+  ITEM_STATUS,
+  ITEM_TYPE,
+  RECORD_STATUS,
+} from '@/app/api/frontend/static-configs.data'
 import { GetConsignorWalletBalance } from '@/app/api/frontend/wallets/GetConsignorWalletBalance'
 import { getUser } from '@/app/api/helpers/getUser'
 import {
@@ -12,10 +17,11 @@ import {
 import { Subheading } from '@/app/catalyst-ui/heading'
 import InfoPopover, { InfoPopoverPanel } from '@/app/components/InfoPopover'
 import RedirectToHome from '@/app/RedirectToHome'
-import { currencySign } from '@/app/static'
+import { currencySign, DATE_FORMAT } from '@/app/static'
 import { StatusFlow } from '@/app/StatusFlow'
 import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+import { format } from 'date-fns'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -121,7 +127,7 @@ async function Content({ params }: PageProps) {
       )}
 
       {itemRes.data.status === ITEM_STATUS.enum('WarehouseReturnPendingStatus') && (
-        <div className='rounded-md bg-blue-50 p-4'>
+        <section className='mb-6 rounded-md bg-blue-50 p-4'>
           <div className='flex'>
             <div className='flex-shrink-0'>
               <InformationCircleIcon
@@ -138,10 +144,113 @@ async function Content({ params }: PageProps) {
               </div>
             </div>
           </div>
-        </div>
+        </section>
       )}
 
       {(async function iife() {
+        if (itemRes.data.status !== ITEM_STATUS.enum('WarehouseReturningStatus')) {
+          return
+        }
+
+        const recordRes = await GetRecord(itemRes.data.recordID)
+        if (recordRes.error === '1003') {
+          return <RedirectToHome />
+        }
+
+        return (
+          <section className='mb-6 rounded-md bg-blue-50 p-4'>
+            <div className='flex'>
+              <div className='flex-shrink-0'>
+                <InformationCircleIcon
+                  aria-hidden='true'
+                  className='h-5 w-5 text-blue-400'
+                />
+              </div>
+              <div className='ml-3'>
+                <h3 className='text-sm font-medium text-blue-800'>
+                  {ITEM_STATUS.get('value', itemRes.data.status).message}
+                </h3>
+                <div className='mt-2 text-sm text-blue-800'>
+                  {recordRes.data.status === RECORD_STATUS.enum('UnpaidStatus') && (
+                    <p>
+                      已確認退貨申請，請
+                      <Link
+                        className='text-indigo-600 underline underline-offset-2 hover:text-indigo-500'
+                        href={`/records?submit-payment=${itemRes.data.recordID}`}
+                      >
+                        點此取得匯款資訊
+                      </Link>
+                      並完成匯款
+                    </p>
+                  )}
+                  {recordRes.data.status ===
+                    RECORD_STATUS.enum('SubmitPaymentStatus') && (
+                    <p>您已確認完成匯款，我們將儘速確認您的付款狀態，請耐心等候</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+        )
+      })()}
+
+      {(async function iife() {
+        if (!itemRes.data.expireAt) return
+        if (new Date(itemRes.data.expireAt) > new Date()) return
+
+        if (itemRes.data.recordID) {
+          const recordRes = await GetRecord(itemRes.data.recordID)
+          if (recordRes.error === '1003') {
+            return <RedirectToHome />
+          }
+
+          return (
+            <div className='mb-6'>
+              <section className='rounded-md bg-blue-50 p-4 sm:text-sm'>
+                <div className='flex shrink-0 items-center gap-x-3'>
+                  <InformationCircleIcon
+                    aria-hidden='true'
+                    className='h-5 w-5 shrink-0 text-blue-400'
+                  />
+                  <h3 className='font-medium text-blue-800'>待繳留倉費</h3>
+                </div>
+
+                <div className='ml-8 mt-2'>
+                  <div className='text-blue-800'>
+                    <div className='mt-4 sm:mt-2'></div>
+
+                    <ul className='list-inside list-disc space-y-1'>
+                      <li className='leading-tight'>
+                        您的物品已於 {format(itemRes.data.expireAt, DATE_FORMAT)}{' '}
+                        超過留倉期限，請繳清留倉費
+                      </li>
+                      {recordRes.data.status ===
+                        RECORD_STATUS.enum('UnpaidStatus') && (
+                        <li>
+                          您已申請匯款支付，請
+                          <Link
+                            className='text-indigo-600 underline underline-offset-2 hover:text-indigo-500'
+                            href={`/records?submit-payment=${itemRes.data.recordID}`}
+                          >
+                            點此取得匯款資訊
+                          </Link>
+                          並完成匯款
+                        </li>
+                      )}
+                      {recordRes.data.status ===
+                        RECORD_STATUS.enum('SubmitPaymentStatus') && (
+                        <li>
+                          您已確認完成匯款，我們將儘速確認您的付款狀態，請耐心等候
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </section>
+            </div>
+          )
+        }
+
         const balanceRes = await GetConsignorWalletBalance()
 
         if (balanceRes.error === '1003') {

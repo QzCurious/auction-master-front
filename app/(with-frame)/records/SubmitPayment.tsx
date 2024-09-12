@@ -21,6 +21,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import CancelPayment from './CancelPayment'
 
 export function SubmitPayment({
   title,
@@ -152,9 +153,7 @@ export function SubmitPaymentDialog({
           </DescriptionList>
         </DialogBody>
         <DialogActions>
-          <Button type='button' disabled={isSubmitting} plain onClick={onClose}>
-            取消
-          </Button>
+          <CancelPayment recordID={recordId} />
           <Button
             type='submit'
             form='withdrawal-form'

@@ -102,6 +102,25 @@ function CancelBiddingDetail({
         </span>{' '}
       </h3>
       <div className='mt-2 flex justify-end gap-x-2'>
+        <Button
+          type='button'
+          outline
+          disabled={isSubmitting}
+          onClick={() => {
+            startTransition(async () => {
+              const res = await ConsignorCancelAuctionItemByTransfer(auctionItem.id)
+              if (res.error) {
+                toast.error(`操作錯誤: ${res.error}`)
+                return
+              }
+              toast.success('取消競標申請已送出')
+              close()
+              router.push(`/records?submit-payment=${res.data}`)
+            })
+          }}
+        >
+          匯款支付
+        </Button>
         {canPayByWallet && (
           <Button
             type='button'
@@ -126,26 +145,6 @@ function CancelBiddingDetail({
             大師幣支付
           </Button>
         )}
-
-        <Button
-          type='button'
-          outline
-          disabled={isSubmitting}
-          onClick={() => {
-            startTransition(async () => {
-              const res = await ConsignorCancelAuctionItemByTransfer(auctionItem.id)
-              if (res.error) {
-                toast.error(`操作錯誤: ${res.error}`)
-                return
-              }
-              toast.success('取消競標申請已送出')
-              close()
-              router.push(`/records?submit-payment=${res.data}`)
-            })
-          }}
-        >
-          匯款支付
-        </Button>
       </div>
     </section>
   )

@@ -28,7 +28,7 @@ export default function PaySpaceFeeAlert({
   const spaceFee = configs.costPerSpace * item.space
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
-  const expired = useUntil(new Date(item.expireAt))
+  const expired = useUntil(item.expireAt, { onFalsy: false })
 
   if (item.expireAt === null) {
     return null
@@ -55,7 +55,7 @@ export default function PaySpaceFeeAlert({
       <div className='ml-8 mt-2'>
         <div className='text-blue-800'>
           <p className='leading-tight'>
-            您的物品已在 {format(item.expireAt, DATE_FORMAT)}{' '}
+            您的物品已於 {format(item.expireAt, DATE_FORMAT)}{' '}
             超過留倉期限，請繳清留倉費{' '}
             <span className='rounded-sm bg-yellow-100 px-0.5'>
               {currencySign('TWD')}
@@ -68,6 +68,24 @@ export default function PaySpaceFeeAlert({
           <div className='mt-4 sm:mt-2'></div>
 
           <div className='mt-2 flex justify-start gap-x-2'>
+            <Button
+              type='button'
+              color='white'
+              disabled={isPending}
+              onClick={() => {
+                startTransition(async () => {
+                  const res = await ConsignorPayItemSpaceFeeByTransfer(item.id)
+                  if (res.error) {
+                    toast.error(`操作錯誤: ${res.error}`)
+                    return
+                  }
+                  toast.success('已申請會匯款結清手續費')
+                  router.push(`/records?submit-payment=${res.data}`)
+                })
+              }}
+            >
+              匯款支付
+            </Button>
             {walletBalance >= spaceFee && (
               <Button
                 type='button'
@@ -85,32 +103,12 @@ export default function PaySpaceFeeAlert({
                       return
                     }
                     toast.success('已結清留倉費')
-                    close()
                   })
                 }
               >
                 大師幣支付
               </Button>
             )}
-            <Button
-              type='button'
-              color='white'
-              disabled={isPending}
-              onClick={() => {
-                startTransition(async () => {
-                  const res = await ConsignorPayItemSpaceFeeByTransfer(item.id)
-                  if (res.error) {
-                    toast.error(`操作錯誤: ${res.error}`)
-                    return
-                  }
-                  toast.success('已申請會匯款結清手續費')
-                  close()
-                  router.push(`/records?submit-payment=${res.data}`)
-                })
-              }}
-            >
-              匯款支付
-            </Button>
           </div>
         </div>
       </div>

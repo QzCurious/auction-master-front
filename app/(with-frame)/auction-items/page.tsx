@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/app/catalyst-ui/table'
+import { TextLink } from '@/app/catalyst-ui/text'
 import AutoRefreshPage from '@/app/components/AutoRefreshPage'
 import { CountdownTime } from '@/app/components/CountdownTime'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
@@ -138,19 +139,18 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 </a>
               </TableCell>
               <TableCell className='min-w-52 whitespace-normal'>
-                <a
+                <TextLink
                   title={
                     process.env.NODE_ENV === 'development'
                       ? row.id.toString()
                       : undefined
                   }
-                  className='text-link'
                   href={`https://page.auctions.yahoo.co.jp/jp/auction/${row.auctionID}`}
                   target='_blank'
                   rel='noreferrer'
                 >
                   {row.name}
-                </a>
+                </TextLink>
               </TableCell>
               <TableCell className='text-center'>
                 <span className='text-zinc-500'>{currencySign('JPY')}</span>
@@ -183,7 +183,13 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 ]) ? (
                   <div className='flex flex-col items-center gap-y-1'>
                     <CountdownTime until={new Date(row.closeAt)} />
-                    {!row.recordID && <CancelBiddingPopover auctionItem={row} />}
+                    {row.recordID ? (
+                      <TextLink href={`/records?submit-payment=${row.recordID}`}>
+                        已申請匯款支付
+                      </TextLink>
+                    ) : (
+                      <CancelBiddingPopover auctionItem={row} />
+                    )}
                   </div>
                 ) : (
                   <div className='flex flex-col items-center gap-y-1'>
@@ -193,7 +199,13 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                     )}
                     {row.status ===
                       AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus') &&
-                      !row.recordID && <PayFeePopover auctionItemId={row.id} />}
+                      (row.recordID ? (
+                        <TextLink href={`/records?submit-payment=${row.recordID}`}>
+                          已申請匯款支付
+                        </TextLink>
+                      ) : (
+                        <PayFeePopover auctionItemId={row.id} />
+                      ))}
                   </div>
                 )}
               </TableCell>

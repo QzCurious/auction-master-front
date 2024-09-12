@@ -99,6 +99,25 @@ function PayFeeDetail({
         未支付
       </h3>
       <div className='mt-2 flex justify-end gap-x-2'>
+        <Button
+          type='button'
+          outline
+          disabled={isPending}
+          onClick={() => {
+            startTransition(async () => {
+              const res = await ConsignorPayAuctionItemFeeTransfer(auctionItemId)
+              if (res.error) {
+                toast.error(`操作錯誤: ${res.error}`)
+                return
+              }
+              toast.success('已申請會匯款結清手續費')
+              close()
+              router.push(`/records?submit-payment=${res.data}`)
+            })
+          }}
+        >
+          匯款支付
+        </Button>
         {canPayByWallet && (
           <Button
             type='button'
@@ -123,25 +142,6 @@ function PayFeeDetail({
             大師幣支付
           </Button>
         )}
-        <Button
-          type='button'
-          outline
-          disabled={isPending}
-          onClick={() => {
-            startTransition(async () => {
-              const res = await ConsignorPayAuctionItemFeeTransfer(auctionItemId)
-              if (res.error) {
-                toast.error(`操作錯誤: ${res.error}`)
-                return
-              }
-              toast.success('已申請會匯款結清手續費')
-              close()
-              router.push(`/records?submit-payment=${res.data}`)
-            })
-          }}
-        >
-          匯款支付
-        </Button>
       </div>
     </section>
   )
