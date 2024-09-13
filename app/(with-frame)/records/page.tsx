@@ -103,12 +103,8 @@ export default async function Page({ searchParams }: PageProps) {
         />
 
         <div className='min-w-0 grow'>
-          <section className='flex items-start gap-x-4 overflow-auto'>
-            <div className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'>
-              <Heading level={2}>總結</Heading>
-              <RecordSummary report={recordsSummaryRes.data} />
-            </div>
-          </section>
+          {/* <Heading level={2}>總結</Heading> */}
+          <RecordSummary report={recordsSummaryRes.data} />
 
           <div className='mt-10'>
             <ReportRecordTable
@@ -162,117 +158,143 @@ export default async function Page({ searchParams }: PageProps) {
 }
 
 function RecordSummary({ report }: { report: RecordSummary }) {
+  // v6 https://docs.google.com/spreadsheets/d/1S2-9S-AOAJG5a_hHFlA1N6YN1W5LZjpZzptL2UgBj5w/edit?gid=1521339545#gid=1521339545
   return (
-    <Table dense>
-      {/* v5 https://docs.google.com/spreadsheets/d/1S2-9S-AOAJG5a_hHFlA1N6YN1W5LZjpZzptL2UgBj5w/edit?gid=1734093702#gid=1734093702 */}
-      <TableBody className='[&>tr>td:last-child]:text-end'>
-        <TableRow>
-          <TableCell>提款日幣</TableCell>
-          <TableCell>
-            {currencySign('JPY')}
-            {report.totalJpyWithdrawal.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>提款台幣</TableCell>
-          <TableCell>
-            {currencySign('TWD')}
-            {report.totalWithdrawal.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>提款手續費</TableCell>
-          <TableCell>
-            {currencySign('TWD')}
-            {report.totalWithdrawalTransferFee.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>結算金額</TableCell>
-          <TableCell>
-            {currencySign('JPY')}
-            {report.totalPrice.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>直購金額</TableCell>
-          <TableCell>
-            {currencySign('JPY')}
-            {report.totalDirectPurchasePrice.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>買回金額</TableCell>
-          <TableCell>
-            {currencySign('JPY')}
-            {report.totalPurchasedPrice.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>日拍手續費</TableCell>
-          <TableCell>
-            {currencySign('JPY')}
-            {report.totalYahooAuctionFeeJpy.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>日拍手續費</TableCell>
-          <TableCell>
-            {currencySign('TWD')}
-            {report.totalYahooAuctionFee.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>平台手續費</TableCell>
-          <TableCell>
-            {currencySign('JPY')}
-            {report.totalCommission.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>回饋金額</TableCell>
-          <TableCell>
-            {currencySign('JPY')}
-            {report.totalBonus.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>日拍取消手續費</TableCell>
-          <TableCell>
-            {currencySign('JPY')}
-            {report.totalYahooCancellationFeeJpy.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>日拍取消手續費</TableCell>
-          <TableCell>
-            {currencySign('TWD')}
-            {report.totalYahooCancellationFee.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>留倉費</TableCell>
-          <TableCell>
-            {currencySign('JPY')}
-            {report.totalSpaceFeeJpy.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>留倉費</TableCell>
-          <TableCell>
-            {currencySign('TWD')}
-            {report.totalSpaceFee.toLocaleString()}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>運費</TableCell>
-          <TableCell>
-            {currencySign('TWD')}
-            {report.totalShippingCost.toLocaleString()}
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+    <div className='flex items-start gap-x-6 overflow-auto [&_td:last-child]:text-end'>
+      <Table
+        dense
+        className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'
+      >
+        <TableBody>
+          <TableRow>
+            <TableCell>提款日幣</TableCell>
+            <TableCell>
+              {currencySign('JPY')}
+              {report.totalJpyWithdrawal.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>提款台幣</TableCell>
+            <TableCell>
+              {currencySign('TWD')}
+              {report.totalWithdrawal.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>提款手續費</TableCell>
+            <TableCell>
+              {currencySign('TWD')}
+              {report.totalWithdrawalTransferFee.toLocaleString()}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      <Table
+        dense
+        className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'
+      >
+        <TableBody>
+          <TableRow>
+            <TableCell>結算金額</TableCell>
+            <TableCell>
+              {currencySign('JPY')}
+              {report.totalPrice.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>直購金額</TableCell>
+            <TableCell>
+              {currencySign('JPY')}
+              {report.totalDirectPurchasePrice.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>買回金額</TableCell>
+            <TableCell>
+              {currencySign('JPY')}
+              {report.totalPurchasedPrice.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>日拍手續費</TableCell>
+            <TableCell>
+              {currencySign('JPY')}
+              {report.totalYahooAuctionFeeJpy.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>日拍手續費</TableCell>
+            <TableCell>
+              {currencySign('TWD')}
+              {report.totalYahooAuctionFee.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>平台手續費</TableCell>
+            <TableCell>
+              {currencySign('JPY')}
+              {report.totalCommission.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>回饋金額</TableCell>
+            <TableCell>
+              {currencySign('JPY')}
+              {report.totalBonus.toLocaleString()}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      <Table
+        dense
+        className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'
+      >
+        <TableBody>
+          <TableRow>
+            <TableCell>留倉費</TableCell>
+            <TableCell>
+              {currencySign('JPY')}
+              {report.totalSpaceFeeJpy.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>留倉費</TableCell>
+            <TableCell>
+              {currencySign('TWD')}
+              {report.totalSpaceFee.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>運費</TableCell>
+            <TableCell>
+              {currencySign('TWD')}
+              {report.totalShippingCost.toLocaleString()}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      <Table
+        dense
+        className='rounded-lg border border-zinc-950/5 p-4 dark:border-white/5'
+      >
+        <TableBody>
+          <TableRow>
+            <TableCell>日拍取消手續費</TableCell>
+            <TableCell>
+              {currencySign('JPY')}
+              {report.totalYahooCancellationFeeJpy.toLocaleString()}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>日拍取消手續費</TableCell>
+            <TableCell>
+              {currencySign('TWD')}
+              {report.totalYahooCancellationFee.toLocaleString()}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
   )
 }
 
