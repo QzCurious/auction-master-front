@@ -81,6 +81,7 @@ function PreviewDeal({ auctionItemId }: { auctionItemId: AuctionItem['id'] }) {
         <tr>
           <td>大師幣</td>
           <td className='pl-4 text-end'>
+            {currencySign('JPY')}
             {data.data.price - data.data.yahooAuctionFee - data.data.commission}
           </td>
         </tr>
