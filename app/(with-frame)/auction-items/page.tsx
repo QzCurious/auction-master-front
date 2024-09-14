@@ -22,9 +22,10 @@ import { CountdownTime } from '@/app/components/CountdownTime'
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
 import { parseSearchParams } from '@/app/helper/parseSearchParams'
 import RedirectToHome from '@/app/RedirectToHome'
-import { currencySign, PAGE, ROWS_PER_PAGE } from '@/app/static'
+import { currencySign, PAGE, ROWS_PER_PAGE, SITE_NAME } from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
+import { Metadata } from 'next'
 import Image from 'next/image'
 import { redirect, RedirectType } from 'next/navigation'
 import * as R from 'remeda'
@@ -33,6 +34,8 @@ import { DesktopFilters, MobileFilters } from './Filters'
 import PayFeePopover from './PayFeePopover'
 import PreviewDealPopover from './PreviewDealPopover'
 import { SearchParamsSchema } from './SearchParamsSchema'
+
+export const metadata = { title: `競標列表 | ${SITE_NAME}` } satisfies Metadata
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined }

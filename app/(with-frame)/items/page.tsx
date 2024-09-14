@@ -10,12 +10,13 @@ import { PAGE, ROWS_PER_PAGE, SITE_NAME } from '@/app/static'
 import { PhotoIcon } from '@heroicons/react/20/solid'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import AutoRefreshPage from '../../components/AutoRefreshPage'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { SearchParamsSchema } from './SearchParamsSchema'
 
-export const metadata = { title: `我的物品 | ${SITE_NAME}` }
+export const metadata = { title: `我的物品 | ${SITE_NAME}` } satisfies Metadata
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined }

@@ -23,15 +23,24 @@ import {
 import { SearchParamsPagination } from '@/app/components/SearchParamsPagination'
 import { parseSearchParams } from '@/app/helper/parseSearchParams'
 import RedirectToHome from '@/app/RedirectToHome'
-import { currencySign, DATE_TIME_FORMAT, PAGE, ROWS_PER_PAGE } from '@/app/static'
+import {
+  currencySign,
+  DATE_TIME_FORMAT,
+  PAGE,
+  ROWS_PER_PAGE,
+  SITE_NAME,
+} from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { format } from 'date-fns'
+import { Metadata } from 'next'
 import { redirect, RedirectType } from 'next/navigation'
 import CancelPayment from './CancelPayment'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { fixRange, SearchParamsSchema } from './SearchParamsSchema'
 import { SubmitPayment, SubmitPaymentDialog } from './SubmitPayment'
+
+export const metadata = { title: `交易紀錄 | ${SITE_NAME}` } satisfies Metadata
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined }

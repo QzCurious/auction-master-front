@@ -1,10 +1,14 @@
 import RedirectToHome from '@/app/RedirectToHome'
 import { GetConsignor } from '@/app/api/frontend/consignor/GetConsignor'
+import { CONSIGNOR_STATUS } from '@/app/api/frontend/static-configs.data'
 import { getUser } from '@/app/api/helpers/getUser'
+import { SITE_NAME } from '@/app/static'
+import { Metadata } from 'next'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
 import IdentityForm from './IdentityForm'
-import { CONSIGNOR_STATUS } from '@/app/api/frontend/static-configs.data'
+
+export const metadata = { title: `帳號設定 | ${SITE_NAME}` } satisfies Metadata
 
 export default async function Example() {
   const [user, consignorRes] = await Promise.all([getUser(), GetConsignor()])

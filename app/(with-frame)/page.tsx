@@ -49,7 +49,7 @@ export default async function Page() {
                   </div>
                 )}
 
-                <div className='mt-10 rounded-lg p-2 shadow-md bg-gray-100'>
+                <div className='mt-10 rounded-lg bg-gray-100 p-2 shadow-md'>
                   <HeroCarousel>
                     <HeroCarouselItem>
                       <Image

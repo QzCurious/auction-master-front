@@ -1,9 +1,13 @@
 import RedirectToHome from '@/app/RedirectToHome'
 import { GetJPYRates } from '@/app/api/frontend/GetJPYRates'
 import { getUser } from '@/app/api/helpers/getUser'
+import { SITE_NAME } from '@/app/static'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import ItemForm from '../ItemForm'
+
+export const metadata = { title: `新增物品 | ${SITE_NAME}` } satisfies Metadata
 
 async function Page() {
   return (

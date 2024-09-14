@@ -27,16 +27,20 @@ import {
   PaginationSchema,
   PaginationSearchParams,
   ROWS_PER_PAGE,
+  SITE_NAME,
 } from '@/app/static'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { addDays, addMonths, format, startOfDay, subDays } from 'date-fns'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect, RedirectType } from 'next/navigation'
 import * as R from 'remeda'
 import { z } from 'zod'
 import DateRangeFilter from './DateRangeFilter'
 import WithdrawDialog from './WithdrawDialog'
+
+export const metadata = { title: `帳戶紀錄 | ${SITE_NAME}` } satisfies Metadata
 
 const MAX_MONTHS = 3
 

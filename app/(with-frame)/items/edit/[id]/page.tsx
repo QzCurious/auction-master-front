@@ -17,11 +17,12 @@ import {
 import { Subheading } from '@/app/catalyst-ui/heading'
 import InfoPopover, { InfoPopoverPanel } from '@/app/components/InfoPopover'
 import RedirectToHome from '@/app/RedirectToHome'
-import { currencySign, DATE_FORMAT } from '@/app/static'
+import { currencySign, DATE_FORMAT, SITE_NAME } from '@/app/static'
 import { StatusFlow } from '@/app/StatusFlow'
 import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import { format } from 'date-fns'
+import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -32,6 +33,8 @@ import PaySpaceFeeAlert from './PaySpaceFeeAlert'
 import PhotoListForm from './PhotoListForm'
 import ReturnItemDialog from './ReturnItemDialog'
 import { StatusFlowUI } from './StatusFlowSection'
+
+export const metadata = { title: `編輯物品 | ${SITE_NAME}` } satisfies Metadata
 
 const QuillTextEditor = dynamic(
   () => import('@/app/components/QuillTextEditor/QuillTextEditor'),
