@@ -1,7 +1,7 @@
 import { type ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 import { z } from 'zod'
 
-export const SITE_NAME = '日拍'
+export const SITE_NAME = '日拍大師'
 
 export const cookieConfigs = {
   token: {
