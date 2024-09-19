@@ -23,14 +23,14 @@ export async function ConsignorSubmitPayment(
 ) {
   const data = throwIfInvalid(payload, ReqSchema)
 
-  const formData = new FormData()
-  appendEntries(formData, data)
+  const urlencoded = new URLSearchParams()
+  appendEntries(urlencoded, data)
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/reports/records/${id}/submit-payment`,
     {
       method: 'POST',
-      body: formData,
+      body: urlencoded,
     },
   )
 

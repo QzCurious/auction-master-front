@@ -31,12 +31,12 @@ export async function UpdateConsignorItem(
 ) {
   const data = throwIfInvalid(payload, ReqSchema)
 
-  const formData = new FormData()
-  appendEntries(formData, data)
+  const urlencoded = new URLSearchParams()
+  appendEntries(urlencoded, data)
 
   const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}`, {
     method: 'PATCH',
-    body: formData,
+    body: urlencoded,
   })
 
   revalidateTag('items')
