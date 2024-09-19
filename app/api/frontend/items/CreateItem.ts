@@ -18,6 +18,10 @@ export async function CreateItem(formData: FormData) {
   if (typeof type !== 'string' || Number.isNaN(parseInt(type))) {
     throw new Error('type should be a number')
   }
+  const isNew = formData.get('isNew')
+  if (isNew !== 'true' && isNew !== 'false') {
+    throw new Error('isNew should be a boolean')
+  }
   if (type !== '0' && !ITEM_TYPE.data.find(({ value }) => value === parseInt(type))) {
     throw new Error('type is invalid')
   }

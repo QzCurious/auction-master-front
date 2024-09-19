@@ -45,6 +45,7 @@ const QuillTextEditor = dynamic(
 const Schema = z.object({
   name: z.string().min(1, { message: '必填' }),
   type: z.number(),
+  isNew: z.boolean(),
   reservePrice: z.number({ message: '必填' }),
   photos: z
     .array(
@@ -80,6 +81,7 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
     values: {
       name: item?.name || '',
       type: item?.type || 0,
+      isNew: item?.isNew || false,
       reservePrice: item?.reservePrice || ('' as any),
       photos: item?.photos || [],
       description: item?.description || '',
@@ -128,22 +130,35 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
         )}
       >
         <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
-          <Controller
-            control={control}
-            name='type'
-            render={({ field: { ref, ...field } }) => (
-              <CheckboxField className='col-span-full'>
-                <Checkbox
-                  {...field}
-                  checked={field.value === ITEM_TYPE.enum('FixedPriceItemType')}
-                  onChange={(v) =>
-                    field.onChange(v ? ITEM_TYPE.enum('FixedPriceItemType') : 0)
-                  }
-                />
-                <Label>是否為定價物品</Label>
-              </CheckboxField>
-            )}
-          />
+          <div className='col-span-full flex gap-x-12'>
+            <Controller
+              control={control}
+              name='type'
+              render={({ field: { ref, ...field } }) => (
+                <CheckboxField className=''>
+                  <Checkbox
+                    {...field}
+                    checked={field.value === ITEM_TYPE.enum('FixedPriceItemType')}
+                    onChange={(v) =>
+                      field.onChange(v ? ITEM_TYPE.enum('FixedPriceItemType') : 0)
+                    }
+                  />
+                  <Label>是否為定價物品</Label>
+                </CheckboxField>
+              )}
+            />
+
+            <Controller
+              control={control}
+              name='isNew'
+              render={({ field: { ref, ...field } }) => (
+                <CheckboxField className=''>
+                  <Checkbox {...field} checked={field.value} />
+                  <Label>是否為全新品</Label>
+                </CheckboxField>
+              )}
+            />
+          </div>
 
           <Controller
             control={control}

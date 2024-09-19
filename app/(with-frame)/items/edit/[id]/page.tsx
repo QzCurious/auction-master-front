@@ -155,6 +155,10 @@ async function Content({ params }: PageProps) {
           return
         }
 
+        if (!itemRes.data.recordID) {
+          return
+        }
+
         const recordRes = await GetRecord(itemRes.data.recordID)
         if (recordRes.error === '1003') {
           return <RedirectToHome />

@@ -16,6 +16,7 @@ const ReqSchema = z
       .refine((i) =>
         i === 0 ? true : !!ITEM_TYPE.data.find(({ value }) => i === value),
       ),
+    isNew: z.boolean(),
     reservePrice: z.number(),
     description: z.string(),
   })
