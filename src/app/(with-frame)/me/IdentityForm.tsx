@@ -1,22 +1,24 @@
 'use client'
 
-import { database } from '@/domain/static/address.data'
 import { CreateConsignorVerification } from '@/api/frontend/consignor/CreateConsignorVerification'
 import { Consignor } from '@/api/frontend/consignor/GetConsignor'
-import { CONSIGNOR_STATUS } from "@/domain/static/static-config-mappers"
+import { Configs } from '@/api/frontend/GetConfigs'
 import { Button } from '@/catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '@/catalyst-ui/fieldset'
 import { Input } from '@/catalyst-ui/input'
 import { Listbox, ListboxLabel, ListboxOption } from '@/catalyst-ui/listbox'
+import { UserContext } from '@/domain/auth/UserContext'
+import { database } from '@/domain/static/address.data'
 import { DATE_FORMAT } from '@/domain/static/static'
+import { CONSIGNOR_STATUS } from '@/domain/static/static-config-mappers'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { InformationCircleIcon, PhotoIcon } from '@heroicons/react/20/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
 import { format } from 'date-fns'
 import { zhTW } from 'date-fns/locale'
-import { useSearchParams } from 'next/navigation'
-import { Fragment } from 'react'
+import Link from 'next/link'
+import { Fragment, useContext } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 import { Controller, useForm } from 'react-hook-form'
@@ -25,29 +27,59 @@ import { z } from 'zod'
 
 export default function IdentityForm({
   consignor,
-  alert,
+  configs,
 }: {
   consignor: Consignor
-  alert: boolean
+  configs: Configs
 }) {
-  const searchParams = useSearchParams()
+  const user = useContext(UserContext)
 
   return (
     <div>
-      {alert && (
-        <div id='identity-form-alert' className='mb-4 rounded-md bg-blue-50 p-4'>
-          <div className='flex'>
-            <div className='flex-shrink-0'>
-              <InformationCircleIcon
-                aria-hidden='true'
-                className='h-5 w-5 text-blue-400'
-              />
-            </div>
-            <div className='ml-3'>
-              <h3 className='text-sm font-medium text-blue-800'>請先完成身份認證</h3>
+      {user?.status ===
+        CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus') && (
+        <section
+          id='identity-form-alert'
+          className='mb-4 rounded-md bg-blue-50 p-4 sm:text-sm'
+        >
+          <div className='flex shrink-0 items-center gap-x-3'>
+            <InformationCircleIcon
+              aria-hidden='true'
+              className='h-5 w-5 shrink-0 text-blue-400'
+            />
+            <h3 className='font-medium text-blue-700'>
+              {consignor.verification ? (
+                <>身份認證審核中，請耐心等候</>
+              ) : (
+                <>請完成身份認證</>
+              )}
+            </h3>
+          </div>
+
+          <div className='ml-8 mt-2'>
+            <div className='text-blue-800'>
+              <div className='mt-4 sm:mt-2'></div>
+              {consignor.verification ? (
+                <p className='leading-tight'>
+                  已加入我們的官方 Line 嗎？這也是審核確認的一部分哦~
+                </p>
+              ) : (
+                <p className='leading-tight'>
+                  請同步加入我們的
+                  <Link
+                    href={configs.lineURL}
+                    className='text-link'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    官方 Line
+                  </Link>
+                  ，並傳送您的暱稱 {user?.nickname} 給我們。
+                </p>
+              )}
             </div>
           </div>
-        </div>
+        </section>
       )}
 
       <div
@@ -74,27 +106,7 @@ export default function IdentityForm({
           {consignor.status === CONSIGNOR_STATUS.enum('EnabledStatus') ? (
             <ConsignorInfoDescriptionList data={consignor} />
           ) : consignor.verification ? (
-            <div>
-              <div className='rounded-md bg-blue-50 p-4'>
-                <div className='flex'>
-                  <div className='flex-shrink-0'>
-                    <InformationCircleIcon
-                      className='h-5 w-5 text-blue-400'
-                      aria-hidden='true'
-                    />
-                  </div>
-                  <div className='ml-3 flex-1 md:flex md:justify-between'>
-                    <p className='text-sm text-blue-700'>
-                      身份認證審核中，請耐心等候
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className='mt-6'>
-                <ConsignorInfoDescriptionList data={consignor.verification} />
-              </div>
-            </div>
+            <ConsignorInfoDescriptionList data={consignor.verification} />
           ) : (
             <Form consignor={consignor} />
           )}

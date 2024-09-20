@@ -1,19 +1,23 @@
-import { getUser } from '@/api/helpers/getUser'
 import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
+import { getUser } from '@/api/helpers/getUser'
 import RedirectAuthError from '@/domain/auth/RedirectAuthError'
 import { SITE_NAME } from '@/domain/static/static'
-import { CONSIGNOR_STATUS } from '@/domain/static/static-config-mappers'
 import { Metadata } from 'next'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
 import IdentityForm from './IdentityForm'
+import { GetConfigs } from '@/api/frontend/GetConfigs'
 
 export const metadata = { title: `帳號設定 | ${SITE_NAME}` } satisfies Metadata
 
 export default async function Example() {
-  const [user, consignorRes] = await Promise.all([getUser(), GetConsignor()])
+  const [user, consignorRes, configsRes] = await Promise.all([
+    getUser(),
+    GetConsignor(),
+    GetConfigs(),
+  ])
 
-  if (!user || consignorRes.error === '1003') {
+  if (!user || consignorRes.error === '1003' || configsRes.error === '1003') {
     return <RedirectAuthError />
   }
 
@@ -30,13 +34,7 @@ export default async function Example() {
             <ChangePasswordForm />
             <div className='h-px bg-gray-200'></div>
 
-            <IdentityForm
-              consignor={consignorRes.data}
-              alert={
-                user.status ===
-                CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
-              }
-            />
+            <IdentityForm consignor={consignorRes.data} configs={configsRes.data} />
 
             {/* <DeleteAccountForm /> */}
           </div>
