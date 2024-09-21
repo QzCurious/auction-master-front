@@ -136,9 +136,10 @@ function WithdrawForm({
                 if (value > balance) {
                   return '餘額不足'
                 }
-                if (value > 100_000) {
-                  return '最大提領金額為 100,000'
-                }
+                // https://trello.com/c/jrTnU04f#comment-66ee68d0b2b94bb4dfba8df0
+                // if (value > 100_000) {
+                //   return '最大提領金額為 100,000'
+                // }
               },
             }}
             render={({ field, fieldState }) => (

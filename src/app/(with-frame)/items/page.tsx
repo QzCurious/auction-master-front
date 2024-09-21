@@ -1,5 +1,5 @@
 import { GetConsignorItems } from '@/api/frontend/items/GetConsignorItems'
-import { ITEM_STATUS } from "@/domain/static/static-config-mappers"
+import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { Button } from '@/catalyst-ui/button'
 import { Heading } from '@/catalyst-ui/heading'
 import { SearchParamsPagination } from '@/components/SearchParamsPagination'
@@ -63,9 +63,9 @@ export default async function Page({ searchParams }: PageProps) {
           <div className='grid grow grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8'>
             {itemsRes.data.items.length === 0 && (
               <div className='col-span-full grid place-items-center'>
-                <div className='mx-auto w-fit text-indigo-400'>
+                <div className='mx-auto w-fit text-zinc-400'>
                   <FileDashed className='mx-auto size-20' />
-                  <p className='mt-6 text-center text-lg leading-6'>目前沒有物品</p>
+                  <p className='mt-6 text-center text-lg leading-6'>沒有資料</p>
                 </div>
               </div>
             )}
