@@ -1,7 +1,9 @@
 'use client'
 
 import Quill, { Delta, type EmitterSource, type Range } from 'quill/core'
+
 import 'quill/dist/quill.snow.css'
+
 import { BackgroundStyle } from 'quill/formats/background'
 import Bold from 'quill/formats/bold'
 import { ColorStyle } from 'quill/formats/color'
@@ -14,7 +16,9 @@ import ListItem from 'quill/formats/list'
 import Underline from 'quill/formats/underline'
 import Toolbar from 'quill/modules/toolbar'
 import SnowTheme from 'quill/themes/snow'
-import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react'
+import type React from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
+
 import './QuillTextEditor.css'
 
 Quill.register('modules/toolbar', Toolbar)
@@ -36,14 +40,19 @@ interface EditorProps {
   defaultValue?: Delta | string
   onTextChange?: (delta: Delta, oldContent: Delta, source: EmitterSource) => void
   onSelectionChange?: (range: Range, oldRange: Range, source: EmitterSource) => void
+  quillRef?: React.ForwardedRef<Quill>
 }
 
 // Editor is an uncontrolled React component
-const QuillTextEditor = forwardRef<Quill, EditorProps>(function QuillTextEditor(
-  { readOnly, hideToolbar, defaultValue, onTextChange, onSelectionChange },
-  ref,
-) {
-  const quillRef = useRef<Quill>(null)
+function QuillTextEditor({
+  quillRef,
+  readOnly,
+  hideToolbar,
+  defaultValue,
+  onTextChange,
+  onSelectionChange,
+}: EditorProps) {
+  const _quillRef = useRef<Quill>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const hideToolbarRef = useRef(hideToolbar)
   const defaultValueRef = useRef(defaultValue)
@@ -69,8 +78,8 @@ const QuillTextEditor = forwardRef<Quill, EditorProps>(function QuillTextEditor(
               container: [
                 [{ header: [1, 2, 3, false] }],
                 ['bold', 'italic', 'underline'], // toggled buttons
-                // ['link'],
-                ['link', 'image'],
+                ['link'],
+                // ['link', 'image'],
 
                 [{ list: 'ordered' }, { list: 'bullet' }],
                 [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
@@ -79,42 +88,42 @@ const QuillTextEditor = forwardRef<Quill, EditorProps>(function QuillTextEditor(
 
                 ['clean'], // remove formatting button
               ],
-              handlers: {
-                image: () => {
-                  const input = document.createElement('input')
-                  input.setAttribute('type', 'file')
-                  input.setAttribute('accept', 'image/*')
-                  input.click()
+              // handlers: {
+              //   image: () => {
+              //     const input = document.createElement('input');
+              //     input.setAttribute('type', 'file');
+              //     input.setAttribute('accept', 'image/*');
+              //     input.click();
 
-                  input.onchange = async () => {
-                    const file = input.files ? input.files[0] : null
-                    if (file) {
-                      const formData = new FormData()
-                      formData.append('image', file)
+              //     input.onchange = async () => {
+              //       const file = input.files ? input.files[0] : null;
+              //       if (file) {
+              //         const formData = new FormData();
+              //         formData.append('image', file);
 
-                      const res = await fetch('http://172.234.95.57:3001/upload', {
-                        method: 'POST',
-                        body: formData,
-                      })
+              //         const res = await fetch('http://172.234.95.57:3001/upload', {
+              //           method: 'POST',
+              //           body: formData,
+              //         });
 
-                      const url = await res.text()
+              //         const url = await res.text();
 
-                      const range = quill.getSelection()
-                      if (range) {
-                        quill.insertEmbed(range.index, 'image', url)
-                      }
-                    }
-                  }
-                },
-              },
+              //         const range = quill.getSelection();
+              //         if (range) {
+              //           quill.insertEmbed(range.index, 'image', url);
+              //         }
+              //       }
+              //     };
+              //   },
+              // },
             },
       },
       theme: 'snow',
     })
 
-    ;(quillRef.current as any) = quill
-    if (typeof ref === 'function') ref(quill)
-    if (ref && typeof ref === 'object') ref.current = quill
+    ;(_quillRef.current as any) = quill
+    if (typeof quillRef === 'function') quillRef(quill)
+    if (quillRef && typeof quillRef === 'object') quillRef.current = quill
 
     if (defaultValueRef.current) {
       quill.setContents(
@@ -133,18 +142,18 @@ const QuillTextEditor = forwardRef<Quill, EditorProps>(function QuillTextEditor(
     })
 
     return () => {
-      ;(quillRef.current as any) = null
-      if (typeof ref === 'function') ref(null)
-      if (ref && typeof ref === 'object') ref.current = null
+      ;(_quillRef.current as any) = null
+      if (typeof quillRef === 'function') quillRef(null)
+      if (quillRef && typeof quillRef === 'object') quillRef.current = null
       container.innerHTML = ''
     }
-  }, [ref])
+  }, [quillRef])
 
   useEffect(() => {
-    quillRef.current?.enable(!readOnly)
+    if (_quillRef) _quillRef?.current?.enable(!readOnly)
   }, [readOnly])
 
   return <div ref={containerRef}></div>
-})
+}
 
 export default QuillTextEditor
