@@ -1,5 +1,4 @@
-import { getUser } from '@/api/helpers/getUser'
-import Image from 'next/image'
+import { getToken } from '@/domain/auth/getToken'
 import { Button } from '../../catalyst-ui/button'
 import heroImg1 from './hero-img-1.jpg'
 import heroImg2 from './hero-img-2.png'
@@ -7,7 +6,7 @@ import heroImg3 from './hero-img-3.png'
 import HeroCarousel, { HeroCarouselItem } from './HeroCarousel'
 
 export default async function Page() {
-  const user = await getUser()
+  const { token } = await getToken()
 
   return (
     <>
@@ -38,7 +37,7 @@ export default async function Page() {
                   這也是對於您物品價值的一種肯定
                 </p>
 
-                {!user && (
+                {!token && (
                   <div className='mt-10 flex items-center justify-center gap-x-6'>
                     <Button href='/sign-up' color='indigo'>
                       立即加入

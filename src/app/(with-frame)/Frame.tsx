@@ -1,16 +1,15 @@
 'use client'
 
+import { ConsignorContext } from '@/domain/auth/ConsignorContext'
 import {
   ArrowRightEndOnRectangleIcon,
   ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useContext } from 'react'
 import { logout } from '../../domain/auth/logout'
-import { UserContext } from '../../domain/auth/UserContext'
 import { MobileMenu, MobileMenuProvider, MobileMenuToggle } from './components'
 
 const navigation = [
@@ -48,7 +47,7 @@ const footerNavigation = {
 }
 
 export default function Frame({ children }: { children: React.ReactNode }) {
-  const user = useContext(UserContext)
+  const consignor = useContext(ConsignorContext)
   const pathname = usePathname()
 
   return (
@@ -73,7 +72,7 @@ export default function Frame({ children }: { children: React.ReactNode }) {
             <MobileMenuToggle />
           </div>
           <div className='hidden grow justify-center lg:flex lg:gap-x-12'>
-            {user &&
+            {consignor &&
               navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -88,19 +87,19 @@ export default function Frame({ children }: { children: React.ReactNode }) {
               ))}
           </div>
           <div className='hidden items-center lg:flex lg:justify-end'>
-            {user ? (
+            {consignor ? (
               <>
                 <Link href='/me' className='hover:underline'>
-                  {user.avatar && (
+                  {consignor.avatar && (
                     <img
-                      src={user.avatar}
+                      src={consignor.avatar}
                       className='mr-2 inline-block size-8 rounded-full object-contain object-center ring-1 ring-gray-200'
                       width={32}
                       height={32}
                       alt='avatar'
                     />
                   )}
-                  {user.nickname}
+                  {consignor.nickname}
                 </Link>
 
                 <form action={logout} className='ml-4 inline'>

@@ -1,5 +1,6 @@
 'use client'
 
+import { ConsignorContext } from '@/domain/auth/ConsignorContext'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import {
   ArrowRightEndOnRectangleIcon,
@@ -8,11 +9,9 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { UserContext } from '../../domain/auth/UserContext'
 import { logout } from '../../domain/auth/logout'
 
 export const navigation = [
@@ -57,7 +56,7 @@ export function MobileMenuToggle() {
 export function MobileMenu() {
   const [mobileMenuOpen, setMobileMenuOpen] = useContext(MobileMenuContext)
   const pathname = usePathname()
-  const user = useContext(UserContext)
+  const consignor = useContext(ConsignorContext)
 
   return (
     <Dialog className='lg:hidden' open={mobileMenuOpen} onClose={setMobileMenuOpen}>
@@ -87,7 +86,7 @@ export function MobileMenu() {
         <div className='mt-6 flow-root'>
           <div className='-my-6 divide-y divide-gray-500/10'>
             <div className='space-y-2 py-6'>
-              {user &&
+              {consignor &&
                 navigation.map((item) => (
                   <Link
                     key={item.name}
@@ -102,19 +101,19 @@ export function MobileMenu() {
                 ))}
             </div>
             <div className='py-6'>
-              {user ? (
+              {consignor ? (
                 <>
                   <Link href='/me' className='hover:underline'>
-                    {user.avatar && (
+                    {consignor.avatar && (
                       <img
-                        src={user.avatar}
+                        src={consignor.avatar}
                         className='mr-2 inline-block size-8 rounded-full object-contain object-center ring-1 ring-gray-200'
                         width={32}
                         height={32}
                         alt='avatar'
                       />
                     )}
-                    {user.nickname}
+                    {consignor.nickname}
                   </Link>
 
                   <form action={logout} className='mt-3'>

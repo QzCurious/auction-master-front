@@ -1,13 +1,11 @@
 'use client'
 
-import { User } from '@/domain/auth/UserContext'
 import { Consignor } from '@/api/frontend/consignor/GetConsignor'
 import { UpdateConsignorAvatar } from '@/api/frontend/consignor/UpdateConsignorAvatar'
 import { Button } from '@/catalyst-ui/button'
 import { toPercent } from '@/domain/static/static'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
-import Image from 'next/image'
 import { useState, useTransition } from 'react'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
@@ -16,13 +14,7 @@ const Schema = z.object({
   avatarPhoto: z.union([z.string(), z.instanceof(File)]).nullable(),
 })
 
-export default function AccountInfoForm({
-  user,
-  consignor,
-}: {
-  user: User
-  consignor: Consignor
-}) {
+export default function AccountInfoForm({ consignor }: { consignor: Consignor }) {
   const [isPending, startTransition] = useTransition()
   const [conformingDelete, setConformingDelete] = useState(false)
 
@@ -44,11 +36,11 @@ export default function AccountInfoForm({
                 aria-hidden='true'
               />
 
-              {user.avatar ? (
+              {consignor.avatar ? (
                 <div className='group relative size-24 flex-none'>
                   <label htmlFor='avatarPhoto' className='block size-full'>
                     <img
-                      src={user.avatar}
+                      src={consignor.avatar}
                       className='size-full rounded-lg bg-gray-800 object-cover object-center'
                       width={96}
                       height={96}
@@ -136,7 +128,7 @@ export default function AccountInfoForm({
                 outline
                 onClick={() => document.getElementById('avatarPhoto')?.click()}
               >
-                {user.avatar ? <>更換頭像</> : <>上傳頭像</>}
+                {consignor.avatar ? <>更換頭像</> : <>上傳頭像</>}
               </Button>
               <p className='mt-2 text-xs leading-5 text-gray-400'>
                 支援 PNG, JPG, JPEG

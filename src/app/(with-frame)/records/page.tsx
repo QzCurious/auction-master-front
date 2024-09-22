@@ -1,3 +1,4 @@
+import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
 import { Configs, GetConfigs } from '@/api/frontend/GetConfigs'
 import { GetRecord } from '@/api/frontend/reports/GetRecord'
 import { GetRecords, Record } from '@/api/frontend/reports/GetRecords'
@@ -5,12 +6,6 @@ import {
   GetRecordsSummary,
   type RecordSummary,
 } from '@/api/frontend/reports/GetRecordsSummary'
-import {
-  CONSIGNOR_STATUS,
-  RECORD_STATUS,
-  RECORD_TYPE
-} from "@/domain/static/static-config-mappers"
-import { getUser } from '@/api/helpers/getUser'
 import { Heading } from '@/catalyst-ui/heading'
 import {
   Table,
@@ -21,8 +16,8 @@ import {
   TableRow,
 } from '@/catalyst-ui/table'
 import { SearchParamsPagination } from '@/components/SearchParamsPagination'
-import { parseSearchParams } from '@/domain/crud/parseSearchParams'
 import RedirectAuthError from '@/domain/auth/RedirectAuthError'
+import { parseSearchParams } from '@/domain/crud/parseSearchParams'
 import {
   currencySign,
   DATE_TIME_FORMAT,
@@ -30,6 +25,11 @@ import {
   ROWS_PER_PAGE,
   SITE_NAME,
 } from '@/domain/static/static'
+import {
+  CONSIGNOR_STATUS,
+  RECORD_STATUS,
+  RECORD_TYPE,
+} from '@/domain/static/static-config-mappers'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { format } from 'date-fns'
@@ -47,45 +47,52 @@ interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const user = await getUser()
-  if (
-    user?.status === CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
-  ) {
-    redirect('/me?alert#identity-form-alert', RedirectType.replace)
-  }
-
   const query = parseSearchParams(SearchParamsSchema, searchParams)
   const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
 
-  const [recordsSummaryRes, recordsRes, configsRes, submitPaymentRecordRes] =
-    await Promise.all([
-      GetRecordsSummary({
-        startAt,
-        endAt,
-        status: query.status,
-        type: query.type,
-      }),
-      GetRecords({
-        startAt,
-        endAt,
-        status: query.status,
-        type: query.type,
-        sort: 'createdAt',
-        order: 'desc',
-        limit: query[ROWS_PER_PAGE],
-        offset: query[PAGE] * query[ROWS_PER_PAGE],
-      }),
-      GetConfigs(),
-      query['submit-payment'] && GetRecord(query['submit-payment']),
-    ])
+  const [
+    consignorRes,
+    recordsSummaryRes,
+    recordsRes,
+    configsRes,
+    submitPaymentRecordRes,
+  ] = await Promise.all([
+    GetConsignor(),
+    GetRecordsSummary({
+      startAt,
+      endAt,
+      status: query.status,
+      type: query.type,
+    }),
+    GetRecords({
+      startAt,
+      endAt,
+      status: query.status,
+      type: query.type,
+      sort: 'createdAt',
+      order: 'desc',
+      limit: query[ROWS_PER_PAGE],
+      offset: query[PAGE] * query[ROWS_PER_PAGE],
+    }),
+    GetConfigs(),
+    query['submit-payment'] && GetRecord(query['submit-payment']),
+  ])
 
   if (
+    consignorRes.error === '1003' ||
     recordsSummaryRes.error === '1003' ||
     recordsRes.error === '1003' ||
     configsRes.error === '1003' ||
     (submitPaymentRecordRes && submitPaymentRecordRes.error === '1003')
   ) {
     return <RedirectAuthError />
+  }
+
+  if (
+    consignorRes.data.status ===
+    CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
+  ) {
+    redirect('/me?alert#identity-form-alert', RedirectType.replace)
   }
 
   return (

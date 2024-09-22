@@ -3,9 +3,9 @@
 import { Configs } from '@/api/frontend/GetConfigs'
 import { Item } from '@/api/frontend/items/GetConsignorItems'
 import { ItemShipped } from '@/api/frontend/items/ItemShipped'
-import { ITEM_STATUS } from "@/domain/static/static-config-mappers"
 import { Button } from '@/catalyst-ui/button'
-import { UserContext } from '@/domain/auth/UserContext'
+import { ConsignorContext } from '@/domain/auth/ConsignorContext'
+import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { Select } from '@headlessui/react'
 import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import {
@@ -26,7 +26,7 @@ export default function ConsignmentApprovedStatusAlert({
 }) {
   const [value, setValue] = useState<'company' | 'sevenEleven' | 'family'>('company')
   const [isPending, startTransition] = useTransition()
-  const user = useContext(UserContext)
+  const consignor = useContext(ConsignorContext)
 
   return (
     <section className='rounded-md bg-blue-50 p-4 sm:text-sm'>
@@ -46,8 +46,8 @@ export default function ConsignmentApprovedStatusAlert({
             請將物品寄送至我司以完成後續寄售程序，並請
             <span className='rounded-sm bg-yellow-100 px-0.5'>
               用便條紙寫上{' '}
-              {user && (
-                <span className='font-semibold underline'>{user.nickname}</span>
+              {consignor && (
+                <span className='font-semibold underline'>{consignor.nickname}</span>
               )}
               ，附於箱子內
             </span>

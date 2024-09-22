@@ -424,7 +424,7 @@ async function Content({ params }: PageProps) {
 
             <Subheading level={2}>物品進度</Subheading>
             <div className='mt-3'>
-              <StatusFlowUI item={itemRes.data} user={user} />
+              <StatusFlowUI item={itemRes.data} />
             </div>
           </div>
         </div>

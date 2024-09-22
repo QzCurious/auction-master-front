@@ -5,41 +5,39 @@ import { ItemChoosesCompanyDirectPurchase } from '@/api/frontend/items/ItemChoos
 import { ItemCompanyDirectPurchase } from '@/api/frontend/items/ItemCompanyDirectPurchase'
 import { ItemConsignmentReview } from '@/api/frontend/items/ItemConsignmentReview'
 import { ItemReady } from '@/api/frontend/items/ItemReady'
-import {
-  CONSIGNOR_STATUS,
-  ITEM_STATUS,
-  ITEM_TYPE
-} from "@/domain/static/static-config-mappers"
 import { Button } from '@/catalyst-ui/button'
-import {
-  Dialog,
-  DialogActions,
-  DialogBody,
-  DialogTitle,
-} from '@/catalyst-ui/dialog'
+import { Dialog, DialogActions, DialogBody, DialogTitle } from '@/catalyst-ui/dialog'
 import { Text } from '@/catalyst-ui/text'
 import {
   DoubleCheckPopover,
   DoubleCheckPopoverButton,
 } from '@/components/DoubleCheckPopover'
+import { ConsignorContext } from '@/domain/auth/ConsignorContext'
 import { DATE_TIME_FORMAT } from '@/domain/static/static'
+import {
+  CONSIGNOR_STATUS,
+  ITEM_STATUS,
+  ITEM_TYPE,
+} from '@/domain/static/static-config-mappers'
 import { StatusFlow } from '@/domain/static/StatusFlow'
-import { User } from '@/domain/auth/UserContext'
 import clsx from 'clsx'
 import copy from 'copy-to-clipboard'
 import { format } from 'date-fns'
 import Link from 'next/link'
 import type React from 'react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import toast from 'react-hot-toast'
 
-export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
+export function StatusFlowUI({ item }: { item: Item }) {
+  const consignor = useContext(ConsignorContext)
+  if (!consignor) return null
+
   const actionMap = StatusFlow.makeActionMap('consignor', {
     AppraisedStatus: (
       <div>
         <div className='flex flex-col gap-y-3'>
-          <CompanyDirectPurchaseBtn item={item} user={user} />
-          <ApproveConsignmentBtn item={item} user={user} />
+          <CompanyDirectPurchaseBtn item={item} />
+          <ApproveConsignmentBtn item={item} />
           <DoubleCheckPopover
             title='取消託售'
             onConfirm={async () => {
@@ -63,7 +61,7 @@ export function StatusFlowUI({ item, user }: { item: Item; user: User }) {
           </DoubleCheckPopover>
         </div>
 
-        {user.status ===
+        {consignor.status ===
           CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus') && (
           <p className='mt-1 w-32 text-center text-sm text-gray-500'>
             完成
@@ -201,8 +199,10 @@ function StatusStep({
   )
 }
 
-function ApproveConsignmentBtn({ item, user }: { item: Item; user: User }) {
+function ApproveConsignmentBtn({ item }: { item: Item }) {
   const [open, setOpen] = useState(false)
+  const consignor = useContext(ConsignorContext)
+  if (!consignor) return null
 
   return (
     <>
@@ -211,7 +211,7 @@ function ApproveConsignmentBtn({ item, user }: { item: Item; user: User }) {
         className='h-9 min-w-20'
         onClick={() => setOpen(true)}
         disabled={
-          user.status ===
+          consignor.status ===
           CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
         }
       >
@@ -300,8 +300,10 @@ function ApproveConsignmentBtn({ item, user }: { item: Item; user: User }) {
   )
 }
 
-function CompanyDirectPurchaseBtn({ item, user }: { item: Item; user: User }) {
+function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
   const [open, setOpen] = useState(false)
+  const consignor = useContext(ConsignorContext)
+  if (!consignor) return null
 
   return (
     <>
@@ -310,7 +312,7 @@ function CompanyDirectPurchaseBtn({ item, user }: { item: Item; user: User }) {
         className='h-9 min-w-20'
         onClick={() => setOpen(true)}
         disabled={
-          user.status ===
+          consignor.status ===
           CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
         }
       >

@@ -1,23 +1,18 @@
 import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
-import { getUser } from '@/api/helpers/getUser'
+import { GetConfigs } from '@/api/frontend/GetConfigs'
 import RedirectAuthError from '@/domain/auth/RedirectAuthError'
 import { SITE_NAME } from '@/domain/static/static'
 import { Metadata } from 'next'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
 import IdentityForm from './IdentityForm'
-import { GetConfigs } from '@/api/frontend/GetConfigs'
 
 export const metadata = { title: `帳號設定 | ${SITE_NAME}` } satisfies Metadata
 
 export default async function Example() {
-  const [user, consignorRes, configsRes] = await Promise.all([
-    getUser(),
-    GetConsignor(),
-    GetConfigs(),
-  ])
+  const [consignorRes, configsRes] = await Promise.all([GetConsignor(), GetConfigs()])
 
-  if (!user || consignorRes.error === '1003' || configsRes.error === '1003') {
+  if (consignorRes.error === '1003' || configsRes.error === '1003') {
     return <RedirectAuthError />
   }
 
@@ -28,7 +23,7 @@ export default async function Example() {
 
         <main className='px-4 sm:px-6 lg:flex-auto lg:px-0'>
           <div className='flex flex-col gap-y-12 px-4 sm:px-6 lg:px-8'>
-            <AccountInfoForm user={user} consignor={consignorRes.data} />
+            <AccountInfoForm consignor={consignorRes.data} />
             <div className='h-px bg-gray-200'></div>
 
             <ChangePasswordForm />
