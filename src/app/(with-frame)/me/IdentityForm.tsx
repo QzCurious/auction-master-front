@@ -271,7 +271,7 @@ function Form({ consignor }: { consignor: Consignor }) {
                     id='identificationPhoto'
                     hidden
                     type='file'
-                    accept='image/*'
+                    accept='image/png, image/jpeg, image/jpg'
                     {...field}
                     value={undefined}
                     onChange={(e) => {

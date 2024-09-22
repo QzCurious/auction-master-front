@@ -111,7 +111,7 @@ export default function AccountInfoForm({
                 className='sr-only'
                 id='avatarPhoto'
                 name='avatarPhoto'
-                accept='image/*'
+                accept='image/png, image/jpeg, image/jpg, image/gif'
                 onChange={(e) => {
                   startTransition(async () => {
                     const file = e.target.files?.[0]

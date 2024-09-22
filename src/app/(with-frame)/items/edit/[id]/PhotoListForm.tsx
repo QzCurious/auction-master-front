@@ -4,7 +4,7 @@ import { ConsignorDeleteItemPhoto } from '@/api/frontend/items/ConsignorDeleteIt
 import { ConsignorReorderItemPhoto } from '@/api/frontend/items/ConsignorReorderItemPhoto'
 import { ConsignorUpsertItemPhoto } from '@/api/frontend/items/ConsignorUpsertItemPhoto'
 import { Item } from '@/api/frontend/items/GetConsignorItems'
-import { ITEM_STATUS } from "@/domain/static/static-config-mappers"
+import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { Field, Label } from '@/catalyst-ui/fieldset'
 import {
   DraggableHandler,
@@ -44,6 +44,7 @@ export default function PhotoListForm({ item }: PhotoListFormProps) {
           id='file-upload'
           name='file-upload'
           type='file'
+          accept='image/png, image/jpeg, image/jpg'
           hidden
           multiple
           onChange={async (e) => {
