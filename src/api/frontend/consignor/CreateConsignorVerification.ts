@@ -16,7 +16,7 @@ const ReqSchema = z.object({
   phone: z.string().min(1),
   bankCode: z.string().min(1),
   bankAccount: z.string().min(1),
-  // birthday:2000-01-01T00:00:00+09:00
+  birthday: z.coerce.date(),
 })
 
 type Data = 'Success'
@@ -24,18 +24,21 @@ type Data = 'Success'
 type ErrorCode = never
 
 export async function CreateConsignorVerification(formData: FormData) {
-  const payload = {
-    name: formData.get('name'),
-    identification: formData.get('identification'),
-    gender: formData.get('gender'),
-    city: formData.get('city'),
-    district: formData.get('district'),
-    streetAddress: formData.get('streetAddress'),
-    phone: formData.get('phone'),
-    bankCode: formData.get('bankCode'),
-    bankAccount: formData.get('bankAccount'),
-  }
-  throwIfInvalid(payload as any, ReqSchema)
+  throwIfInvalid(
+    {
+      name: formData.get('name'),
+      identification: formData.get('identification'),
+      gender: formData.get('gender'),
+      city: formData.get('city'),
+      district: formData.get('district'),
+      streetAddress: formData.get('streetAddress'),
+      phone: formData.get('phone'),
+      bankCode: formData.get('bankCode'),
+      bankAccount: formData.get('bankAccount'),
+      birthday: formData.get('birthday'),
+    } as any,
+    ReqSchema,
+  )
 
   if (!formData.has('identificationPhoto')) {
     throw new Error('identificationPhoto is required')

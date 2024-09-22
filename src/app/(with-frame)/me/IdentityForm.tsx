@@ -202,7 +202,6 @@ function Form({ consignor }: { consignor: Consignor }) {
     watch,
     handleSubmit,
     formState: { isSubmitting },
-    setError,
     setValue,
   } = useForm<z.output<typeof Schema>>({
     defaultValues: {
@@ -215,14 +214,16 @@ function Form({ consignor }: { consignor: Consignor }) {
       phone: '',
       bankCode: '',
       bankAccount: '',
+      birthday: '' as any,
     },
     resolver: zodResolver(Schema),
   })
 
   return (
     <form
-      onSubmit={handleSubmit(async (_, e) => {
+      onSubmit={handleSubmit(async (data, e) => {
         const formData = new FormData(e?.target)
+        formData.append('birthday', data.birthday.toISOString())
         const res = await CreateConsignorVerification(formData)
         if (res.error === '1003') {
           toast.error('請重新登入')
