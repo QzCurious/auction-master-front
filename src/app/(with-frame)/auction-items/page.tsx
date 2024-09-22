@@ -132,7 +132,7 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                   target='_blank'
                   rel='noreferrer'
                 >
-                  <Image
+                  <img
                     className='mx-auto h-20 w-20 rounded-md object-cover'
                     src={row.photo}
                     width={200}

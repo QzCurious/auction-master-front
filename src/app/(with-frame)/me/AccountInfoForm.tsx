@@ -47,10 +47,9 @@ export default function AccountInfoForm({
               {user.avatar ? (
                 <div className='group relative size-24 flex-none'>
                   <label htmlFor='avatarPhoto' className='block size-full'>
-                    <Image
+                    <img
                       src={user.avatar}
                       className='size-full rounded-lg bg-gray-800 object-cover object-center'
-                      priority
                       width={96}
                       height={96}
                       alt=''

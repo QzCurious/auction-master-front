@@ -106,7 +106,7 @@ export function MobileMenu() {
                 <>
                   <Link href='/me' className='hover:underline'>
                     {user.avatar && (
-                      <Image
+                      <img
                         src={user.avatar}
                         className='mr-2 inline-block size-8 rounded-full object-contain object-center ring-1 ring-gray-200'
                         width={32}

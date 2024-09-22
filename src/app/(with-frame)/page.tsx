@@ -52,22 +52,22 @@ export default async function Page() {
                 <div className='mt-10 rounded-lg bg-gray-100 p-2 shadow-md'>
                   <HeroCarousel>
                     <HeroCarouselItem>
-                      <Image
-                        src={heroImg1}
+                      <img
+                        src={heroImg1.src}
                         className='size-full object-contain object-center'
                         alt=''
                       />
                     </HeroCarouselItem>
                     <HeroCarouselItem>
-                      <Image
-                        src={heroImg2}
+                      <img
+                        src={heroImg2.src}
                         className='size-full object-contain object-center'
                         alt=''
                       />
                     </HeroCarouselItem>
                     <HeroCarouselItem>
-                      <Image
-                        src={heroImg3}
+                      <img
+                        src={heroImg3.src}
                         className='size-full object-contain object-center'
                         alt=''
                       />
