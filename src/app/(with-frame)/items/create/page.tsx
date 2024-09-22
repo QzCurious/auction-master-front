@@ -1,6 +1,5 @@
-import RedirectAuthError from '@/domain/auth/RedirectAuthError'
 import { GetJPYRates } from '@/api/frontend/GetJPYRates'
-import { getUser } from '@/api/helpers/getUser'
+import RedirectAuthError from '@/domain/auth/RedirectAuthError'
 import { SITE_NAME } from '@/domain/static/static'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
@@ -32,11 +31,7 @@ async function Page() {
 export default Page
 
 async function Content() {
-  const [user, jpyRatesRes] = await Promise.all([getUser(), GetJPYRates()])
-
-  if (!user) {
-    return <RedirectAuthError />
-  }
+  const [jpyRatesRes] = await Promise.all([GetJPYRates()])
 
   if (jpyRatesRes.error === '1003') {
     return <RedirectAuthError />

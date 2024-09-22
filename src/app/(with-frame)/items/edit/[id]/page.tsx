@@ -2,13 +2,7 @@ import { GetConfigs } from '@/api/frontend/GetConfigs'
 import { GetJPYRates } from '@/api/frontend/GetJPYRates'
 import { GetConsignorItem } from '@/api/frontend/items/GetConsignorItem'
 import { GetRecord } from '@/api/frontend/reports/GetRecord'
-import {
-  ITEM_STATUS,
-  ITEM_TYPE,
-  RECORD_STATUS
-} from "@/domain/static/static-config-mappers"
 import { GetConsignorWalletBalance } from '@/api/frontend/wallets/GetConsignorWalletBalance'
-import { getUser } from '@/api/helpers/getUser'
 import {
   DescriptionDetails,
   DescriptionList,
@@ -18,6 +12,11 @@ import { Subheading } from '@/catalyst-ui/heading'
 import InfoPopover, { InfoPopoverPanel } from '@/components/InfoPopover'
 import RedirectAuthError from '@/domain/auth/RedirectAuthError'
 import { currencySign, DATE_FORMAT, SITE_NAME } from '@/domain/static/static'
+import {
+  ITEM_STATUS,
+  ITEM_TYPE,
+  RECORD_STATUS,
+} from '@/domain/static/static-config-mappers'
 import { StatusFlow } from '@/domain/static/StatusFlow'
 import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
@@ -70,16 +69,11 @@ async function Content({ params }: PageProps) {
   if (isNaN(id)) {
     notFound()
   }
-  const [user, itemRes, configsRes, jpyRatesRes] = await Promise.all([
-    getUser(),
+  const [itemRes, configsRes, jpyRatesRes] = await Promise.all([
     GetConsignorItem(id),
     GetConfigs(),
     GetJPYRates(),
   ])
-
-  if (!user) {
-    return <RedirectAuthError />
-  }
 
   if (
     configsRes.error === '1003' ||

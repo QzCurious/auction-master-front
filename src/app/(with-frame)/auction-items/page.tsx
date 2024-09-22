@@ -2,7 +2,7 @@ import {
   AuctionItem,
   GetConsignorAuctionItems,
 } from '@/api/frontend/auction-items/GetConsignorAuctionItems'
-import { getUser } from '@/api/helpers/getUser'
+import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
 import { Heading } from '@/catalyst-ui/heading'
 import {
   Table,
@@ -26,7 +26,6 @@ import {
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { Metadata } from 'next'
-import Image from 'next/image'
 import { redirect, RedirectType } from 'next/navigation'
 import * as R from 'remeda'
 import CancelBiddingPopover from './CancelBiddingPopover'
@@ -42,16 +41,10 @@ interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const user = await getUser()
-  if (
-    user?.status === CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
-  ) {
-    redirect('/me?alert#identity-form-alert', RedirectType.replace)
-  }
-
   const filters = parseSearchParams(SearchParamsSchema, searchParams)
 
-  const [auctionItemsRes] = await Promise.all([
+  const [consignorRes, auctionItemsRes] = await Promise.all([
+    GetConsignor(),
     GetConsignorAuctionItems({
       status: filters.status,
       sort: 'createdAt',
@@ -61,8 +54,15 @@ export default async function Page({ searchParams }: PageProps) {
     }),
   ])
 
-  if (auctionItemsRes?.error === '1003') {
+  if (auctionItemsRes.error === '1003' || consignorRes.error === '1003') {
     return <RedirectAuthError />
+  }
+
+  if (
+    consignorRes.data.status ===
+    CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
+  ) {
+    redirect('/me?alert#identity-form-alert', RedirectType.replace)
   }
 
   return (

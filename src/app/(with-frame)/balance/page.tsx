@@ -3,14 +3,8 @@ import { GetConsignorBonusBalance } from '@/api/frontend/bonuses/GetConsignorBon
 import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
 import { GetConfigs } from '@/api/frontend/GetConfigs'
 import { GetJPYRates } from '@/api/frontend/GetJPYRates'
-import {
-  BONUS_ACTION,
-  CONSIGNOR_STATUS,
-  WALLET_ACTION
-} from "@/domain/static/static-config-mappers"
 import { GetConsignorWalletBalance } from '@/api/frontend/wallets/GetConsignorWalletBalance'
 import { GetWalletLogs, WalletLog } from '@/api/frontend/wallets/GetWalletLogs'
-import { getUser } from '@/api/helpers/getUser'
 import {
   Table,
   TableBody,
@@ -29,6 +23,11 @@ import {
   ROWS_PER_PAGE,
   SITE_NAME,
 } from '@/domain/static/static'
+import {
+  BONUS_ACTION,
+  CONSIGNOR_STATUS,
+  WALLET_ACTION,
+} from '@/domain/static/static-config-mappers'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { addDays, addMonths, format, startOfDay, subDays } from 'date-fns'
@@ -114,13 +113,6 @@ interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const user = await getUser()
-  if (
-    user?.status === CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
-  ) {
-    redirect('/me?alert#identity-form-alert', RedirectType.replace)
-  }
-
   const query = querySchema.parse(searchParams)
   const pagination = PaginationSchema.parse(searchParams)
   const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
@@ -171,6 +163,13 @@ export default async function Page({ searchParams }: PageProps) {
     bonusLogsRes?.error === '1003'
   ) {
     return <RedirectAuthError />
+  }
+
+  if (
+    consignorRes.data.status ===
+    CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
+  ) {
+    redirect('/me?alert#identity-form-alert', RedirectType.replace)
   }
 
   return (

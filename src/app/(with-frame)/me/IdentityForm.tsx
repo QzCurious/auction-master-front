@@ -7,7 +7,6 @@ import { Button } from '@/catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '@/catalyst-ui/fieldset'
 import { Input } from '@/catalyst-ui/input'
 import { Listbox, ListboxLabel, ListboxOption } from '@/catalyst-ui/listbox'
-import { UserContext } from '@/domain/auth/UserContext'
 import { database } from '@/domain/static/address.data'
 import { DATE_FORMAT } from '@/domain/static/static'
 import { CONSIGNOR_STATUS } from '@/domain/static/static-config-mappers'
@@ -18,7 +17,7 @@ import clsx from 'clsx'
 import { format } from 'date-fns'
 import { zhTW } from 'date-fns/locale'
 import Link from 'next/link'
-import { Fragment, useContext } from 'react'
+import { Fragment } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 import { Controller, useForm } from 'react-hook-form'
@@ -32,11 +31,9 @@ export default function IdentityForm({
   consignor: Consignor
   configs: Configs
 }) {
-  const user = useContext(UserContext)
-
   return (
     <div>
-      {user?.status ===
+      {consignor.status ===
         CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus') && (
         <section
           id='identity-form-alert'
@@ -74,7 +71,7 @@ export default function IdentityForm({
                   >
                     官方 Line
                   </Link>
-                  ，並傳送您的暱稱 {user?.nickname} 給我們。
+                  ，並傳送您的暱稱 {consignor.nickname} 給我們。
                 </p>
               )}
             </div>

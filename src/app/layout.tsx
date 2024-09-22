@@ -1,9 +1,9 @@
-import { getUser } from '@/api/helpers/getUser'
+import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
+import { ConsignorContextProvider } from '@/domain/auth/ConsignorContext'
 import '@fontsource-variable/noto-sans-tc'
 import type { Metadata } from 'next'
 import { Noto_Sans_TC } from 'next/font/google'
 import Script from 'next/script'
-import { UserContextProvider } from '../domain/auth/UserContext'
 import { SITE_NAME } from '../domain/static/static'
 import './globals.css'
 
@@ -16,11 +16,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const user = await getUser()
+  const consignorRes = await GetConsignor()
 
   return (
     <html lang='en'>
-      <UserContextProvider user={user}>
+      <ConsignorContextProvider consignor={consignorRes.data}>
         <body className={font.className}>{children}</body>
         <Script id='noWheel-on-number-input'>
           {`
@@ -31,7 +31,7 @@ export default async function RootLayout({
           })
           `}
         </Script>
-      </UserContextProvider>
+      </ConsignorContextProvider>
     </html>
   )
 }
