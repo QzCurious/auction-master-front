@@ -1,7 +1,6 @@
 'use server'
 
 import { apiClient } from '../apiClient'
-import { withAuth } from '../withAuth'
 
 export interface Configs {
   yahooAuctionFeeRate: number
@@ -40,7 +39,7 @@ interface Data extends Configs {}
 type ErrorCode = never
 
 export async function GetConfigs() {
-  const res = await withAuth(apiClient)<Data, ErrorCode>('/frontend/configs', {
+  const res = await apiClient<Data, ErrorCode>('/configs', {
     method: 'GET',
     next: { tags: ['configs'] },
   })
