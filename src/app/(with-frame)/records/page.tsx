@@ -1,5 +1,6 @@
 import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
 import { Configs, GetConfigs } from '@/api/frontend/GetConfigs'
+import { GetConsignorItem, Item } from '@/api/frontend/items/GetConsignorItem'
 import { GetRecord } from '@/api/frontend/reports/GetRecord'
 import { GetRecords, Record } from '@/api/frontend/reports/GetRecords'
 import {
@@ -30,10 +31,12 @@ import {
   RECORD_STATUS,
   RECORD_TYPE,
 } from '@/domain/static/static-config-mappers'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { format } from 'date-fns'
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { redirect, RedirectType } from 'next/navigation'
 import CancelPayment from './CancelPayment'
 import { DesktopFilters, MobileFilters } from './Filters'
@@ -355,6 +358,11 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                 }
               >
                 {RECORD_TYPE.get('value', row.type).message}
+                <div className='flex flex-row justify-center gap-y-1'>
+                  {row.itemIDs?.map((itemID) => (
+                    <ItemLink key={itemID} itemID={itemID} />
+                  ))}
+                </div>
               </TableCell>
               <TableCell
                 className={clsx(
@@ -565,5 +573,22 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
       </Table>
       <SearchParamsPagination count={count} />
     </div>
+  )
+}
+
+async function ItemLink({ itemID }: { itemID: Item['id'] }) {
+  const itemRes = await GetConsignorItem(itemID)
+  if (!itemRes.data) return null
+
+  return (
+    <Link
+      className='text-indigo-400 underline hover:text-indigo-500'
+      href={`/items/edit/${itemID}`}
+      target='_blank'
+      rel='noreferrer'
+    >
+      {itemRes.data.name}{' '}
+      <ArrowTopRightOnSquareIcon className='inline-block h-4 w-4' />
+    </Link>
   )
 }

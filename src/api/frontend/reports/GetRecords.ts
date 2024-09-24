@@ -1,12 +1,14 @@
 'use server'
 
-import { z } from 'zod'
-
+import { apiClient } from '@/api/apiClient'
+import { throwIfInvalid } from '@/api/helpers/throwIfInvalid'
+import { withAuth } from '@/api/withAuth'
 import { appendEntries } from '@/domain/crud/appendEntries'
-import { apiClient } from '../../apiClient'
-import { throwIfInvalid } from '../../helpers/throwIfInvalid'
-import { withAuth } from '../../withAuth'
-import { RECORD_TYPE, type RECORD_STATUS } from "@/domain/static/static-config-mappers"
+import {
+  type RECORD_STATUS,
+  type RECORD_TYPE,
+} from '@/domain/static/static-config-mappers'
+import { z } from 'zod'
 
 const ReqSchema = z.object({
   type: z.number().array().optional(),
@@ -22,11 +24,12 @@ const ReqSchema = z.object({
 export interface Record {
   id: string
   type: RECORD_TYPE['value']
+  opCode: string
   consignorID: number
   consignorNickname: string
-  opCode: string
-  itemID?: number
-  auctionItemID?: number
+  itemIDs?: number[]
+  auctionItemIDs?: number[]
+  shippingID?: string
   exchangeRate?: number
   jpyWithdrawal?: number
   withdrawal?: number
