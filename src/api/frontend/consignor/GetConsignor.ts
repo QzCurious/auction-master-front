@@ -1,8 +1,8 @@
 'use server'
 
+import { CONSIGNOR_STATUS } from '@/domain/static/static-config-mappers'
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { CONSIGNOR_STATUS } from "@/domain/static/static-config-mappers"
 
 export interface Consignor {
   id: number
@@ -19,6 +19,7 @@ export interface Consignor {
   district: string
   streetAddress: string
   phone: string
+  beneficiaryName: string
   bankCode: string
   bankAccount: string
   status: CONSIGNOR_STATUS['value']
@@ -36,12 +37,15 @@ export interface Consignor {
     district: string
     streetAddress: string
     phone: string
+    beneficiaryName: string
     bankCode: string
     bankAccount: string
     status: number
     createdAt: string
     updatedAt: string
   }
+  walletBalance: number
+  bonusBalance: number
 }
 
 type Data = Consignor

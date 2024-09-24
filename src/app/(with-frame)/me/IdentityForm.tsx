@@ -123,6 +123,7 @@ function ConsignorInfoDescriptionList({
     | 'birthday'
     | 'identification'
     | 'phone'
+    | 'beneficiaryName'
     | 'bankCode'
     | 'bankAccount'
     | 'city'
@@ -168,6 +169,13 @@ function ConsignorInfoDescriptionList({
         </dd>
       </div>
       <div className='sm:col-span-3'>
+        <dt className='text-sm font-medium leading-6 text-gray-900'>戶名</dt>
+        <dd className='mt-1 text-sm leading-6 text-gray-700'>
+          {data.beneficiaryName}
+        </dd>
+      </div>
+
+      <div className='sm:col-span-3'>
         <dt className='text-sm font-medium leading-6 text-gray-900'>地址</dt>
         <dd className='mt-1 text-sm leading-6 text-gray-700'>
           {data.city} {data.district} {data.streetAddress}
@@ -182,15 +190,16 @@ const Schema = z.object({
     .instanceof(File, { message: '必填' })
     .refine((file) => file.size <= 20 * 1024 * 1024, { message: '上限 20MB' }),
   name: z.string().min(1, { message: '必填' }),
-  gender: z.number().refine((v) => v === 1 || v === 2, { message: '必填' }),
   identification: z.string().min(1, { message: '必填' }),
+  gender: z.number().refine((v) => v === 1 || v === 2, { message: '必填' }),
+  birthday: z.coerce.date({ errorMap: () => ({ message: '必填' }) }),
   city: z.string().min(1, { message: '必填' }),
   district: z.string().min(1, { message: '必填' }),
   streetAddress: z.string().min(1, { message: '必填' }),
   phone: z.string().min(1, { message: '必填' }),
+  beneficiaryName: z.string().min(1, { message: '必填' }),
   bankCode: z.string().min(1, { message: '必填' }),
   bankAccount: z.string().min(1, { message: '必填' }),
-  birthday: z.coerce.date({ errorMap: () => ({ message: '必填' }) }),
 })
 
 function Form({ consignor }: { consignor: Consignor }) {
@@ -205,13 +214,14 @@ function Form({ consignor }: { consignor: Consignor }) {
       name: '',
       identification: '',
       gender: 0 as any,
+      birthday: '' as any,
       city: '',
       district: '',
       streetAddress: '',
       phone: '',
+      beneficiaryName: '',
       bankCode: '',
       bankAccount: '',
-      birthday: '' as any,
     },
     resolver: zodResolver(Schema),
   })
@@ -424,6 +434,22 @@ function Form({ consignor }: { consignor: Consignor }) {
             </Field>
           )}
         />
+
+        <Controller
+          name='beneficiaryName'
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field className='sm:col-span-3'>
+              <Label>戶名</Label>
+              <Input type='text' autoComplete='off' {...field} />
+              {fieldState.error && (
+                <ErrorMessage>{fieldState.error.message}</ErrorMessage>
+              )}
+            </Field>
+          )}
+        />
+
+        <div className='sm:col-span-3' />
 
         <Controller
           name='city'
