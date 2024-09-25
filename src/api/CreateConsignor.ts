@@ -16,7 +16,9 @@ type Data = 'Success'
 
 type ErrorCode =
   // consignor account exists
-  '1028'
+  | '1028'
+  // invalid account format
+  | '1032'
 
 export async function CreateConsignor(payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
