@@ -169,7 +169,7 @@ function ConsignorInfoDescriptionList({
         </dd>
       </div>
       <div className='sm:col-span-3'>
-        <dt className='text-sm font-medium leading-6 text-gray-900'>戶名</dt>
+        <dt className='text-sm font-medium leading-6 text-gray-900'>銀行戶名</dt>
         <dd className='mt-1 text-sm leading-6 text-gray-700'>
           {data.beneficiaryName}
         </dd>
@@ -440,7 +440,7 @@ function Form({ consignor }: { consignor: Consignor }) {
           control={control}
           render={({ field, fieldState }) => (
             <Field className='sm:col-span-3'>
-              <Label>戶名</Label>
+              <Label>銀行戶名</Label>
               <Input type='text' autoComplete='off' {...field} />
               {fieldState.error && (
                 <ErrorMessage>{fieldState.error.message}</ErrorMessage>
