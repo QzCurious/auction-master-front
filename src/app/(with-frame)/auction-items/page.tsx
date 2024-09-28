@@ -13,7 +13,6 @@ import {
   TableRow,
 } from '@/catalyst-ui/table'
 import { TextLink } from '@/catalyst-ui/text'
-import AutoRefreshPage from '@/components/AutoRefreshPage'
 import { CountdownTime } from '@/components/CountdownTime'
 import { SearchParamsPagination } from '@/components/SearchParamsPagination'
 import RedirectAuthError from '@/domain/auth/RedirectAuthError'
@@ -23,6 +22,7 @@ import {
   AUCTION_ITEM_STATUS,
   CONSIGNOR_STATUS,
 } from '@/domain/static/static-config-mappers'
+import { AutoRefreshEffect } from '@/helper/useAutoRefresh'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import clsx from 'clsx'
 import { Metadata } from 'next'
@@ -66,7 +66,7 @@ export default async function Page({ searchParams }: PageProps) {
   }
 
   return (
-    <AutoRefreshPage ms={10_000}>
+    <AutoRefreshEffect ms={10_000}>
       <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
         <Heading level={1} className='lg:sr-only'>
           競標列表
@@ -85,7 +85,7 @@ export default async function Page({ searchParams }: PageProps) {
           />
         </div>
       </div>
-    </AutoRefreshPage>
+    </AutoRefreshEffect>
   )
 }
 

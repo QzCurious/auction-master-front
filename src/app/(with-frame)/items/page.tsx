@@ -1,18 +1,18 @@
 import { GetConsignorItems } from '@/api/frontend/items/GetConsignorItems'
-import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { Button } from '@/catalyst-ui/button'
 import { Heading } from '@/catalyst-ui/heading'
 import { SearchParamsPagination } from '@/components/SearchParamsPagination'
-import { parseSearchParams } from '@/domain/crud/parseSearchParams'
-import { Until } from '@/helper/useUntil'
 import RedirectAuthError from '@/domain/auth/RedirectAuthError'
+import { parseSearchParams } from '@/domain/crud/parseSearchParams'
 import { PAGE, ROWS_PER_PAGE, SITE_NAME } from '@/domain/static/static'
+import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
+import { AutoRefreshEffect } from '@/helper/useAutoRefresh'
+import { Until } from '@/helper/useUntil'
 import { PhotoIcon } from '@heroicons/react/20/solid'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import { Metadata } from 'next'
 import Link from 'next/link'
-import AutoRefreshPage from '../../../components/AutoRefreshPage'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { SearchParamsSchema } from './SearchParamsSchema'
 
@@ -37,7 +37,7 @@ export default async function Page({ searchParams }: PageProps) {
   }
 
   return (
-    <AutoRefreshPage ms={10_000}>
+    <AutoRefreshEffect ms={30_000}>
       <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
         <Heading level={1} className='lg:sr-only'>
           我的物品
@@ -116,6 +116,6 @@ export default async function Page({ searchParams }: PageProps) {
 
         <SearchParamsPagination count={itemsRes.data.count} />
       </div>
-    </AutoRefreshPage>
+    </AutoRefreshEffect>
   )
 }
