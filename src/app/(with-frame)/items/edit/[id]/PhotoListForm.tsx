@@ -4,13 +4,13 @@ import { ConsignorDeleteItemPhoto } from '@/api/frontend/items/ConsignorDeleteIt
 import { ConsignorReorderItemPhoto } from '@/api/frontend/items/ConsignorReorderItemPhoto'
 import { ConsignorUpsertItemPhoto } from '@/api/frontend/items/ConsignorUpsertItemPhoto'
 import { Item } from '@/api/frontend/items/GetConsignorItems'
-import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { Field, Label } from '@/catalyst-ui/fieldset'
 import {
   DraggableHandler,
   DraggableList,
   DraggableListItem,
 } from '@/components/DraggableList'
+import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { ArrowsOutLineHorizontal } from '@phosphor-icons/react/dist/ssr/ArrowsOutLineHorizontal'
@@ -23,12 +23,13 @@ interface PhotoListFormProps {
 
 export default function PhotoListForm({ item }: PhotoListFormProps) {
   const enabled = R.isIncludedIn(item.status, [
-    ITEM_STATUS.enum('WarehouseArrivalStatus'),
     ITEM_STATUS.enum('SubmitAppraisalStatus'),
-    ITEM_STATUS.enum('AppraisalFailureStatus'),
     ITEM_STATUS.enum('AppraisedStatus'),
     ITEM_STATUS.enum('ConsignmentApprovedStatus'),
+    ITEM_STATUS.enum('ConsignorShippedItem'),
     ITEM_STATUS.enum('WarehouseArrivalStatus'),
+    ITEM_STATUS.enum('WarehousePersonnelConfirmedStatus'),
+    ITEM_STATUS.enum('AppraiserConfirmedStatus'),
   ])
 
   const [isPending, startTransition] = useTransition()
@@ -108,23 +109,25 @@ export default function PhotoListForm({ item }: PhotoListFormProps) {
                   </article>
                   {/* {error && <p className='text-end text-sm text-red-600'>{error}</p>} */}
 
-                  <div className='absolute right-0 top-0 z-20 flex w-fit items-center gap-x-2 pr-3 pt-1'>
-                    <DraggableHandler>
-                      <span className='sr-only'>Drag to move</span>
-                      <ArrowsOutLineHorizontal className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
-                    </DraggableHandler>
-                    <button
-                      type='button'
-                      onClick={() => {
-                        startTransition(async () => {
-                          await ConsignorDeleteItemPhoto(item.id, i + 1)
-                        })
-                      }}
-                    >
-                      <span className='sr-only'>Delete</span>
-                      <XMarkIcon className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
-                    </button>
-                  </div>
+                  {enabled && (
+                    <div className='absolute right-0 top-0 z-20 flex w-fit items-center gap-x-2 pr-3 pt-1'>
+                      <DraggableHandler>
+                        <span className='sr-only'>Drag to move</span>
+                        <ArrowsOutLineHorizontal className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+                      </DraggableHandler>
+                      <button
+                        type='button'
+                        onClick={() => {
+                          startTransition(async () => {
+                            await ConsignorDeleteItemPhoto(item.id, i + 1)
+                          })
+                        }}
+                      >
+                        <span className='sr-only'>Delete</span>
+                        <XMarkIcon className='size-7 rounded-full bg-white/80 stroke-2 p-1 text-gray-400 hover:bg-white hover:text-gray-600' />
+                      </button>
+                    </div>
+                  )}
                 </DraggableListItem>
               ))}
             </DraggableList>
