@@ -65,7 +65,7 @@ export function StatusFlowUI({ item }: { item: Item }) {
           CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus') && (
           <p className='mt-1 w-32 text-center text-sm text-gray-500'>
             完成
-            <Link href='/me#identity-form' className='text-indigo-600 underline'>
+            <Link href='/me#identity-form-alert' className='text-indigo-600 underline'>
               身份認證
             </Link>
             後即可申請現金收購或託售
