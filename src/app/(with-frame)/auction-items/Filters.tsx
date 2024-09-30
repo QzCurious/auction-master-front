@@ -33,6 +33,7 @@ const filters = [
         AUCTION_ITEM_STATUS.data[7],
         AUCTION_ITEM_STATUS.data[8],
         AUCTION_ITEM_STATUS.data[9],
+        AUCTION_ITEM_STATUS.data[10],
       ],
       ({ value, message }) => ({ label: message, value }),
     ),

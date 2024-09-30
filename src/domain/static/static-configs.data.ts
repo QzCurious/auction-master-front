@@ -223,6 +223,11 @@ export const STATIC_CONFIGS_DATA = {
       message: '寄售人已付手續費',
       value: 23,
     },
+    {
+      key: 'NoBidsPlacedStatus',
+      message: '無人下標',
+      value: 24,
+    },
   ],
   consignorStatus: [
     {
@@ -307,6 +312,11 @@ export const STATIC_CONFIGS_DATA = {
       key: 'ShippedStatus',
       message: '已寄出',
       value: 4,
+    },
+    {
+      key: 'ClosedStatus',
+      message: '已結束',
+      value: 10,
     },
     {
       key: 'CanceledStatus',
