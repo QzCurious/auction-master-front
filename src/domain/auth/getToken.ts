@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode'
 import { cookies } from 'next/headers'
 import { CookieConfigs } from './CookieConfigs'
 
-let sessionRefreshing: ReturnType<typeof RefreshToken> | null = null
+const tokenRefreshingMap = new Map<string, ReturnType<typeof RefreshToken>>()
 
 export async function getToken({ force }: { force?: boolean } = { force: false }) {
   // no token
@@ -27,15 +27,17 @@ export async function getToken({ force }: { force?: boolean } = { force: false }
     throw new Error('BUG: Token expired without refresh token')
   }
 
-  if (!sessionRefreshing) {
-    sessionRefreshing = RefreshToken({
+  let refreshing = tokenRefreshingMap.get(token.value)
+  if (!refreshing) {
+    refreshing = RefreshToken({
       token: token.value,
       refreshToken: refreshToken.value,
     })
+    tokenRefreshingMap.set(token.value, refreshing)
   }
 
-  const res = await sessionRefreshing
-  sessionRefreshing = null
+  const res = await refreshing
+  tokenRefreshingMap.delete(token.value)
 
   // 1003 refresh token expired
   if (!res.data) {
