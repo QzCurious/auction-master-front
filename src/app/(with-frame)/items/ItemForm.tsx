@@ -6,7 +6,6 @@ import { ConsignorUpsertItemPhoto } from '@/api/frontend/items/ConsignorUpsertIt
 import { CreateItem } from '@/api/frontend/items/CreateItem'
 import { Item } from '@/api/frontend/items/GetConsignorItems'
 import { UpdateConsignorItem } from '@/api/frontend/items/UpdateConsignorItem'
-import { ITEM_TYPE } from "@/domain/static/static-config-mappers"
 import { Button } from '@/catalyst-ui/button'
 import { Checkbox, CheckboxField } from '@/catalyst-ui/checkbox'
 import { Description, ErrorMessage, Field, Label } from '@/catalyst-ui/fieldset'
@@ -18,9 +17,10 @@ import {
   DraggableListItem,
 } from '@/components/DraggableList'
 import InfoPopover, { InfoPopoverPanel } from '@/components/InfoPopover'
+import { appendEntries } from '@/domain/crud/appendEntries'
 import { getDirtyFields } from '@/domain/crud/getDirtyFields'
 import { currencySign } from '@/domain/static/static'
-import { appendEntries } from '@/domain/crud/appendEntries'
+import { ITEM_TYPE } from '@/domain/static/static-config-mappers'
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -283,6 +283,7 @@ function UploadImage({
   item?: Item
   control: Control<z.output<typeof Schema>>
 }) {
+  const LIMIT = 10
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
     control,
     name: 'photos',
@@ -310,7 +311,10 @@ function UploadImage({
             ? (e) => {
                 const files = e.target.files
                 if (!files) return
-                for (const file of Array.from(files)) {
+                for (const file of Array.from(files).slice(
+                  0,
+                  LIMIT - fields.length,
+                )) {
                   append({ file })
                 }
               }
@@ -319,7 +323,11 @@ function UploadImage({
                 if (!files) return
                 if (item) {
                   const formData = new FormData()
-                  for (let i = 0; i < files.length; i++) {
+                  for (
+                    let i = 0;
+                    i < files.length && i < LIMIT - item.photos.length;
+                    i++
+                  ) {
                     formData.append('photo', files[i])
                     formData.append('sorted', `${i + item.photos.length + 1}`)
                   }
@@ -336,11 +344,14 @@ function UploadImage({
 
       <Field>
         <Label className='inline-flex items-center gap-x-2'>
-          物品圖片 {item && <span className='text-gray-500'>(自動儲存)</span>}
-          <button onClick={() => document.getElementById('file-upload')?.click()}>
-            <span className='sr-only'>新增圖片</span>
-            <PlusIcon className='h-5 w-5 rounded bg-indigo-500 p-0.5 text-white hover:bg-indigo-400' />
-          </button>
+          物品圖片 {fields.length}/{LIMIT}{' '}
+          {item && <span className='text-gray-500'>(自動儲存)</span>}
+          {((item && item.photos.length < LIMIT) || fields.length < LIMIT) && (
+            <button onClick={() => document.getElementById('file-upload')?.click()}>
+              <span className='sr-only'>新增圖片</span>
+              <PlusIcon className='h-5 w-5 rounded bg-indigo-500 p-0.5 text-white hover:bg-indigo-400' />
+            </button>
+          )}
         </Label>
 
         <div data-slot='control'>
