@@ -3,6 +3,8 @@ import Image from 'next/image'
 import img from './LINE_APP_Android.png'
 
 export default async function LineFloatBtn() {
+  if (process.env.NEXT_PUBLIC_IS_MAINTENANCE) return null
+
   const { data } = await GetConfigs()
 
   if (!data) return null

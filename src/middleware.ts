@@ -1,9 +1,16 @@
 import { cookies } from 'next/headers'
 import { NextResponse, type NextRequest } from 'next/server'
+import { CookieConfigs } from './domain/auth/CookieConfigs'
 import { getToken } from './domain/auth/getToken'
-import { CookieConfigs } from "./domain/auth/CookieConfigs"
 
 export async function middleware(request: NextRequest) {
+  if (process.env.NEXT_PUBLIC_IS_MAINTENANCE) {
+    if (request.nextUrl.pathname !== '/') {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+    return NextResponse.next()
+  }
+
   // refresh token and set cookie
   const response = NextResponse.next()
   const token = cookies().get(CookieConfigs.token.name)?.value

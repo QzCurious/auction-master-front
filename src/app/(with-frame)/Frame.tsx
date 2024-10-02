@@ -53,75 +53,79 @@ export default function Frame({ children }: { children: React.ReactNode }) {
   return (
     <MobileMenuProvider>
       {/* Header */}
-      <header className='relative z-30'>
-        <nav
-          className='flex min-h-20 items-center justify-between gap-x-24 px-6 lg:px-8'
-          aria-label='Global'
-        >
-          <div className='flex'>
-            <Link href='/' className='-m-1.5 p-1.5'>
-              <span className='sr-only'>Auction Master</span>
-              <img
-                className='h-8 w-auto'
-                src='https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600'
-                alt=''
-              />
-            </Link>
-          </div>
-          <div className='flex lg:hidden'>
-            <MobileMenuToggle />
-          </div>
-          <div className='hidden grow justify-center lg:flex lg:gap-x-12'>
-            {consignor &&
-              navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={clsx(
-                    'px-2 py-1.5 text-lg font-semibold leading-6 text-gray-900',
-                    pathname.startsWith(item.href) && 'border-b-2 border-indigo-500',
-                  )}
-                >
-                  {item.name}
-                </Link>
-              ))}
-          </div>
-          <div className='hidden items-center lg:flex lg:justify-end'>
-            {consignor ? (
-              <>
-                <Link href='/me' className='hover:underline'>
-                  {consignor.avatar && (
-                    <img
-                      src={consignor.avatar}
-                      className='mr-2 inline-block size-8 rounded-full object-contain object-center ring-1 ring-gray-200'
-                      width={32}
-                      height={32}
-                      alt='avatar'
-                    />
-                  )}
-                  {consignor.nickname}
-                </Link>
-
-                <form action={logout} className='ml-4 inline'>
-                  <button className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-red-700 underline'>
-                    <span>登出</span>
-                    <ArrowRightStartOnRectangleIcon className='size-5' />
-                  </button>
-                </form>
-              </>
-            ) : (
-              <Link
-                href='/sign-in'
-                className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900'
-              >
-                登入
-                <ArrowRightEndOnRectangleIcon className='size-5' />
+      {!process.env.NEXT_PUBLIC_IS_MAINTENANCE && (
+        <header className='relative z-30'>
+          <nav
+            className='flex min-h-20 items-center justify-between gap-x-24 px-6 lg:px-8'
+            aria-label='Global'
+          >
+            <div className='flex'>
+              <Link href='/' className='-m-1.5 p-1.5'>
+                <span className='sr-only'>Auction Master</span>
+                <img
+                  className='h-8 w-auto'
+                  src='https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600'
+                  alt=''
+                />
               </Link>
-            )}
-          </div>
-        </nav>
-        <MobileMenu />
-      </header>
+            </div>
+            <div className='flex lg:hidden'>
+              <MobileMenuToggle />
+            </div>
+            <div className='hidden grow justify-center lg:flex lg:gap-x-12'>
+              {consignor &&
+                navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={clsx(
+                      'px-2 py-1.5 text-lg font-semibold leading-6 text-gray-900',
+                      pathname.startsWith(item.href) &&
+                        'border-b-2 border-indigo-500',
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+            </div>
+            <div className='hidden items-center lg:flex lg:justify-end'>
+              {consignor ? (
+                <>
+                  <Link href='/me' className='hover:underline'>
+                    {consignor.avatar && (
+                      <img
+                        src={consignor.avatar}
+                        className='mr-2 inline-block size-8 rounded-full object-contain object-center ring-1 ring-gray-200'
+                        width={32}
+                        height={32}
+                        alt='avatar'
+                      />
+                    )}
+                    {consignor.nickname}
+                  </Link>
+
+                  <form action={logout} className='ml-4 inline'>
+                    <button className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-red-700 underline'>
+                      <span>登出</span>
+                      <ArrowRightStartOnRectangleIcon className='size-5' />
+                    </button>
+                  </form>
+                </>
+              ) : (
+                <Link
+                  href='/sign-in'
+                  className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900'
+                >
+                  登入
+                  <ArrowRightEndOnRectangleIcon className='size-5' />
+                </Link>
+              )}
+            </div>
+          </nav>
+          <MobileMenu />
+        </header>
+      )}
+
       {children}
 
       {/* Footer */}
