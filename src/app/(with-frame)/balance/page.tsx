@@ -38,6 +38,7 @@ import * as R from 'remeda'
 import { z } from 'zod'
 import DateRangeFilter from './DateRangeFilter'
 import WithdrawDialog from './WithdrawDialog'
+import { Heading } from '@/catalyst-ui/heading'
 
 export const metadata = { title: `帳戶紀錄 | ${SITE_NAME}` } satisfies Metadata
 
@@ -173,10 +174,26 @@ export default async function Page({ searchParams }: PageProps) {
   }
 
   return (
-    <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
-      <h1 className='sr-only'>帳戶紀錄</h1>
+    <>
+      <div className='flex gap-x-8'>
+        <Heading>帳戶紀錄</Heading>
 
-      <div className='flex gap-x-4'>
+        <div className='ml-auto'>
+          {query.type === 'balance' && (
+            <WithdrawDialog
+              balance={balanceRes.data}
+              withdrawalTransferFee={
+                consignorRes.data.bankCode === configsRes.data.bankCode
+                  ? 0
+                  : configsRes.data.withdrawalTransferFee
+              }
+              jpyExchangeRate={jpyRatesRes.data}
+            />
+          )}
+        </div>
+      </div>
+
+      <div className='mt-4 flex gap-x-4'>
         <Link
           href='?type=balance'
           className={clsx(
@@ -201,24 +218,7 @@ export default async function Page({ searchParams }: PageProps) {
         </Link>
       </div>
 
-      <div className='mt-8 flex justify-between gap-x-8'>
-        <h2 className='text-2xl'>
-          {query.type === 'balance' ? '大師幣紀錄' : '紅利紀錄'}
-        </h2>
-        {query.type === 'balance' && (
-          <WithdrawDialog
-            balance={balanceRes.data}
-            withdrawalTransferFee={
-              consignorRes.data.bankCode === configsRes.data.bankCode
-                ? 0
-                : configsRes.data.withdrawalTransferFee
-            }
-            jpyExchangeRate={jpyRatesRes.data}
-          />
-        )}
-      </div>
-
-      <div>
+      <div className='mt-4'>
         {/* {query.type === 'balance' && <AuctionFilter selected={query.action} />} */}
         <DateRangeFilter
           canCancel
@@ -241,7 +241,7 @@ export default async function Page({ searchParams }: PageProps) {
           />
         )}
       </div>
-    </div>
+    </>
   )
 }
 

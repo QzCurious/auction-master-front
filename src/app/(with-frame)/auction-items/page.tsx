@@ -67,23 +67,19 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <AutoRefreshEffect ms={10_000}>
-      <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
-        <Heading level={1} className='lg:sr-only'>
-          競標列表
-        </Heading>
+      <Heading level={1}>競標列表</Heading>
 
-        <div className='mt-2.5'>
-          <MobileFilters selected={filters.status} />
-        </div>
+      <div className='mt-2.5'>
+        <MobileFilters selected={filters.status} />
+      </div>
 
-        <div className='mt-6 sm:flex sm:gap-16'>
-          <DesktopFilters selected={filters.status} />
+      <div className='mt-6 sm:flex sm:gap-16'>
+        <DesktopFilters selected={filters.status} />
 
-          <AuctionItemsTable
-            rows={auctionItemsRes.data.auctionItems}
-            count={auctionItemsRes.data.count}
-          />
-        </div>
+        <AuctionItemsTable
+          rows={auctionItemsRes.data.auctionItems}
+          count={auctionItemsRes.data.count}
+        />
       </div>
     </AutoRefreshEffect>
   )

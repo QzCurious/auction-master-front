@@ -12,7 +12,7 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { logout } from '../../domain/auth/logout'
+import { logout } from '../../../domain/auth/logout'
 
 export const navigation = [
   { name: '我的物品', href: '/items' },

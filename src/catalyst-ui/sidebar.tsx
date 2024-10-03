@@ -156,7 +156,7 @@ export const SidebarItem = forwardRef(function SidebarItem(
       {current && (
         <motion.span
           layoutId='current-indicator'
-          className='absolute inset-y-2 -left-4 w-0.5 rounded-full bg-zinc-950 dark:bg-white'
+          className='absolute inset-y-2 -left-3 w-0.5 rounded-full bg-indigo-600 dark:bg-white'
         />
       )}
       {'href' in props ? (

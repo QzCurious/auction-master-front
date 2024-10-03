@@ -3,6 +3,7 @@
 import { Consignor } from '@/api/frontend/consignor/GetConsignor'
 import { UpdateConsignorAvatar } from '@/api/frontend/consignor/UpdateConsignorAvatar'
 import { Button } from '@/catalyst-ui/button'
+import { Subheading } from '@/catalyst-ui/heading'
 import { toPercent } from '@/domain/static/static'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'

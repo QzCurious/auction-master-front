@@ -1,17 +1,79 @@
 import { GetConfigs } from '@/api/frontend/GetConfigs'
+import { Button } from '@/catalyst-ui/button'
+import { Heading } from '@/catalyst-ui/heading'
 import { getToken } from '@/domain/auth/getToken'
 import { toPercent } from '@/domain/static/static'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
-import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline'
-import { Button } from '../../catalyst-ui/button'
-import heroImg1 from './hero-img-1.jpg'
-import heroImg2 from './hero-img-2.png'
-import heroImg3 from './hero-img-3.png'
-import HeroCarousel, { HeroCarouselItem } from './HeroCarousel'
+import {
+  ArrowRightEndOnRectangleIcon,
+  MinusSmallIcon,
+  PlusSmallIcon,
+} from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import React from 'react'
+import heroImg1 from './_components/hero-img-1.jpg'
+import heroImg2 from './_components/hero-img-2.png'
+import heroImg3 from './_components/hero-img-3.png'
+import { HeroCarousel, HeroCarouselItem } from './_components/HeroCarousel'
+import LineFloatBtn from './_components/LineFloatBtn'
+
+const footerNavigation = {
+  solutions: [
+    { name: 'Hosting', href: '#' },
+    { name: 'Data Services', href: '#' },
+    { name: 'Uptime Monitoring', href: '#' },
+    { name: 'Enterprise Services', href: '#' },
+  ],
+  support: [
+    { name: 'Pricing', href: '#' },
+    { name: 'Documentation', href: '#' },
+    { name: 'Guides', href: '#' },
+    { name: 'API Reference', href: '#' },
+  ],
+  company: [
+    { name: 'About', href: '#' },
+    { name: 'Blog', href: '#' },
+    { name: 'Jobs', href: '#' },
+    { name: 'Press', href: '#' },
+    { name: 'Partners', href: '#' },
+  ],
+  legal: [
+    { name: 'Claim', href: '#' },
+    { name: 'Privacy', href: '#' },
+    { name: 'Terms', href: '#' },
+  ],
+}
 
 export default async function Page() {
   return (
     <>
+      {process.env.NEXT_PUBLIC_IS_MAINTENANCE && (
+        <div className='sticky top-0 z-50 flex items-center justify-center bg-indigo-800/40 backdrop-blur-sm'>
+          <div className='text-center'>
+            <h2 className='text-lg/10 text-white'>系統維護中</h2>
+          </div>
+        </div>
+      )}
+
+      <header className='relative z-30'>
+        <nav className='flex min-h-14 items-center justify-between gap-x-24 px-4'>
+          <div className='flex items-center gap-x-2'>
+            <div className='size-4 rounded-full bg-indigo-400' />
+            <Heading>日拍大師</Heading>
+          </div>
+
+          {!process.env.NEXT_PUBLIC_IS_MAINTENANCE && (
+            <Link
+              href='/sign-in'
+              className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900'
+            >
+              登入
+              <ArrowRightEndOnRectangleIcon className='size-5' />
+            </Link>
+          )}
+        </nav>
+      </header>
+
       <main className='isolate'>
         {/* Hero section */}
         <div className='relative'>
@@ -71,6 +133,8 @@ export default async function Page() {
           </div>
         </div>
 
+        <LineFloatBtn />
+
         {!process.env.NEXT_PUBLIC_IS_MAINTENANCE && <FaqSection />}
 
         <div
@@ -86,6 +150,99 @@ export default async function Page() {
           />
         </div>
       </main>
+
+      {/* Footer */}
+      <div className='mx-auto mt-16 max-w-7xl px-6 lg:px-8'>
+        <footer
+          aria-labelledby='footer-heading'
+          className='relative border-t border-gray-900/10 py-24'
+        >
+          <h2 id='footer-heading' className='sr-only'>
+            Footer
+          </h2>
+          <div className='xl:grid xl:grid-cols-3 xl:gap-8'>
+            <img
+              className='h-7'
+              src='https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600'
+              alt='Company name'
+            />
+            <div className='mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0'>
+              <div className='md:grid md:grid-cols-2 md:gap-8'>
+                <div>
+                  <h3 className='text-sm font-semibold leading-6 text-gray-900'>
+                    Solutions
+                  </h3>
+                  <ul role='list' className='mt-6 space-y-4'>
+                    {footerNavigation.solutions.map((item) => (
+                      <li key={item.name}>
+                        <a
+                          href={item.href}
+                          className='text-sm leading-6 text-gray-600 hover:text-gray-900'
+                        >
+                          {item.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className='mt-10 md:mt-0'>
+                  <h3 className='text-sm font-semibold leading-6 text-gray-900'>
+                    Support
+                  </h3>
+                  <ul role='list' className='mt-6 space-y-4'>
+                    {footerNavigation.support.map((item) => (
+                      <li key={item.name}>
+                        <a
+                          href={item.href}
+                          className='text-sm leading-6 text-gray-600 hover:text-gray-900'
+                        >
+                          {item.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className='md:grid md:grid-cols-2 md:gap-8'>
+                <div>
+                  <h3 className='text-sm font-semibold leading-6 text-gray-900'>
+                    Company
+                  </h3>
+                  <ul role='list' className='mt-6 space-y-4'>
+                    {footerNavigation.company.map((item) => (
+                      <li key={item.name}>
+                        <a
+                          href={item.href}
+                          className='text-sm leading-6 text-gray-600 hover:text-gray-900'
+                        >
+                          {item.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className='mt-10 md:mt-0'>
+                  <h3 className='text-sm font-semibold leading-6 text-gray-900'>
+                    Legal
+                  </h3>
+                  <ul role='list' className='mt-6 space-y-4'>
+                    {footerNavigation.legal.map((item) => (
+                      <li key={item.name}>
+                        <a
+                          href={item.href}
+                          className='text-sm leading-6 text-gray-600 hover:text-gray-900'
+                        >
+                          {item.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
     </>
   )
 }

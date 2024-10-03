@@ -38,84 +38,85 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <AutoRefreshEffect ms={30_000}>
-      <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
-        <Heading level={1} className='lg:sr-only'>
-          我的物品
-        </Heading>
-        <div className='flex gap-x-4'>
-          <MobileFilters
-            selected={filter.status}
-            statusCount={itemsRes.data.statusCounts}
-          />
-          <div className='mx-auto'></div>
-          <Button href='/items/create' color='indigo' className='!px-4'>
-            <PlusIcon className='inline-block !size-5 stroke-2 !text-white' />
-            <span className='text-base'>新增物品</span>
-          </Button>
-        </div>
-
-        <div className='mt-6 sm:flex sm:gap-16'>
-          <DesktopFilters
-            selected={filter.status}
-            statusCount={itemsRes.data.statusCounts}
-          />
-
-          <div className='grid grow grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8'>
-            {itemsRes.data.items.length === 0 && (
-              <div className='col-span-full grid place-items-center'>
-                <div className='mx-auto w-fit text-zinc-400'>
-                  <FileDashed className='mx-auto size-20' />
-                  <p className='mt-6 text-center text-lg leading-6'>沒有資料</p>
-                </div>
-              </div>
-            )}
-            {itemsRes.data.items.map((item) => (
-              <article key={item.id} className='relative'>
-                <Link href={`/items/edit/${item.id}`}>
-                  <div className='aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg border border-gray-200 group-hover:opacity-75'>
-                    <div className='min-w-0 shrink-0 basis-full'>
-                      {item.photos.length > 0 ? (
-                        <img
-                          src={item.photos[0].photo}
-                          className='h-full w-full object-contain object-center'
-                          alt=''
-                        />
-                      ) : (
-                        <PhotoIcon className='p-8 text-gray-200' />
-                      )}
-                    </div>
-                  </div>
-                </Link>
-
-                {!!item.expireAt && !item.recordID && (
-                  <Until date={new Date(item.expireAt)}>
-                    <div className='absolute right-2 top-2'>
-                      <p className='inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10'>
-                        待繳留倉費
-                      </p>
-                    </div>
-                  </Until>
-                )}
-
-                <div className='mt-2 flex items-center gap-x-2'>
-                  <h2
-                    className='truncate text-xl font-medium text-indigo-500'
-                    title={item.name}
-                  >
-                    {item.name}
-                  </h2>
-
-                  <p className='ml-auto inline-flex flex-none cursor-default items-center rounded-md bg-gray-50 px-2 py-1 text-sm text-gray-800 ring-1 ring-inset ring-gray-500/10'>
-                    {ITEM_STATUS.get('value', item.status).message}
-                  </p>
-                </div>
-              </article>
-            ))}
+      <div className='flex gap-x-4'>
+        <div>
+          <Heading level={1}>我的物品</Heading>
+          <div className='mt-2.5'>
+            <MobileFilters
+              selected={filter.status}
+              statusCount={itemsRes.data.statusCounts}
+            />
           </div>
         </div>
 
-        <SearchParamsPagination count={itemsRes.data.count} />
+        <div className='mx-auto'></div>
+        <Button href='/items/create' color='indigo' className='self-start'>
+          <PlusIcon className='inline-block !size-5 stroke-2 !text-white' />
+          <span className='text-base'>新增物品</span>
+        </Button>
       </div>
+
+      <div className='mt-6 sm:flex sm:gap-16'>
+        <DesktopFilters
+          selected={filter.status}
+          statusCount={itemsRes.data.statusCounts}
+        />
+
+        <div className='grid grow grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8'>
+          {itemsRes.data.items.length === 0 && (
+            <div className='col-span-full grid place-items-center'>
+              <div className='mx-auto w-fit text-zinc-400'>
+                <FileDashed className='mx-auto size-20' />
+                <p className='mt-6 text-center text-lg leading-6'>沒有資料</p>
+              </div>
+            </div>
+          )}
+          {itemsRes.data.items.map((item) => (
+            <article key={item.id} className='relative'>
+              <Link href={`/items/edit/${item.id}`}>
+                <div className='aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg border border-gray-200 group-hover:opacity-75'>
+                  <div className='min-w-0 shrink-0 basis-full'>
+                    {item.photos.length > 0 ? (
+                      <img
+                        src={item.photos[0].photo}
+                        className='h-full w-full object-contain object-center'
+                        alt=''
+                      />
+                    ) : (
+                      <PhotoIcon className='p-8 text-gray-200' />
+                    )}
+                  </div>
+                </div>
+              </Link>
+
+              {!!item.expireAt && !item.recordID && (
+                <Until date={new Date(item.expireAt)}>
+                  <div className='absolute right-2 top-2'>
+                    <p className='inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10'>
+                      待繳留倉費
+                    </p>
+                  </div>
+                </Until>
+              )}
+
+              <div className='mt-2 flex items-center gap-x-2'>
+                <h2
+                  className='truncate text-xl font-medium text-indigo-500'
+                  title={item.name}
+                >
+                  {item.name}
+                </h2>
+
+                <p className='ml-auto inline-flex flex-none cursor-default items-center rounded-md bg-gray-50 px-2 py-1 text-sm text-gray-800 ring-1 ring-inset ring-gray-500/10'>
+                  {ITEM_STATUS.get('value', item.status).message}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <SearchParamsPagination count={itemsRes.data.count} />
     </AutoRefreshEffect>
   )
 }

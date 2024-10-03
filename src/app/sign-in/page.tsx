@@ -1,7 +1,15 @@
+import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { SignInForm } from './SignInForm'
 
-export default function Page() {
+export default async function Page() {
+  const consignor = await GetConsignor()
+
+  if (consignor.data) {
+    redirect('/items')
+  }
+
   return (
     <>
       <div className='flex min-h-screen flex-1'>

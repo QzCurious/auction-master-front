@@ -6,7 +6,7 @@ import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import { Children, PropsWithChildren, useEffect, useState } from 'react'
 
-export default function HeroCarousel({ children }: PropsWithChildren) {
+export function HeroCarousel({ children }: PropsWithChildren) {
   const count = Children.count(children)
   const [emblaRef, emblaApi] = useEmblaCarousel({ startIndex: 0, loop: true }, [
     Autoplay({

@@ -15,17 +15,8 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en'>
+    <html lang='zh-TW'>
       <body className={font.className}>{children}</body>
-      <Script id='noWheel-on-number-input'>
-        {`
-          window.addEventListener('mousewheel', (e) => {
-            if (e.target instanceof HTMLInputElement && e.target.type === 'number') {
-              e.target.blur()
-            }
-          })
-          `}
-      </Script>
     </html>
   )
 }

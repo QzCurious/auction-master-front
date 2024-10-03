@@ -99,10 +99,8 @@ export default async function Page({ searchParams }: PageProps) {
   }
 
   return (
-    <div className='mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
-      <Heading level={1} className='lg:sr-only'>
-        交易紀錄
-      </Heading>
+    <div className=''>
+      <Heading>交易紀錄</Heading>
 
       <div className='mt-2.5'>
         <MobileFilters

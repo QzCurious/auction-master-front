@@ -6,6 +6,7 @@ import { Metadata } from 'next'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
 import IdentityForm from './IdentityForm'
+import { Heading } from '@/catalyst-ui/heading'
 
 export const metadata = { title: `帳號設定 | ${SITE_NAME}` } satisfies Metadata
 
@@ -17,24 +18,22 @@ export default async function Example() {
   }
 
   return (
-    <>
-      <div className='mx-auto mt-0 max-w-4xl lg:mt-10 lg:flex lg:gap-x-16 lg:px-8'>
-        <h1 className='sr-only'>我的帳號設定</h1>
+    <main className='mx-auto max-w-4xl px-4 sm:px-6 lg:px-8'>
+      <Heading>帳號設定</Heading>
 
-        <main className='px-4 sm:px-6 lg:flex-auto lg:px-0'>
-          <div className='flex flex-col gap-y-12 px-4 sm:px-6 lg:px-8'>
-            <AccountInfoForm consignor={consignorRes.data} />
-            <div className='h-px bg-gray-200'></div>
+      <div className='mt-10 lg:flex-auto'>
+        <div className='flex flex-col gap-y-12'>
+          <AccountInfoForm consignor={consignorRes.data} />
+          <div className='h-px bg-gray-200'></div>
 
-            <ChangePasswordForm />
-            <div className='h-px bg-gray-200'></div>
+          <ChangePasswordForm />
+          <div className='h-px bg-gray-200'></div>
 
-            <IdentityForm consignor={consignorRes.data} configs={configsRes.data} />
+          <IdentityForm consignor={consignorRes.data} configs={configsRes.data} />
 
-            {/* <DeleteAccountForm /> */}
-          </div>
-        </main>
+          {/* <DeleteAccountForm /> */}
+        </div>
       </div>
-    </>
+    </main>
   )
 }

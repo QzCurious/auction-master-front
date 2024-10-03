@@ -2,7 +2,6 @@
 
 import { Consignor } from '@/api/frontend/consignor/GetConsignor'
 import { JwtPayload } from '@/api/JwtPayload'
-import type React from 'react'
 import { createContext } from 'react'
 
 export const ConsignorContext = createContext<Consignor | null>(null)
