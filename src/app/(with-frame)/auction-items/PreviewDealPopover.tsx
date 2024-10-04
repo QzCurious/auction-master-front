@@ -9,9 +9,9 @@ import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 
 export default function PreviewDealPopover({
-  auctionItemId,
+  auctionId,
 }: {
-  auctionItemId: AuctionItem['id']
+  auctionId: AuctionItem['auctionId']
 }) {
   return (
     <Popover>
@@ -25,15 +25,15 @@ export default function PreviewDealPopover({
           'z-30 rounded border border-black/10 bg-white px-2 py-1.5 shadow-md transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:translate-y-1 data-[closed]:opacity-0',
         )}
       >
-        <PreviewDeal auctionItemId={auctionItemId} />
+        <PreviewDeal auctionId={auctionId} />
       </PopoverPanel>
     </Popover>
   )
 }
 
-function PreviewDeal({ auctionItemId }: { auctionItemId: AuctionItem['id'] }) {
+function PreviewDeal({ auctionId }: { auctionId: AuctionItem['auctionId'] }) {
   const { isPending, data, error } = useQuery(
-    AuctionItemDealPreviewQueryOptions(auctionItemId),
+    AuctionItemDealPreviewQueryOptions(auctionId),
   )
 
   if (error || data?.error) return null

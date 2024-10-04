@@ -149,11 +149,11 @@ async function Content({ params }: PageProps) {
           return
         }
 
-        if (!itemRes.data.recordID) {
+        if (!itemRes.data.recordId) {
           return
         }
 
-        const recordRes = await GetRecord(itemRes.data.recordID)
+        const recordRes = await GetRecord(itemRes.data.recordId)
         if (recordRes.error === '1003') {
           return <RedirectAuthError />
         }
@@ -177,7 +177,7 @@ async function Content({ params }: PageProps) {
                       已確認退貨申請，請
                       <Link
                         className='text-indigo-600 underline underline-offset-2 hover:text-indigo-500'
-                        href={`/records?submit-payment=${itemRes.data.recordID}`}
+                        href={`/records?submit-payment=${itemRes.data.recordId}`}
                       >
                         點此取得匯款資訊
                       </Link>
@@ -199,8 +199,8 @@ async function Content({ params }: PageProps) {
         if (!itemRes.data.expireAt) return
         if (new Date(itemRes.data.expireAt) > new Date()) return
 
-        if (itemRes.data.recordID) {
-          const recordRes = await GetRecord(itemRes.data.recordID)
+        if (itemRes.data.recordId) {
+          const recordRes = await GetRecord(itemRes.data.recordId)
           if (recordRes.error === '1003') {
             return <RedirectAuthError />
           }
@@ -231,7 +231,7 @@ async function Content({ params }: PageProps) {
                           您已申請匯款支付，請
                           <Link
                             className='text-indigo-600 underline underline-offset-2 hover:text-indigo-500'
-                            href={`/records?submit-payment=${itemRes.data.recordID}`}
+                            href={`/records?submit-payment=${itemRes.data.recordId}`}
                           >
                             點此取得匯款資訊
                           </Link>

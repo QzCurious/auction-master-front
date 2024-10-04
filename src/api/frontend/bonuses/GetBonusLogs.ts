@@ -19,7 +19,7 @@ const ReqSchema = z.object({
 
 export interface BonusLog {
   id: number
-  consignorID: number
+  consignorId: number
   opCode: string
   action: BONUS_ACTION['value']
   previousBalance: number

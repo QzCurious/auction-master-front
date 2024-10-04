@@ -25,11 +25,11 @@ export interface Record {
   id: string
   type: RECORD_TYPE['value']
   opCode: string
-  consignorID: number
+  consignorId: number
   consignorNickname: string
   itemIDs?: number[]
   auctionItemIDs?: number[]
-  shippingID?: string
+  shippingId?: string
   exchangeRate?: number
   jpyWithdrawal?: number
   withdrawal?: number

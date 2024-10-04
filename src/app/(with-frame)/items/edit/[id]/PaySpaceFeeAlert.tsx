@@ -38,7 +38,7 @@ export default function PaySpaceFeeAlert({
     return null
   }
 
-  if (item.recordID) {
+  if (item.recordId) {
     return null
   }
 

@@ -10,7 +10,7 @@ type Data = string // report id
 
 type ErrorCode = never
 
-export async function ConsignorPayAuctionItemFeeTransfer(id: AuctionItem['id']) {
+export async function ConsignorPayAuctionItemFeeTransfer(id: AuctionItem['auctionId']) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/auction-items/${id}/payment/fee-by-transfer`,
     {

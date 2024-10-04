@@ -12,7 +12,7 @@ type ErrorCode =
   // 大師幣不足
   '1703'
 
-export async function ConsignorCancelAuctionItem(id: AuctionItem['id']) {
+export async function ConsignorCancelAuctionItem(id: AuctionItem['auctionId']) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/auction-items/${id}/cancellation`,
     {

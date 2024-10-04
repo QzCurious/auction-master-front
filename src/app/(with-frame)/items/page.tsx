@@ -89,7 +89,7 @@ export default async function Page({ searchParams }: PageProps) {
                 </div>
               </Link>
 
-              {!!item.expireAt && !item.recordID && (
+              {!!item.expireAt && !item.recordId && (
                 <Until date={new Date(item.expireAt)}>
                   <div className='absolute right-2 top-2'>
                     <p className='inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10'>

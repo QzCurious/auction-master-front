@@ -27,7 +27,7 @@ export interface Consignor {
   updatedAt: string
   verification: null | {
     id: number
-    consignorID: number
+    consignorId: number
     photo: string
     name: string
     identification: string

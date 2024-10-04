@@ -108,7 +108,7 @@ function CancelBiddingDetail({
           disabled={isSubmitting}
           onClick={() => {
             startTransition(async () => {
-              const res = await ConsignorCancelAuctionItemByTransfer(auctionItem.id)
+              const res = await ConsignorCancelAuctionItemByTransfer(auctionItem.auctionId)
               if (res.error) {
                 toast.error(`操作錯誤: ${res.error}`)
                 return
@@ -128,7 +128,7 @@ function CancelBiddingDetail({
             disabled={isSubmitting}
             onClick={() =>
               startTransition(async () => {
-                const res = await ConsignorCancelAuctionItem(auctionItem.id)
+                const res = await ConsignorCancelAuctionItem(auctionItem.auctionId)
                 if (res.error === '1703') {
                   toast.error('大師幣不足')
                   return

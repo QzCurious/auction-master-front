@@ -6,7 +6,7 @@ import { ITEM_STATUS, ITEM_TYPE } from "@/domain/static/static-config-mappers"
 
 export interface Item {
   id: number
-  consignorID: number
+  consignorId: number
   type: 0 | ITEM_TYPE['value']
   isNew: boolean
   name: string
@@ -16,7 +16,7 @@ export interface Item {
   maxEstimatedPrice: number
   reservePrice: number
   expireAt: string | null
-  warehouseID: string
+  warehouseId: string
   space: number
   shippingCostsWithinJapan: number
   grossWeight: number
@@ -32,8 +32,8 @@ export interface Item {
     updatedAt: string
   }>
   pastStatuses?: { [k in ITEM_STATUS['value']]?: string }
-  auctionItemID?: number
-  recordID?: string
+  auctionId?: number
+  recordId?: string
 }
 
 interface Data extends Item {}

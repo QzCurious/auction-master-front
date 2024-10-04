@@ -16,9 +16,9 @@ interface Data {
 
 type ErrorCode = never
 
-export async function AuctionItemDealPreview(id: AuctionItem['id']) {
+export async function AuctionItemDealPreview(auctionId: AuctionItem['auctionId']) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(
-    `/frontend/auction-items/${id}/deal/preview`,
+    `/frontend/auction-items/${auctionId}/deal/preview`,
     {
       method: 'GET',
       next: { tags: ['auction-items'] },

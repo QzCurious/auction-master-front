@@ -18,9 +18,9 @@ import { useTransition } from 'react'
 import toast from 'react-hot-toast'
 
 export default function PayFeePopover({
-  auctionItemId,
+  auctionId,
 }: {
-  auctionItemId: AuctionItem['id']
+  auctionId: AuctionItem['id']
 }) {
   return (
     <Popover>
@@ -34,22 +34,22 @@ export default function PayFeePopover({
           'z-30 rounded border border-black/10 bg-white px-2 py-1.5 shadow-md transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:translate-y-1 data-[closed]:opacity-0',
         )}
       >
-        {({ close }) => <PayFeeDetail auctionItemId={auctionItemId} close={close} />}
+        {({ close }) => <PayFeeDetail auctionId={auctionId} close={close} />}
       </PopoverPanel>
     </Popover>
   )
 }
 
 function PayFeeDetail({
-  auctionItemId,
+  auctionId,
   close,
 }: {
-  auctionItemId: AuctionItem['id']
+  auctionId: AuctionItem['id']
   close: () => void
 }) {
   const router = useRouter()
   const configsQuery = useQuery(GetConfigsQueryOptions)
-  const previewQuery = useQuery(AuctionItemDealPreviewQueryOptions(auctionItemId))
+  const previewQuery = useQuery(AuctionItemDealPreviewQueryOptions(auctionId))
   const walletQuery = useQuery(GetConsignorWalletBalanceQueryOptions)
   const jpyRatesQuery = useQuery(GetJPYRatesQueryOptions)
   const [isPending, startTransition] = useTransition()
@@ -105,7 +105,7 @@ function PayFeeDetail({
           disabled={isPending}
           onClick={() => {
             startTransition(async () => {
-              const res = await ConsignorPayAuctionItemFeeTransfer(auctionItemId)
+              const res = await ConsignorPayAuctionItemFeeTransfer(auctionId)
               if (res.error) {
                 toast.error(`操作錯誤: ${res.error}`)
                 return
@@ -125,7 +125,7 @@ function PayFeeDetail({
             disabled={isPending}
             onClick={() =>
               startTransition(async () => {
-                const res = await ConsignorPayAuctionItemFee(auctionItemId)
+                const res = await ConsignorPayAuctionItemFee(auctionId)
                 if (res.error === '1703') {
                   toast.error('大師幣不足')
                   return

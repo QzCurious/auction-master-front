@@ -357,8 +357,8 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
               >
                 {RECORD_TYPE.get('value', row.type).message}
                 <div className='flex flex-row justify-center gap-y-1'>
-                  {row.itemIDs?.map((itemID) => (
-                    <ItemLink key={itemID} itemID={itemID} />
+                  {row.itemIDs?.map((itemId) => (
+                    <ItemLink key={itemId} itemId={itemId} />
                   ))}
                 </div>
               </TableCell>
@@ -378,7 +378,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
 
                 {row.status === RECORD_STATUS.enum('UnpaidStatus') && (
                   <div className='mt-2 flex justify-center gap-x-2'>
-                    <CancelPayment recordID={row.id} />
+                    <CancelPayment recordId={row.id} />
                     <SubmitPayment
                       title={(function iife() {
                         switch (row.type) {
@@ -574,14 +574,14 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
   )
 }
 
-async function ItemLink({ itemID }: { itemID: Item['id'] }) {
-  const itemRes = await GetConsignorItem(itemID)
+async function ItemLink({ itemId }: { itemId: Item['id'] }) {
+  const itemRes = await GetConsignorItem(itemId)
   if (!itemRes.data) return null
 
   return (
     <Link
       className='text-indigo-400 underline hover:text-indigo-500'
-      href={`/items/edit/${itemID}`}
+      href={`/items/edit/${itemId}`}
       target='_blank'
       rel='noreferrer'
     >

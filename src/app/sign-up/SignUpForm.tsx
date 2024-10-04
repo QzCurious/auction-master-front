@@ -54,7 +54,7 @@ export function SignUpForm() {
           setError('account', { message: '只能包含數字、英文字母及 _ . - 符號' })
           return
         }
-        router.push('/')
+        router.push('/items')
       })}
     >
       <Controller

@@ -116,15 +116,15 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
             </TableRow>
           )}
           {rows?.map((row) => (
-            <TableRow key={row.id}>
+            <TableRow key={row.auctionId}>
               <TableCell>
                 <a
                   title={
                     process.env.NODE_ENV === 'development'
-                      ? row.id.toString()
+                      ? row.auctionId.toString()
                       : undefined
                   }
-                  href={`https://page.auctions.yahoo.co.jp/jp/auction/${row.auctionID}`}
+                  href={`https://page.auctions.yahoo.co.jp/jp/auction/${row.auctionId}`}
                   target='_blank'
                   rel='noreferrer'
                 >
@@ -141,10 +141,10 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 <TextLink
                   title={
                     process.env.NODE_ENV === 'development'
-                      ? row.id.toString()
+                      ? row.auctionId.toString()
                       : undefined
                   }
-                  href={`https://page.auctions.yahoo.co.jp/jp/auction/${row.auctionID}`}
+                  href={`https://page.auctions.yahoo.co.jp/jp/auction/${row.auctionId}`}
                   target='_blank'
                   rel='noreferrer'
                 >
@@ -170,7 +170,7 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 className='text-center'
                 title={
                   process.env.NODE_ENV === 'development'
-                    ? `id:${row.id} status:${AUCTION_ITEM_STATUS.enum(row.status)} recordID:${row.recordID}`
+                    ? `id:${row.auctionId} status:${AUCTION_ITEM_STATUS.enum(row.status)} recordId:${row.recordId}`
                     : undefined
                 }
               >
@@ -182,8 +182,8 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 ]) ? (
                   <div className='flex flex-col items-center gap-y-1'>
                     <CountdownTime until={new Date(row.closeAt)} />
-                    {row.recordID ? (
-                      <TextLink href={`/records?submit-payment=${row.recordID}`}>
+                    {row.recordId ? (
+                      <TextLink href={`/records?submit-payment=${row.recordId}`}>
                         已申請匯款支付
                       </TextLink>
                     ) : (
@@ -193,17 +193,18 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 ) : (
                   <div className='flex flex-col items-center gap-y-1'>
                     <div>{AUCTION_ITEM_STATUS.get('value', row.status).message}</div>
-                    {row.status === AUCTION_ITEM_STATUS.enum('ClosedStatus') && (
-                      <PreviewDealPopover auctionItemId={row.id} />
-                    )}
+                    {R.isIncludedIn(row.status, [
+                      AUCTION_ITEM_STATUS.enum('SoldStatus'),
+                      AUCTION_ITEM_STATUS.enum('ClosedStatus'),
+                    ]) && <PreviewDealPopover auctionId={row.auctionId} />}
                     {row.status ===
                       AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus') &&
-                      (row.recordID ? (
-                        <TextLink href={`/records?submit-payment=${row.recordID}`}>
+                      (row.recordId ? (
+                        <TextLink href={`/records?submit-payment=${row.recordId}`}>
                           已申請匯款支付
                         </TextLink>
                       ) : (
-                        <PayFeePopover auctionItemId={row.id} />
+                        <PayFeePopover auctionId={row.auctionId} />
                       ))}
                   </div>
                 )}

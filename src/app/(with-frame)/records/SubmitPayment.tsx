@@ -153,7 +153,7 @@ export function SubmitPaymentDialog({
           </DescriptionList>
         </DialogBody>
         <DialogActions>
-          <CancelPayment recordID={recordId} />
+          <CancelPayment recordId={recordId} />
           <Button
             type='submit'
             form='withdrawal-form'

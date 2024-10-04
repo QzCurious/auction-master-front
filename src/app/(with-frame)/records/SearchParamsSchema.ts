@@ -33,7 +33,7 @@ export const SearchParamsSchema = PaginationSchema.extend({
   'submit-payment': z.string().optional().catch(undefined),
   startAt: z.coerce.date().optional().catch(undefined),
   endAt: z.coerce.date().optional().catch(undefined),
-  consignorID: z.coerce.number().optional(),
+  consignorId: z.coerce.number().optional(),
   type: z.coerce
     .number()
     .array()

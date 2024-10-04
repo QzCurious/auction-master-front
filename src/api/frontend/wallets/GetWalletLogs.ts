@@ -19,7 +19,7 @@ const ReqSchema = z.object({
 
 export interface WalletLog {
   id: number
-  consignorID: number
+  consignorId: number
   opCode: string
   action: WALLET_ACTION['value']
   previousBalance: number

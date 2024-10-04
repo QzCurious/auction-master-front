@@ -8,11 +8,11 @@ import { type RECORD_STATUS, type RECORD_TYPE } from "@/domain/static/static-con
 export interface Record {
   id: string
   type: RECORD_TYPE['value']
-  consignorID: number
+  consignorId: number
   consignorNickname: string
   opCode: string
-  itemID?: number
-  auctionItemID?: number
+  itemId?: number
+  auctionId?: number
   currency: Currency
   exchangeRate?: number
   jpyWithdrawal?: number

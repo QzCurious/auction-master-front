@@ -10,7 +10,7 @@ type Data = 'Success'
 
 type ErrorCode = never
 
-export async function ConsignorCancelAuctionItemByTransfer(id: AuctionItem['id']) {
+export async function ConsignorCancelAuctionItemByTransfer(id: AuctionItem['auctionId']) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/auction-items/${id}/cancellation-by-transfer`,
     {

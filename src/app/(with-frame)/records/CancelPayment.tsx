@@ -6,7 +6,7 @@ import { Button } from '@/catalyst-ui/button'
 import { useTransition } from 'react'
 import toast from 'react-hot-toast'
 
-export default function CancelPayment({ recordID }: { recordID: Record['id'] }) {
+export default function CancelPayment({ recordId }: { recordId: Record['id'] }) {
   const [isPending, startTransition] = useTransition()
   return (
     <Button
@@ -15,7 +15,7 @@ export default function CancelPayment({ recordID }: { recordID: Record['id'] }) 
       disabled={isPending}
       onClick={() => {
         startTransition(async () => {
-          const res = await ConsignorCancelPayment(recordID)
+          const res = await ConsignorCancelPayment(recordId)
           if (res.error) {
             toast.error(`操作錯誤: ${res.error}`)
             return
@@ -31,7 +31,7 @@ export default function CancelPayment({ recordID }: { recordID: Record['id'] }) 
   //     <DoubleCheckPopover
   //       title='取消付款'
   //       onConfirm={async () => {
-  //         const res = await ConsignorCancelPayment(recordID)
+  //         const res = await ConsignorCancelPayment(recordId)
   //         if (res.error) {
   //           toast.error(`操作錯誤: ${res.error}`)
   //           return

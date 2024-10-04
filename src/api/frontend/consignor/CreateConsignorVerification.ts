@@ -55,6 +55,7 @@ export async function CreateConsignorVerification(formData: FormData) {
   )
 
   revalidateTag('consignor')
+  revalidateTag('items')
 
   return res
 }
