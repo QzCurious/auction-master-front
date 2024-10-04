@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
-import { WALLET_ACTION } from "@/domain/static/static-config-mappers"
+import { WALLET_ACTION } from '@/domain/static/static-config-mappers'
 
 const ReqSchema = z.object({
   startAt: z.coerce.date().optional(),

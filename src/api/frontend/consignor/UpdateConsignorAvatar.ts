@@ -1,7 +1,7 @@
 'use server'
 
 import { getToken } from '@/domain/auth/getToken'
-import { CookieConfigs } from "@/domain/auth/CookieConfigs"
+import { CookieConfigs } from '@/domain/auth/CookieConfigs'
 import { cookies } from 'next/headers'
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'

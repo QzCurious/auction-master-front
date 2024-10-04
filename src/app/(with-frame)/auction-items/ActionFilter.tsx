@@ -1,6 +1,6 @@
 'use client'
 
-import { WALLET_ACTION } from "@/domain/static/static-config-mappers"
+import { WALLET_ACTION } from '@/domain/static/static-config-mappers'
 import { Field, Label } from '@/catalyst-ui/fieldset'
 import { Listbox, ListboxLabel, ListboxOption } from '@/catalyst-ui/listbox'
 import { useRouter, useSearchParams } from 'next/navigation'

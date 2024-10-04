@@ -1,6 +1,6 @@
 'use client'
 
-import { RECORD_STATUS, RECORD_TYPE } from "@/domain/static/static-config-mappers"
+import { RECORD_STATUS, RECORD_TYPE } from '@/domain/static/static-config-mappers'
 import { Field, Label } from '@/catalyst-ui/fieldset'
 import { Input } from '@/catalyst-ui/input'
 import { Text } from '@/catalyst-ui/text'

@@ -1,4 +1,4 @@
-import { AUCTION_ITEM_STATUS } from "@/domain/static/static-config-mappers"
+import { AUCTION_ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { PaginationSchema } from '@/domain/static/static'
 import * as R from 'remeda'
 import { z } from 'zod'

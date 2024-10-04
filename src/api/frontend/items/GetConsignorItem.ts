@@ -2,7 +2,7 @@
 
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { ITEM_STATUS, ITEM_TYPE } from "@/domain/static/static-config-mappers"
+import { ITEM_STATUS, ITEM_TYPE } from '@/domain/static/static-config-mappers'
 
 export interface Item {
   id: number

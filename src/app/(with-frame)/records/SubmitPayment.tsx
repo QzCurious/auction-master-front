@@ -8,12 +8,7 @@ import {
   DescriptionList,
   DescriptionTerm,
 } from '@/catalyst-ui/description-list'
-import {
-  Dialog,
-  DialogActions,
-  DialogBody,
-  DialogTitle,
-} from '@/catalyst-ui/dialog'
+import { Dialog, DialogActions, DialogBody, DialogTitle } from '@/catalyst-ui/dialog'
 import { ErrorMessage, Field } from '@/catalyst-ui/fieldset'
 import { Input } from '@/catalyst-ui/input'
 import { currencySign } from '@/domain/static/static'

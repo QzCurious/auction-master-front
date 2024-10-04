@@ -1,6 +1,6 @@
 'use client'
 
-import { AUCTION_ITEM_STATUS } from "@/domain/static/static-config-mappers"
+import { AUCTION_ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { Text } from '@/catalyst-ui/text'
 import {
   Dialog,

@@ -1,7 +1,7 @@
 'use client'
 
 import { StatusCounts } from '@/api/frontend/items/GetConsignorItems'
-import { ITEM_STATUS } from "@/domain/static/static-config-mappers"
+import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { Text } from '@/catalyst-ui/text'
 import { StatusFlow } from '@/domain/static/StatusFlow'
 import {

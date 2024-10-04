@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
-import { ITEM_STATUS, ITEM_TYPE } from "@/domain/static/static-config-mappers"
+import { ITEM_STATUS, ITEM_TYPE } from '@/domain/static/static-config-mappers'
 
 const ReqSchema = z.object({
   status: z.coerce.number().array().optional(),

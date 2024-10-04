@@ -108,7 +108,9 @@ function CancelBiddingDetail({
           disabled={isSubmitting}
           onClick={() => {
             startTransition(async () => {
-              const res = await ConsignorCancelAuctionItemByTransfer(auctionItem.auctionId)
+              const res = await ConsignorCancelAuctionItemByTransfer(
+                auctionItem.auctionId,
+              )
               if (res.error) {
                 toast.error(`操作錯誤: ${res.error}`)
                 return

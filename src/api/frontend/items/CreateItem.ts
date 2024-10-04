@@ -3,7 +3,7 @@
 import { revalidateTag } from 'next/cache'
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { ITEM_TYPE } from "@/domain/static/static-config-mappers"
+import { ITEM_TYPE } from '@/domain/static/static-config-mappers'
 
 type Data = 'Success'
 

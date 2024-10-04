@@ -36,9 +36,7 @@ export function DoubleCheckPopover({
         )}
       >
         <Subheading level={3}>{title}</Subheading>
-        <p className='text-sm text-zinc-500 dark:text-zinc-400'>
-          {description}
-        </p>
+        <p className='text-sm text-zinc-500 dark:text-zinc-400'>{description}</p>
 
         <div className='mt-2 flex gap-x-4'>
           <CloseButton

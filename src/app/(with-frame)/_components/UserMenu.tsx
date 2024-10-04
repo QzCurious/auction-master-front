@@ -41,7 +41,13 @@ export function UserMenu() {
       </DropdownButton>
       <DropdownMenu className='min-w-44 !bg-white' anchor='bottom end'>
         <DropdownHeader className='flex min-w-0 items-center gap-3'>
-          <Avatar src={consignor.avatar} initials={consignor.nickname.slice(0, 1)} className='size-10' square alt='' />
+          <Avatar
+            src={consignor.avatar}
+            initials={consignor.nickname.slice(0, 1)}
+            className='size-10'
+            square
+            alt=''
+          />
           <span className='min-w-0'>
             <span className='block truncate text-sm/5 font-medium text-zinc-950 dark:text-white'>
               {consignor.nickname}

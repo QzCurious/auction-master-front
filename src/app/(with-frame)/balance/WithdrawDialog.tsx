@@ -3,12 +3,7 @@
 import { ExchangeRate } from '@/api/frontend/GetJPYRates'
 import { ConsignorWalletWithdrawal } from '@/api/frontend/wallets/ConsignorWalletWithdrawal'
 import { Button } from '@/catalyst-ui/button'
-import {
-  Dialog,
-  DialogActions,
-  DialogBody,
-  DialogTitle,
-} from '@/catalyst-ui/dialog'
+import { Dialog, DialogActions, DialogBody, DialogTitle } from '@/catalyst-ui/dialog'
 import {
   Description,
   ErrorMessage,

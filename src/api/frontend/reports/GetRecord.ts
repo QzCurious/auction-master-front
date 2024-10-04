@@ -3,7 +3,10 @@
 import { Currency } from '@/domain/static/static'
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
-import { type RECORD_STATUS, type RECORD_TYPE } from "@/domain/static/static-config-mappers"
+import {
+  type RECORD_STATUS,
+  type RECORD_TYPE,
+} from '@/domain/static/static-config-mappers'
 
 export interface Record {
   id: string

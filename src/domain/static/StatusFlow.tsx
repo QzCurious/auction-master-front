@@ -1,5 +1,5 @@
 import type React from 'react'
-import { ITEM_STATUS, ITEM_TYPE } from "./static-config-mappers"
+import { ITEM_STATUS, ITEM_TYPE } from './static-config-mappers'
 
 type Adjudicator = 'admin' | 'consignor' | 'system'
 
