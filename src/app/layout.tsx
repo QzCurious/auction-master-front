@@ -1,7 +1,6 @@
 import '@fontsource-variable/noto-sans-tc'
 import type { Metadata } from 'next'
 import { Noto_Sans_TC } from 'next/font/google'
-import Script from 'next/script'
 import { SITE_NAME } from '../domain/static/static'
 import './globals.css'
 
