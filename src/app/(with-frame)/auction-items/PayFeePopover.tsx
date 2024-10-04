@@ -20,7 +20,7 @@ import toast from 'react-hot-toast'
 export default function PayFeePopover({
   auctionId,
 }: {
-  auctionId: AuctionItem['id']
+  auctionId: AuctionItem['auctionId']
 }) {
   return (
     <Popover>
@@ -44,7 +44,7 @@ function PayFeeDetail({
   auctionId,
   close,
 }: {
-  auctionId: AuctionItem['id']
+  auctionId: AuctionItem['auctionId']
   close: () => void
 }) {
   const router = useRouter()
