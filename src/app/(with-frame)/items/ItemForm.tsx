@@ -47,7 +47,7 @@ const Schema = z.object({
   name: z.string().min(1, { message: '必填' }),
   type: z.number(),
   isNew: z.boolean(),
-  reservePrice: z.number({ message: '必填' }),
+  reservePrice: z.number().min(0, '不可為負數').int('請輸入整數').min(1, '必填'),
   photos: z
     .array(
       z.union([

@@ -128,6 +128,9 @@ function WithdrawForm({
                 if (value <= atLeast) {
                   return '最少需大於 ' + atLeast
                 }
+                if(!Number.isInteger(value)) {
+                  return '請輸入整數'
+                }
                 if (value > balance) {
                   return '餘額不足'
                 }
