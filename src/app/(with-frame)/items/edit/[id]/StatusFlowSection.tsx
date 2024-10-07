@@ -20,6 +20,7 @@ import {
   ITEM_TYPE,
 } from '@/domain/static/static-config-mappers'
 import { StatusFlow } from '@/domain/static/StatusFlow'
+import { useUntil } from '@/helper/useUntil'
 import clsx from 'clsx'
 import copy from 'copy-to-clipboard'
 import { format } from 'date-fns'
@@ -30,6 +31,8 @@ import toast from 'react-hot-toast'
 
 export function StatusFlowUI({ item }: { item: Item }) {
   const consignor = useContext(ConsignorContext)
+  const expired = useUntil(item.expireAt, { onFalsy: false })
+
   if (!consignor) return null
 
   const actionMap = StatusFlow.makeActionMap('consignor', {
@@ -97,21 +100,23 @@ export function StatusFlowUI({ item }: { item: Item }) {
             </DoubleCheckPopoverButton>
           </DoubleCheckPopover>
         ) : (
-          <DoubleCheckPopover
-            title='申請物品上架'
-            onConfirm={async () => {
-              const res = await ItemReady(item.id)
-              if (res.error) {
-                toast.error(`操作錯誤: ${res.error}`)
-                return
-              }
-              toast.success('物品上架申請已送出')
-            }}
-          >
-            <DoubleCheckPopoverButton as={Button} color='indigo' className='h-9'>
-              申請上架
-            </DoubleCheckPopoverButton>
-          </DoubleCheckPopover>
+          !expired && (
+            <DoubleCheckPopover
+              title='申請物品上架'
+              onConfirm={async () => {
+                const res = await ItemReady(item.id)
+                if (res.error) {
+                  toast.error(`操作錯誤: ${res.error}`)
+                  return
+                }
+                toast.success('物品上架申請已送出')
+              }}
+            >
+              <DoubleCheckPopoverButton as={Button} color='indigo' className='h-9'>
+                申請上架
+              </DoubleCheckPopoverButton>
+            </DoubleCheckPopover>
+          )
         )}
       </>
     ),
