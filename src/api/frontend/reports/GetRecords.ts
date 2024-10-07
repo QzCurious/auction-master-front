@@ -28,7 +28,7 @@ export interface Record {
   consignorId: number
   consignorNickname: string
   itemIds?: number[]
-  auctionItemIds?: number[]
+  auctionIds?: string[]
   shippingId?: string
   exchangeRate?: number
   jpyWithdrawal?: number

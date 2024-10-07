@@ -1,10 +1,8 @@
 'use server'
 
-import { appendEntries } from '@/domain/crud/appendEntries'
 import { AUCTION_ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { z } from 'zod'
 import { apiClient } from '../../apiClient'
-import { throwIfInvalid } from '../../helpers/throwIfInvalid'
 import { withAuth } from '../../withAuth'
 
 const ReqSchema = z.object({
@@ -44,21 +42,13 @@ export interface AuctionItem {
   recordId: string
 }
 
-interface Data {
-  auctionItems: Array<AuctionItem>
-  count: number
-}
+interface Data extends AuctionItem {}
 
 type ErrorCode = never
 
-export async function GetConsignorAuctionItems(payload: z.input<typeof ReqSchema>) {
-  const data = throwIfInvalid(payload, ReqSchema)
-
-  const query = new URLSearchParams()
-  appendEntries(query, data)
-
+export async function GetConsignorAuctionItem(auctionId: AuctionItem['auctionId']) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(
-    `/frontend/auction-items?${query}`,
+    `/frontend/auction-items/${auctionId}`,
     {
       method: 'GET',
       next: { tags: ['auction-items'] },

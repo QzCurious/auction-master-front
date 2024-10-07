@@ -17,7 +17,13 @@ import { CountdownTime } from '@/components/CountdownTime'
 import { SearchParamsPagination } from '@/components/SearchParamsPagination'
 import RedirectAuthError from '@/domain/auth/RedirectAuthError'
 import { parseSearchParams } from '@/domain/crud/parseSearchParams'
-import { currencySign, PAGE, ROWS_PER_PAGE, SITE_NAME } from '@/domain/static/static'
+import {
+  currencySign,
+  PAGE,
+  ROWS_PER_PAGE,
+  SITE_NAME,
+  yahooAuctionLink,
+} from '@/domain/static/static'
 import {
   AUCTION_ITEM_STATUS,
   CONSIGNOR_STATUS,
@@ -124,7 +130,7 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                       ? row.auctionId.toString()
                       : undefined
                   }
-                  href={`https://page.auctions.yahoo.co.jp/jp/auction/${row.auctionId}`}
+                  href={yahooAuctionLink(row.auctionId)}
                   target='_blank'
                   rel='noreferrer'
                 >
@@ -144,7 +150,7 @@ function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                       ? row.auctionId.toString()
                       : undefined
                   }
-                  href={`https://page.auctions.yahoo.co.jp/jp/auction/${row.auctionId}`}
+                  href={yahooAuctionLink(row.auctionId)}
                   target='_blank'
                   rel='noreferrer'
                 >

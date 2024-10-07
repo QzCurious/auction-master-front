@@ -1,3 +1,5 @@
+import { GetConsignorAuctionItem } from '@/api/frontend/auction-items/GetConsignorAuctionItem'
+import { AuctionItem } from '@/api/frontend/auction-items/GetConsignorAuctionItems'
 import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
 import { Configs, GetConfigs } from '@/api/frontend/GetConfigs'
 import { GetConsignorItem, Item } from '@/api/frontend/items/GetConsignorItem'
@@ -25,6 +27,7 @@ import {
   PAGE,
   ROWS_PER_PAGE,
   SITE_NAME,
+  yahooAuctionLink,
 } from '@/domain/static/static'
 import {
   CONSIGNOR_STATUS,
@@ -357,8 +360,8 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
               >
                 {RECORD_TYPE.get('value', row.type).message}
                 <div className='flex flex-row justify-center gap-y-1'>
-                  {row.itemIds?.map((itemId) => (
-                    <ItemLink key={itemId} itemId={itemId} />
+                  {row.auctionIds?.map((auctionId) => (
+                    <AuctionItemLink key={auctionId} auctionId={auctionId} />
                   ))}
                 </div>
               </TableCell>
@@ -586,6 +589,27 @@ async function ItemLink({ itemId }: { itemId: Item['id'] }) {
       rel='noreferrer'
     >
       {itemRes.data.name}{' '}
+      <ArrowTopRightOnSquareIcon className='inline-block h-4 w-4' />
+    </Link>
+  )
+}
+
+async function AuctionItemLink({
+  auctionId,
+}: {
+  auctionId: AuctionItem['auctionId']
+}) {
+  const auctionItemRes = await GetConsignorAuctionItem(auctionId)
+  if (!auctionItemRes.data) return null
+
+  return (
+    <Link
+      className='text-indigo-400 underline hover:text-indigo-500'
+      href={yahooAuctionLink(auctionId)}
+      target='_blank'
+      rel='noreferrer'
+    >
+      {auctionItemRes.data.name}{' '}
       <ArrowTopRightOnSquareIcon className='inline-block h-4 w-4' />
     </Link>
   )
