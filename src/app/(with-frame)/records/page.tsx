@@ -357,7 +357,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
               >
                 {RECORD_TYPE.get('value', row.type).message}
                 <div className='flex flex-row justify-center gap-y-1'>
-                  {row.itemIDs?.map((itemId) => (
+                  {row.itemIds?.map((itemId) => (
                     <ItemLink key={itemId} itemId={itemId} />
                   ))}
                 </div>

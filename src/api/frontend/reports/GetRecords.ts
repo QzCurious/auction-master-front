@@ -27,8 +27,8 @@ export interface Record {
   opCode: string
   consignorId: number
   consignorNickname: string
-  itemIDs?: number[]
-  auctionItemIDs?: number[]
+  itemIds?: number[]
+  auctionItemIds?: number[]
   shippingId?: string
   exchangeRate?: number
   jpyWithdrawal?: number
