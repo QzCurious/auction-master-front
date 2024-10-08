@@ -142,6 +142,7 @@ function QuillTextEditor({
     })
 
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       ;(_quillRef.current as any) = null
       if (typeof quillRef === 'function') quillRef(null)
       if (quillRef && typeof quillRef === 'object') quillRef.current = null

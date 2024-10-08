@@ -1,43 +1,15 @@
-import {
-  AuctionItem,
-  GetConsignorAuctionItems,
-} from '@/api/frontend/auction-items/GetConsignorAuctionItems'
+import { GetConsignorAuctionItems } from '@/api/frontend/auction-items/GetConsignorAuctionItems'
 import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
 import { Heading } from '@/catalyst-ui/heading'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/catalyst-ui/table'
-import { TextLink } from '@/catalyst-ui/text'
-import { CountdownTime } from '@/components/CountdownTime'
-import { SearchParamsPagination } from '@/components/SearchParamsPagination'
 import RedirectAuthError from '@/domain/auth/RedirectAuthError'
 import { parseSearchParams } from '@/domain/crud/parseSearchParams'
-import {
-  currencySign,
-  PAGE,
-  ROWS_PER_PAGE,
-  SITE_NAME,
-  yahooAuctionLink,
-} from '@/domain/static/static'
-import {
-  AUCTION_ITEM_STATUS,
-  CONSIGNOR_STATUS,
-} from '@/domain/static/static-config-mappers'
+import { PAGE, ROWS_PER_PAGE, SITE_NAME } from '@/domain/static/static'
+import { CONSIGNOR_STATUS } from '@/domain/static/static-config-mappers'
 import { AutoRefreshEffect } from '@/helper/useAutoRefresh'
-import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
-import clsx from 'clsx'
 import { Metadata } from 'next'
 import { redirect, RedirectType } from 'next/navigation'
-import * as R from 'remeda'
-import CancelBiddingPopover from './CancelBiddingPopover'
+import { AuctionItemsTable } from './AuctionItemTable'
 import { DesktopFilters, MobileFilters } from './Filters'
-import PayFeePopover from './PayFeePopover'
-import PreviewDealPopover from './PreviewDealPopover'
 import { SearchParamsSchema } from './SearchParamsSchema'
 
 export const metadata = { title: `競標列表 | ${SITE_NAME}` } satisfies Metadata
@@ -88,138 +60,5 @@ export default async function Page({ searchParams }: PageProps) {
         />
       </div>
     </AutoRefreshEffect>
-  )
-}
-
-interface AuctionItemsTableProps {
-  rows: AuctionItem[]
-  count: number
-}
-
-function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
-  return (
-    <div className='min-w-0 grow'>
-      <Table>
-        <TableHead>
-          <TableRow className='text-center'>
-            <TableHeader>商品圖片</TableHeader>
-            <TableHeader>商品名稱</TableHeader>
-            <TableHeader>當前金額</TableHeader>
-            <TableHeader>狀態</TableHeader>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={999} className='text-center'>
-                <div className='grid place-items-center py-20'>
-                  <div className='mx-auto w-fit text-zinc-400'>
-                    <FileDashed className='mx-auto size-20' />
-                    <p className='mt-6 text-center text-lg leading-6'>沒有資料</p>
-                  </div>
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
-          {rows?.map((row) => (
-            <TableRow key={row.auctionId}>
-              <TableCell>
-                <a
-                  title={
-                    process.env.NODE_ENV === 'development'
-                      ? row.auctionId.toString()
-                      : undefined
-                  }
-                  href={yahooAuctionLink(row.auctionId)}
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  <img
-                    className='mx-auto h-20 w-20 rounded-md object-cover'
-                    src={row.photo}
-                    width={200}
-                    height={200}
-                    alt={row.name}
-                  />
-                </a>
-              </TableCell>
-              <TableCell className='min-w-52 whitespace-normal'>
-                <TextLink
-                  title={
-                    process.env.NODE_ENV === 'development'
-                      ? row.auctionId.toString()
-                      : undefined
-                  }
-                  href={yahooAuctionLink(row.auctionId)}
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  {row.name}
-                </TextLink>
-              </TableCell>
-              <TableCell className='text-center'>
-                <span className='text-zinc-500'>{currencySign('JPY')}</span>
-                <span
-                  className={clsx(
-                    row.currentPrice >= row.reservePrice
-                      ? 'text-emerald-500'
-                      : 'text-rose-600',
-                  )}
-                >
-                  {row.currentPrice.toLocaleString()}
-                </span>{' '}
-                <span title='期望金額' className='text-zinc-500'>
-                  / {row.reservePrice.toLocaleString()}
-                </span>
-              </TableCell>
-              <TableCell
-                className='text-center'
-                title={
-                  process.env.NODE_ENV === 'development'
-                    ? `id:${row.auctionId} status:${AUCTION_ITEM_STATUS.enum(row.status)} recordId:${row.recordId}`
-                    : undefined
-                }
-              >
-                {R.isIncludedIn(row.status, [
-                  AUCTION_ITEM_STATUS.enum('InitStatus'),
-                  AUCTION_ITEM_STATUS.enum('StopBiddingStatus'),
-                  AUCTION_ITEM_STATUS.enum('HighestBiddedStatus'),
-                  AUCTION_ITEM_STATUS.enum('NotHighestBiddedStatus'),
-                ]) ? (
-                  <div className='flex flex-col items-center gap-y-1'>
-                    <CountdownTime until={new Date(row.closeAt)} />
-                    {row.recordId ? (
-                      <TextLink href={`/records?submit-payment=${row.recordId}`}>
-                        已申請匯款支付
-                      </TextLink>
-                    ) : (
-                      <CancelBiddingPopover auctionItem={row} />
-                    )}
-                  </div>
-                ) : (
-                  <div className='flex flex-col items-center gap-y-1'>
-                    <div>{AUCTION_ITEM_STATUS.get('value', row.status).message}</div>
-                    {R.isIncludedIn(row.status, [
-                      AUCTION_ITEM_STATUS.enum('SoldStatus'),
-                      AUCTION_ITEM_STATUS.enum('ClosedStatus'),
-                    ]) && <PreviewDealPopover auctionId={row.auctionId} />}
-                    {row.status ===
-                      AUCTION_ITEM_STATUS.enum('AwaitingConsignorPayFeeStatus') &&
-                      (row.recordId ? (
-                        <TextLink href={`/records?submit-payment=${row.recordId}`}>
-                          已申請匯款支付
-                        </TextLink>
-                      ) : (
-                        <PayFeePopover auctionId={row.auctionId} />
-                      ))}
-                  </div>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <SearchParamsPagination count={count} />
-    </div>
   )
 }

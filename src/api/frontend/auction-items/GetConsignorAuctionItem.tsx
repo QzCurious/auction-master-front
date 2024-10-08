@@ -1,6 +1,7 @@
 'use server'
 
 import { AUCTION_ITEM_STATUS } from '@/domain/static/static-config-mappers'
+import { cache } from 'react'
 import { z } from 'zod'
 import { apiClient } from '../../apiClient'
 import { withAuth } from '../../withAuth'
@@ -46,7 +47,7 @@ interface Data extends AuctionItem {}
 
 type ErrorCode = never
 
-export async function GetConsignorAuctionItem(auctionId: AuctionItem['auctionId']) {
+async function GetConsignorAuctionItem(auctionId: AuctionItem['auctionId']) {
   const res = await withAuth(apiClient)<Data, ErrorCode>(
     `/frontend/auction-items/${auctionId}`,
     {
@@ -57,3 +58,7 @@ export async function GetConsignorAuctionItem(auctionId: AuctionItem['auctionId'
 
   return res
 }
+
+const CachedGetAuctionItem = cache(GetConsignorAuctionItem)
+
+export { CachedGetAuctionItem as GetConsignorAuctionItem }

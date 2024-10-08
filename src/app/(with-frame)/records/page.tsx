@@ -36,6 +36,8 @@ import {
 } from '@/domain/static/static-config-mappers'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
+import { Gavel } from '@phosphor-icons/react/dist/ssr/Gavel'
+import { StackSimple } from '@phosphor-icons/react/dist/ssr/StackSimple'
 import clsx from 'clsx'
 import { format } from 'date-fns'
 import { Metadata } from 'next'
@@ -359,11 +361,7 @@ function ReportRecordTable({ rows, count, configs }: ReportRecordTableProps) {
                 }
               >
                 {RECORD_TYPE.get('value', row.type).message}
-                <div className='flex flex-row justify-center gap-y-1'>
-                  {row.auctionIds?.map((auctionId) => (
-                    <AuctionItemLink key={auctionId} auctionId={auctionId} />
-                  ))}
-                </div>
+                <AllKindsOfLinks row={row} />
               </TableCell>
               <TableCell
                 className={clsx(
@@ -613,4 +611,90 @@ async function AuctionItemLink({
       <ArrowTopRightOnSquareIcon className='inline-block h-4 w-4' />
     </Link>
   )
+}
+
+async function AllKindsOfLinks({ row }: { row: Record }) {
+  if (row.auctionIds && row.auctionIds.length > 0) {
+    const auctionItemRes = await Promise.all(
+      row.auctionIds.map((x) => GetConsignorAuctionItem(x)),
+    )
+    const itemRes = await Promise.all(
+      auctionItemRes.map((x) =>
+        x.data?.itemId ? GetConsignorItem(x.data.itemId) : null,
+      ),
+    )
+
+    return (
+      <div className='mx-auto mt-1 flex w-fit gap-x-2 text-indigo-400'>
+        {row.auctionIds?.map((auctionId, i) => (
+          <div key={auctionId} className='flex gap-x-3'>
+            <div>
+              {itemRes[i]?.data && (
+                <Link
+                  className='text-link'
+                  title={itemRes[i].data.name}
+                  href={`/items/edit/${itemRes[i].data.id}`}
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  <StackSimple fontSize='large' />
+                </Link>
+              )}
+            </div>
+            <div>
+              {auctionItemRes[i]?.data && (
+                <Link
+                  className='text-link'
+                  title={auctionItemRes[i].data.name}
+                  href={`/auction-items/${auctionItemRes[i].data.auctionId}`}
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  <Gavel fontSize='large' />
+                </Link>
+              )}
+            </div>
+            <div>
+              <Link
+                className='text-link'
+                href={yahooAuctionLink(auctionId)}
+                target='_blank'
+                rel='noreferrer'
+              >
+                {auctionId}
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (row.itemIds && row.itemIds.length > 0) {
+    const itemRes = await Promise.all(row.itemIds.map((x) => GetConsignorItem(x)))
+
+    return (
+      <div className='mx-auto mt-1 flex w-fit gap-x-2 text-indigo-400'>
+        {row.itemIds?.map((itemId, i) => (
+          <div key={itemId} className='flex gap-x-3'>
+            <div>
+              {itemRes[i]?.data && (
+                <Link
+                  className='text-link'
+                  title={itemRes[i].data.name}
+                  href={`/items/edit/${itemRes[i].data.id}`}
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  <StackSimple fontSize='large' />
+                </Link>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  return null
 }
