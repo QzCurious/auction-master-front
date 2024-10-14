@@ -47,7 +47,7 @@ const Schema = z.object({
   name: z.string().min(1, { message: '必填' }),
   type: z.number(),
   isNew: z.boolean(),
-  reservePrice: z.number().min(0, '不可為負數').int('請輸入整數').min(1, '必填'),
+  reservePrice: z.number({ message: '必填' }).min(1, '不可小於 1').int('請輸入整數'),
   photos: z
     .array(
       z.union([
@@ -203,7 +203,7 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
                     }}
                   />
                 </InputGroup>
-                {field.value && !fieldState.invalid && (
+                {!!field.value && !fieldState.invalid && (
                   <Description className='text-end'>
                     約 {currencySign('TWD')}
                     {Math.floor(field.value * jpyBuyingRate).toLocaleString()}
