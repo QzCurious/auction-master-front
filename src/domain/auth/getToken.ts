@@ -1,9 +1,10 @@
 'use server'
 
-import { JwtPayload } from '@/api/JwtPayload'
-import { RefreshToken } from '@/api/RefreshToken'
 import { jwtDecode } from 'jwt-decode'
 import { cookies } from 'next/headers'
+
+import { RefreshToken } from '@/api/RefreshToken'
+import { type JwtPayload } from '../../api/JwtPayload'
 import { CookieConfigs } from './CookieConfigs'
 
 const tokenRefreshingMap = new Map<string, ReturnType<typeof RefreshToken>>()
@@ -24,7 +25,8 @@ export async function getToken({ force }: { force?: boolean } = { force: false }
 
   const refreshToken = cookies().get(CookieConfigs.refreshToken.name)
   if (!refreshToken?.value) {
-    throw new Error('BUG: Token expired without refresh token')
+    console.log('BUG: Token expired without refresh token')
+    return { token: null, res: null } as const
   }
 
   let refreshing = tokenRefreshingMap.get(token.value)
