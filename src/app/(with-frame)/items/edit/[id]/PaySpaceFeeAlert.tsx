@@ -78,7 +78,7 @@ export default function PaySpaceFeeAlert({
                 startTransition(async () => {
                   const res = await ConsignorPayItemSpaceFeeByTransfer(item.id)
                   if (res.error) {
-                    toast.error(`操作錯誤: ${res.error}`)
+                    handleApiError(res.error)
                     return
                   }
                   toast.success('已申請會匯款結清手續費')

@@ -40,6 +40,7 @@ interface PageProps {
 }
 
 async function Page(pageProps: PageProps) {
+  const params = await pageProps.params
   return (
     <div className='mx-auto max-w-4xl px-8'>
       <Link
@@ -50,7 +51,7 @@ async function Page(pageProps: PageProps) {
         回到物品列表
       </Link>
       <div className='mt-4'>
-        <Content {...pageProps} />
+        <Content params={params} />
       </div>
     </div>
   )
@@ -58,8 +59,8 @@ async function Page(pageProps: PageProps) {
 
 export default Page
 
-async function Content({ params }: PageProps) {
-  const id = Number((await params).id)
+async function Content({ params }: { params: Awaited<PageProps['params']> }) {
+  const id = Number(params.id)
   if (isNaN(id)) {
     notFound()
   }

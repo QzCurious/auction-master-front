@@ -115,7 +115,7 @@ function CancelBiddingDetail({
                 auctionItem.auctionId,
               )
               if (res.error) {
-                toast.error(`操作錯誤: ${res.error}`)
+                handleApiError(res.error)
                 return
               }
               toast.success('取消競標申請已送出')

@@ -8,7 +8,6 @@ import toast from 'react-hot-toast'
 export function useHandleApiError() {
   return useCallback((err: ApiError) => {
     if (err.type === 'toast') {
-      toast
       toast.error(err.message)
       return
     }

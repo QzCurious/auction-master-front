@@ -3,7 +3,7 @@
 import { Consignor } from '@/api/frontend/consignor/GetConsignor'
 import { UpdateConsignorAvatar } from '@/api/frontend/consignor/UpdateConsignorAvatar'
 import { Button } from '@/catalyst-ui/button'
-import { Subheading } from '@/catalyst-ui/heading'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { toPercent } from '@/domain/static/static'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
@@ -18,6 +18,7 @@ const Schema = z.object({
 export default function AccountInfoForm({ consignor }: { consignor: Consignor }) {
   const [isPending, startTransition] = useTransition()
   const [conformingDelete, setConformingDelete] = useState(false)
+  const handleApiError = useHandleApiError()
 
   return (
     <div className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3'>
@@ -61,7 +62,7 @@ export default function AccountInfoForm({ consignor }: { consignor: Consignor })
                             formData.append('avatarPhoto', '')
                             const res = await UpdateConsignorAvatar(formData)
                             if (res.error) {
-                              toast.error(`刪除頭像失敗: ${res.error}`)
+                              handleApiError(res.error)
                               return
                             }
 
@@ -113,7 +114,7 @@ export default function AccountInfoForm({ consignor }: { consignor: Consignor })
                     formData.append('avatarPhoto', file)
                     const res = await UpdateConsignorAvatar(formData)
                     if (res.error) {
-                      toast.error(`頭像更新失敗: ${res.error}`)
+                      handleApiError(res.error)
                       return
                     }
 

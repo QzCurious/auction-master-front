@@ -4,12 +4,14 @@ import { ConsignorItemReturning } from '@/api/frontend/items/ConsignorItemReturn
 import { Item } from '@/api/frontend/items/GetConsignorItem'
 import { Button } from '@/catalyst-ui/button'
 import { Dialog, DialogActions, DialogBody, DialogTitle } from '@/catalyst-ui/dialog'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { useState, useTransition } from 'react'
 import toast from 'react-hot-toast'
 
 export default function ReturnItemDialog({ item }: { item: Item }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const handleApiError = useHandleApiError()
 
   return (
     <>
@@ -42,7 +44,7 @@ export default function ReturnItemDialog({ item }: { item: Item }) {
               startTransition(async () => {
                 const res = await ConsignorItemReturning(item.id)
                 if (res.error) {
-                  toast.error(`操作錯誤: ${res.error}`)
+                  handleApiError(res.error)
                   return
                 }
                 toast.success('退貨申請已送出，請聯繫客服')

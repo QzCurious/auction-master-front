@@ -12,6 +12,7 @@ import {
   DoubleCheckPopover,
   DoubleCheckPopoverButton,
 } from '@/components/DoubleCheckPopover'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { ConsignorContext } from '@/domain/auth/ConsignorContext'
 import { DATE_TIME_FORMAT } from '@/domain/static/static'
 import {
@@ -32,6 +33,7 @@ import toast from 'react-hot-toast'
 export function StatusFlowUI({ item }: { item: Item }) {
   const consignor = useContext(ConsignorContext)
   const expired = useUntil(item.expireAt, { onFalsy: false })
+  const handleApiError = useHandleApiError()
 
   if (!consignor) return null
 
@@ -48,7 +50,7 @@ export function StatusFlowUI({ item }: { item: Item }) {
                 action: 'reject',
               })
               if (res.error) {
-                toast.error(`操作錯誤: ${res.error}`)
+                handleApiError(res.error)
                 return
               }
               toast.success('託售已取消')
@@ -89,7 +91,7 @@ export function StatusFlowUI({ item }: { item: Item }) {
             onConfirm={async () => {
               const res = await ItemCompanyDirectPurchase(item.id)
               if (res.error) {
-                toast.error(`操作錯誤: ${res.error}`)
+                handleApiError(res.error)
                 return
               }
               toast.success('已確認公司直購')
@@ -106,7 +108,7 @@ export function StatusFlowUI({ item }: { item: Item }) {
               onConfirm={async () => {
                 const res = await ItemReady(item.id)
                 if (res.error) {
-                  toast.error(`操作錯誤: ${res.error}`)
+                  handleApiError(res.error)
                   return
                 }
                 toast.success('物品上架申請已送出')
@@ -210,6 +212,7 @@ function StatusStep({
 function ApproveConsignmentBtn({ item }: { item: Item }) {
   const [open, setOpen] = useState(false)
   const consignor = useContext(ConsignorContext)
+  const handleApiError = useHandleApiError()
   if (!consignor) return null
 
   return (
@@ -292,7 +295,7 @@ function ApproveConsignmentBtn({ item }: { item: Item }) {
             onClick={async () => {
               const res = await ItemConsignmentReview(item.id, { action: 'approve' })
               if (res.error) {
-                toast.error(`操作錯誤: ${res.error}`)
+                handleApiError(res.error)
                 return
               }
               toast.success('已申請託售')
@@ -311,6 +314,7 @@ function ApproveConsignmentBtn({ item }: { item: Item }) {
 function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
   const [open, setOpen] = useState(false)
   const consignor = useContext(ConsignorContext)
+  const handleApiError = useHandleApiError()
   if (!consignor) return null
 
   return (
@@ -393,7 +397,7 @@ function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
             onClick={async () => {
               const res = await ItemChoosesCompanyDirectPurchase(item.id)
               if (res.error) {
-                toast.error(`操作錯誤: ${res.error}`)
+                handleApiError(res.error)
                 return
               }
               toast.success('已申請現金收購')

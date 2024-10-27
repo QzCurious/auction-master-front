@@ -3,11 +3,14 @@
 import { ConsignorCancelPayment } from '@/api/frontend/reports/ConsignorCancelPayment'
 import { Record } from '@/api/frontend/reports/GetRecords'
 import { Button } from '@/catalyst-ui/button'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { useTransition } from 'react'
 import toast from 'react-hot-toast'
 
 export default function CancelPayment({ recordId }: { recordId: Record['id'] }) {
   const [isPending, startTransition] = useTransition()
+  const handleApiError = useHandleApiError()
+
   return (
     <Button
       type='button'
@@ -17,7 +20,7 @@ export default function CancelPayment({ recordId }: { recordId: Record['id'] }) 
         startTransition(async () => {
           const res = await ConsignorCancelPayment(recordId)
           if (res.error) {
-            toast.error(`操作錯誤: ${res.error}`)
+            handleApiError(res.error)
             return
           }
           toast.success('已取消付款')

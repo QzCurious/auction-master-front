@@ -11,6 +11,7 @@ import {
 import { Dialog, DialogActions, DialogBody, DialogTitle } from '@/catalyst-ui/dialog'
 import { ErrorMessage, Field } from '@/catalyst-ui/fieldset'
 import { Input } from '@/catalyst-ui/input'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { currencySign } from '@/domain/static/static'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
@@ -80,6 +81,7 @@ export function SubmitPaymentDialog({
     newSearchParams.delete('submit-payment')
     router.replace(`?${newSearchParams}`)
   }
+  const handleApiError = useHandleApiError()
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
@@ -91,7 +93,7 @@ export function SubmitPaymentDialog({
             opCode: data.opCode,
           })
           if (res.error) {
-            toast.error(`操作錯誤: ${res.error}`)
+            handleApiError(res.error)
             return
           }
           toast.success('已提交付款')
