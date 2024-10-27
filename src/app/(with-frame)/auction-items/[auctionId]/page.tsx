@@ -12,10 +12,13 @@ import { AuctionItemsTable } from '../AuctionItemTable'
 export const metadata = { title: `競標商品 | ${SITE_NAME}` } satisfies Metadata
 
 interface PageProps {
-  params: { auctionId: string }
+  params: Promise<{ auctionId: string }>
 }
 
-export default async function Page({ params: { auctionId } }: PageProps) {
+export default async function Page(props: PageProps) {
+  const params = await props.params
+  const { auctionId } = params
+
   const [consignorRes, auctionItemRes] = await Promise.all([
     GetConsignor(),
     GetConsignorAuctionItem(auctionId),

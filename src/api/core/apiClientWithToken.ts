@@ -1,10 +1,10 @@
-import { cookies } from 'next/headers';
-import { CookieConfigs } from '@/domain/auth/CookieConfigs';
-import { HTTPError } from 'ky';
+import { CookieConfigs } from '@/domain/auth/CookieConfigs'
+import { HTTPError } from 'ky'
+import { cookies } from 'next/headers'
 
-import { apiClientBase } from './apiClientBase';
-import { type FailedResponseJson } from './static';
-import { RefreshToken } from '../RefreshToken';
+import { RefreshToken } from '../RefreshToken'
+import { apiClientBase } from './apiClientBase'
+import { type FailedResponseJson } from './static'
 
 const apiClientWithToken = apiClientBase.extend({
   retry: {
@@ -14,35 +14,39 @@ const apiClientWithToken = apiClientBase.extend({
   hooks: {
     beforeRequest: [
       async (request, options) => {
-        if (request.headers.get('Authorization')) return;
+        if (request.headers.get('Authorization')) return
 
-        const token = cookies().get(CookieConfigs.token.name)?.value;
-        if (token) request.headers.set('Authorization', `Bearer ${token}`);
+        const token = (await cookies()).get(CookieConfigs.token.name)?.value
+        if (token) request.headers.set('Authorization', `Bearer ${token}`)
       },
     ],
     beforeRetry: [
       async ({ request, options, error, retryCount }) => {
-        if (retryCount > 1) return;
+        if (retryCount > 1) return
 
         if (!(error instanceof HTTPError)) {
-          return;
+          return
         }
 
-        const res = (await error.response.clone().json()) as FailedResponseJson;
-        if (res.status.code !== '1003') return;
+        const res = (await error.response.clone().json()) as FailedResponseJson
+        if (res.status.code !== '1003') return
 
-        const token = cookies().get(CookieConfigs.token.name)?.value;
-        const refreshToken = cookies().get(CookieConfigs.refreshToken.name)?.value;
-        if (!token || !refreshToken) return;
+        const awaitedCookies = await cookies()
 
-        const refreshTokenRes = await RefreshToken();
+        const token = awaitedCookies.get(CookieConfigs.token.name)?.value
+        const refreshToken = awaitedCookies.get(
+          CookieConfigs.refreshToken.name,
+        )?.value
+        if (!token || !refreshToken) return
+
+        const refreshTokenRes = await RefreshToken()
         if (refreshTokenRes.data) {
-          console.log('apiClientWithToken: token refreshed');
-          request.headers.set('Authorization', `Bearer ${refreshTokenRes.data.token}`);
+          console.log('apiClientWithToken: token refreshed')
+          request.headers.set('Authorization', `Bearer ${refreshTokenRes.data.token}`)
         }
       },
     ],
   },
-});
+})
 
-export { apiClientWithToken };
+export { apiClientWithToken }

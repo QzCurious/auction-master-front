@@ -15,10 +15,11 @@ import { SearchParamsSchema } from './SearchParamsSchema'
 export const metadata = { title: `競標列表 | ${SITE_NAME}` } satisfies Metadata
 
 interface PageProps {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page(props: PageProps) {
+  const searchParams = await props.searchParams
   const filters = parseSearchParams(SearchParamsSchema, searchParams)
 
   const [consignorRes, auctionItemsRes] = await Promise.all([

@@ -19,10 +19,11 @@ import { SearchParamsSchema } from './SearchParamsSchema'
 export const metadata = { title: `我的物品 | ${SITE_NAME}` } satisfies Metadata
 
 interface PageProps {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page(props: PageProps) {
+  const searchParams = await props.searchParams
   const filter = parseSearchParams(SearchParamsSchema, searchParams)
   const itemsRes = await GetConsignorItems({
     limit: filter[ROWS_PER_PAGE],

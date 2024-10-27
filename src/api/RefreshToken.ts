@@ -10,7 +10,9 @@ interface Data {
 }
 
 export async function RefreshToken() {
-  const token = cookies().get(CookieConfigs.token.name)?.value
+  const awaitedCookies = await cookies()
+
+  const token = awaitedCookies.get(CookieConfigs.token.name)?.value
   if (!token) {
     console.error('token is not found')
     return {
@@ -23,7 +25,7 @@ export async function RefreshToken() {
     } as const
   }
 
-  const refreshToken = cookies().get(CookieConfigs.refreshToken.name)?.value
+  const refreshToken = awaitedCookies.get(CookieConfigs.refreshToken.name)?.value
   if (!refreshToken) {
     console.error('refreshToken is not found')
     return {
@@ -40,7 +42,7 @@ export async function RefreshToken() {
   appendEntries(urlencoded, { refreshToken })
 
   const res = await apiClientBase
-    .post<SuccessResponseJson<Data>>('/session/refresh', {
+    .post<SuccessResponseJson<Data>>('session/refresh', {
       body: urlencoded,
       headers: {
         Authorization: `Bearer ${token}`,

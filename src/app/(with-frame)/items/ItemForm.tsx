@@ -17,6 +17,8 @@ import {
   DraggableListItem,
 } from '@/components/DraggableList'
 import InfoPopover, { InfoPopoverPanel } from '@/components/InfoPopover'
+import { QuillTextEditorClientOnly } from '@/components/QuillTextEditor/QuillTextEditorClientOnly'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { appendEntries } from '@/domain/crud/appendEntries'
 import { getDirtyFields } from '@/domain/crud/getDirtyFields'
 import { currencySign } from '@/domain/static/static'
@@ -25,7 +27,6 @@ import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowsOutLineHorizontal } from '@phosphor-icons/react/dist/ssr/ArrowsOutLineHorizontal'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState, useTransition } from 'react'
 import {
@@ -37,11 +38,6 @@ import {
 } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { z } from 'zod'
-
-const QuillTextEditor = dynamic(
-  () => import('@/components/QuillTextEditor/QuillTextEditor'),
-  { ssr: false },
-)
 
 const Schema = z.object({
   name: z.string().min(1, { message: '必填' }),
@@ -90,6 +86,7 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
     resolver: zodResolver(Schema),
   })
   const router = useRouter()
+  const handleApiError = useHandleApiError()
 
   return (
     <div>
@@ -111,9 +108,10 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
 
                 const res = await CreateItem(formData)
                 if (res.error) {
-                  setError('root', { message: `操作失敗: ${res.error}` })
+                  handleApiError(res.error)
                   return
                 }
+
                 toast.success('新增成功')
                 router.push('/items')
               }
@@ -123,7 +121,7 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
 
                 const res = await UpdateConsignorItem(item.id, dirtyValues)
                 if (res.error) {
-                  setError('root', { message: `操作失敗: ${res.error}` })
+                  handleApiError(res.error)
                   return
                 }
                 toast.success('更新成功')
@@ -227,7 +225,7 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
               <Field className='col-span-full'>
                 <Label className='mb-3'>物品描述</Label>
                 <div data-slot='control'>
-                  <QuillTextEditor
+                  <QuillTextEditorClientOnly
                     defaultValue={item?.description}
                     onTextChange={(delta, oldDelta) =>
                       field.onChange(JSON.stringify(oldDelta.compose(delta).ops))

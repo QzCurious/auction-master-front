@@ -3,9 +3,7 @@ import plugin from 'tailwindcss/plugin'
 
 const config: Config = {
   darkMode: 'selector',
-  content: [
-    './src/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   plugins: [
     require('@tailwindcss/typography'),
     // require('@tailwindcss/forms'),

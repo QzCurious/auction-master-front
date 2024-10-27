@@ -9,6 +9,11 @@ const nextConfig = {
       { hostname: 'auctions.c.yimg.jp' },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
 }
 
 export default nextConfig

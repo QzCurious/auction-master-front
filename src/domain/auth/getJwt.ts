@@ -7,7 +7,7 @@ import { type JwtPayload } from '../../api/JwtPayload'
 import { CookieConfigs } from './CookieConfigs'
 
 export async function getJwt() {
-  const token = cookies().get(CookieConfigs.token.name)?.value
+  const token = (await cookies()).get(CookieConfigs.token.name)?.value
   if (!token) return null
 
   try {

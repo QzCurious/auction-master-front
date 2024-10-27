@@ -108,7 +108,8 @@ export function DraggableList({
   )
 }
 
-const DraggableListItemContext = createContext<RefObject<HTMLLIElement> | null>(null)
+const DraggableListItemContext =
+  createContext<RefObject<HTMLLIElement | null> | null>(null)
 
 export function DraggableListItem({
   className,

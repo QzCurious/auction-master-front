@@ -110,10 +110,11 @@ const querySchema = z.intersection(
 )
 
 interface PageProps {
-  searchParams: PaginationSearchParams & z.output<typeof querySchema>
+  searchParams: Promise<PaginationSearchParams & z.output<typeof querySchema>>
 }
 
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page(props: PageProps) {
+  const searchParams = await props.searchParams
   const query = querySchema.parse(searchParams)
   const pagination = PaginationSchema.parse(searchParams)
   const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)

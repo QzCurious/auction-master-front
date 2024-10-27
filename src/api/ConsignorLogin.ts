@@ -35,8 +35,14 @@ export async function ConsignorLogin(payload: z.input<typeof ReqSchema>) {
     return res
   }
 
-  cookies().set(CookieConfigs.token.name, res.data.token, CookieConfigs.token.opts())
-  cookies().set(
+  const awaitedCookies = await cookies()
+
+  awaitedCookies.set(
+    CookieConfigs.token.name,
+    res.data.token,
+    CookieConfigs.token.opts(),
+  )
+  awaitedCookies.set(
     CookieConfigs.refreshToken.name,
     res.data.refreshToken,
     CookieConfigs.refreshToken.opts(),

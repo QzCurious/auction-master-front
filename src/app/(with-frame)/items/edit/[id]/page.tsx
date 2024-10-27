@@ -10,6 +10,7 @@ import {
 } from '@/catalyst-ui/description-list'
 import { Subheading } from '@/catalyst-ui/heading'
 import InfoPopover, { InfoPopoverPanel } from '@/components/InfoPopover'
+import { QuillTextEditorClientOnly } from '@/components/QuillTextEditor/QuillTextEditorClientOnly'
 import { HandleApiError } from '@/domain/api/HandleApiError'
 import { currencySign, DATE_FORMAT, SITE_NAME } from '@/domain/static/static'
 import {
@@ -22,7 +23,6 @@ import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import { format } from 'date-fns'
 import { Metadata } from 'next'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import * as R from 'remeda'
@@ -35,13 +35,8 @@ import { StatusFlowUI } from './StatusFlowSection'
 
 export const metadata = { title: `編輯物品 | ${SITE_NAME}` } satisfies Metadata
 
-const QuillTextEditor = dynamic(
-  () => import('@/components/QuillTextEditor/QuillTextEditor'),
-  { ssr: false },
-)
-
 interface PageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 async function Page(pageProps: PageProps) {
@@ -54,7 +49,6 @@ async function Page(pageProps: PageProps) {
         <ArrowLeftIcon className='size-4 stroke-2' />
         回到物品列表
       </Link>
-
       <div className='mt-4'>
         <Content {...pageProps} />
       </div>
@@ -65,7 +59,7 @@ async function Page(pageProps: PageProps) {
 export default Page
 
 async function Content({ params }: PageProps) {
-  const id = Number(params.id)
+  const id = Number((await params).id)
   if (isNaN(id)) {
     notFound()
   }
@@ -289,7 +283,7 @@ async function Content({ params }: PageProps) {
             <Subheading level={2}>描述</Subheading>
             {itemRes.data.description ? (
               <div className='mt-2'>
-                <QuillTextEditor
+                <QuillTextEditorClientOnly
                   readOnly
                   hideToolbar
                   defaultValue={itemRes.data.description}

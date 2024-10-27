@@ -51,10 +51,11 @@ import { SubmitPayment, SubmitPaymentDialog } from './SubmitPayment'
 export const metadata = { title: `交易紀錄 | ${SITE_NAME}` } satisfies Metadata
 
 interface PageProps {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page(props: PageProps) {
+  const searchParams = await props.searchParams
   const query = parseSearchParams(SearchParamsSchema, searchParams)
   const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
 
