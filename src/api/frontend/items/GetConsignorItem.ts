@@ -1,7 +1,8 @@
 'use server'
 
-import { apiClient } from '../../apiClient'
-import { withAuth } from '../../withAuth'
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { ITEM_STATUS, ITEM_TYPE } from '@/domain/static/static-config-mappers'
 
 export interface Item {
@@ -38,13 +39,13 @@ export interface Item {
 
 interface Data extends Item {}
 
-type ErrorCode = '1801'
-
 export async function GetConsignorItem(id: number) {
-  const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}`, {
-    method: 'GET',
-    next: { tags: ['items'] },
-  })
+  const res = await apiClientWithToken
+    .get<SuccessResponseJson<Data>>(`frontend/items/${id}`, {
+      next: { tags: ['items'] },
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   return res
 }

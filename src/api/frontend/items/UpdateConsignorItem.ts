@@ -1,12 +1,13 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { appendEntries } from '@/domain/crud/appendEntries'
+import { ITEM_TYPE } from '@/domain/static/static-config-mappers'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
-import { apiClient } from '../../apiClient'
-import { throwIfInvalid } from '../../helpers/throwIfInvalid'
-import { withAuth } from '../../withAuth'
-import { ITEM_TYPE } from '@/domain/static/static-config-mappers'
+import { throwIfInvalid } from '@/api/core/static'
 
 const ReqSchema = z
   .object({
@@ -24,8 +25,6 @@ const ReqSchema = z
 
 type Data = 'Success'
 
-type ErrorCode = never
-
 export async function UpdateConsignorItem(
   id: number,
   payload: z.input<typeof ReqSchema>,
@@ -35,10 +34,12 @@ export async function UpdateConsignorItem(
   const urlencoded = new URLSearchParams()
   appendEntries(urlencoded, data)
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items/${id}`, {
-    method: 'PATCH',
-    body: urlencoded,
-  })
+  const res = await apiClientWithToken
+    .patch<SuccessResponseJson<Data>>(`frontend/items/${id}`, {
+      body: urlencoded,
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   revalidateTag('items')
 

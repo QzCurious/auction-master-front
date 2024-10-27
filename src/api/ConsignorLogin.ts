@@ -4,8 +4,9 @@ import { CookieConfigs } from '@/domain/auth/CookieConfigs'
 import { appendEntries } from '@/domain/crud/appendEntries'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
-import { apiClient } from './apiClient'
-import { throwIfInvalid } from './helpers/throwIfInvalid'
+import { apiClientBase } from './core/apiClientBase'
+import { createApiErrorServerSide } from './core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson, throwIfInvalid } from './core/static'
 
 const ReqSchema = z.object({
   account: z.string().min(1, 'Account is required'),
@@ -17,27 +18,21 @@ interface Data {
   refreshToken: string
 }
 
-type ErrorCode =
-  // block user
-  | '1002'
-  // PasswordIncorrect
-  | '1004'
-  // ConsignorNotExist
-  | '1602'
-
 export async function ConsignorLogin(payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const urlencoded = new URLSearchParams()
   appendEntries(urlencoded, data)
 
-  const res = await apiClient<Data, ErrorCode>('/session', {
-    method: 'POST',
-    body: urlencoded,
-  })
+  const res = await apiClientBase
+    .post<SuccessResponseJson<Data>>('session', {
+      body: urlencoded,
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
-  if (res.error) {
-    return { data: null, error: res.error }
+  if (!res.data) {
+    return res
   }
 
   cookies().set(CookieConfigs.token.name, res.data.token, CookieConfigs.token.opts())
@@ -47,5 +42,5 @@ export async function ConsignorLogin(payload: z.input<typeof ReqSchema>) {
     CookieConfigs.refreshToken.opts(),
   )
 
-  return { data: res.data, error: null }
+  return null
 }

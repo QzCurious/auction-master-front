@@ -1,12 +1,13 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { revalidateTag } from 'next/cache'
 
 import { appendEntries } from '@/domain/crud/appendEntries'
 import { z } from 'zod'
-import { apiClient } from '../../apiClient'
-import { throwIfInvalid } from '../../helpers/throwIfInvalid'
-import { withAuth } from '../../withAuth'
+import { throwIfInvalid } from '@/api/core/static'
 
 const ReqSchema = z.object({
   amount: z.number(),
@@ -14,23 +15,18 @@ const ReqSchema = z.object({
 
 type Data = 'Success'
 
-type ErrorCode =
-  // 錢包餘額不足
-  '1703'
-
 export async function ConsignorWalletWithdrawal(payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const urlencoded = new URLSearchParams()
   appendEntries(urlencoded, data)
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>(
-    '/frontend/wallets/withdrawal',
-    {
-      method: 'POST',
+  const res = await apiClientWithToken
+    .post<SuccessResponseJson<Data>>('frontend/wallets/withdrawal', {
       body: urlencoded,
-    },
-  )
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   revalidateTag('wallets')
 

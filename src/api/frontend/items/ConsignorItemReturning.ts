@@ -1,22 +1,19 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { revalidateTag } from 'next/cache'
 
-import { apiClient } from '../../apiClient'
-import { withAuth } from '../../withAuth'
 import { Item } from './GetConsignorItem'
 
 type Data = 'Success'
 
-type ErrorCode = never
-
 export async function ConsignorItemReturning(id: Item['id']) {
-  const res = await withAuth(apiClient)<Data, ErrorCode>(
-    `/frontend/items/${id}/returning`,
-    {
-      method: 'POST',
-    },
-  )
+  const res = await apiClientWithToken
+    .post<SuccessResponseJson<Data>>(`frontend/items/${id}/returning`)
+    .json()
+    .catch(createApiErrorServerSide)
 
   revalidateTag('items')
 

@@ -1,7 +1,8 @@
 'use server'
 
-import { apiClient } from '../../apiClient'
-import { withAuth } from '../../withAuth'
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { Item } from '../items/GetConsignorItem'
 import { AuctionItem } from './GetConsignorAuctionItems'
 
@@ -14,16 +15,16 @@ interface Data {
   auctionItem: AuctionItem
 }
 
-type ErrorCode = never
-
 export async function AuctionItemDealPreview(auctionId: AuctionItem['auctionId']) {
-  const res = await withAuth(apiClient)<Data, ErrorCode>(
-    `/frontend/auction-items/${auctionId}/deal/preview`,
-    {
-      method: 'GET',
-      next: { tags: ['auction-items'] },
-    },
-  )
+  const res = await apiClientWithToken
+    .get<SuccessResponseJson<Data>>(
+      `frontend/auction-items/${auctionId}/deal/preview`,
+      {
+        next: { tags: ['auction-items'] },
+      },
+    )
+    .json()
+    .catch(createApiErrorServerSide)
 
   return res
 }

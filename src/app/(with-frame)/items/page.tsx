@@ -2,7 +2,7 @@ import { GetConsignorItems } from '@/api/frontend/items/GetConsignorItems'
 import { Button } from '@/catalyst-ui/button'
 import { Heading } from '@/catalyst-ui/heading'
 import { SearchParamsPagination } from '@/components/SearchParamsPagination'
-import RedirectAuthError from '@/domain/auth/RedirectAuthError'
+import { HandleApiError } from '@/domain/api/HandleApiError'
 import { parseSearchParams } from '@/domain/crud/parseSearchParams'
 import { PAGE, ROWS_PER_PAGE, SITE_NAME } from '@/domain/static/static'
 import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
@@ -32,8 +32,8 @@ export default async function Page({ searchParams }: PageProps) {
     status: filter.status,
   })
 
-  if (itemsRes.error === '1003') {
-    return <RedirectAuthError />
+  if (itemsRes.error) {
+    return <HandleApiError error={itemsRes.error} />
   }
 
   return (

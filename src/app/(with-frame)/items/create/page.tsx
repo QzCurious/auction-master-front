@@ -1,5 +1,5 @@
 import { GetJPYRates } from '@/api/frontend/GetJPYRates'
-import RedirectAuthError from '@/domain/auth/RedirectAuthError'
+import { HandleApiError } from '@/domain/api/HandleApiError'
 import { SITE_NAME } from '@/domain/static/static'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
@@ -33,8 +33,8 @@ export default Page
 async function Content() {
   const [jpyRatesRes] = await Promise.all([GetJPYRates()])
 
-  if (jpyRatesRes.error === '1003') {
-    return <RedirectAuthError />
+  if (jpyRatesRes.error) {
+    return <HandleApiError error={jpyRatesRes.error} />
   }
 
   return <ItemForm jpyBuyingRate={jpyRatesRes.data.buying} />

@@ -25,7 +25,7 @@ export function UserMenu() {
   if (!consignor) {
     return (
       <Link
-        href='/sign-in'
+        href='/auth/sign-in'
         className='flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900'
       >
         登入

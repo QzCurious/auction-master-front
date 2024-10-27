@@ -1,11 +1,12 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { appendEntries } from '@/domain/crud/appendEntries'
-import { z } from 'zod'
-import { apiClient } from '../../apiClient'
-import { throwIfInvalid } from '../../helpers/throwIfInvalid'
-import { withAuth } from '../../withAuth'
 import { WALLET_ACTION } from '@/domain/static/static-config-mappers'
+import { z } from 'zod'
+import { throwIfInvalid } from '@/api/core/static'
 
 const ReqSchema = z.object({
   startAt: z.coerce.date().optional(),
@@ -32,21 +33,18 @@ interface Data {
   count: number
 }
 
-type ErrorCode = never
-
 export async function GetWalletLogs(payload: z.input<typeof ReqSchema>) {
   const parsed = throwIfInvalid(payload, ReqSchema)
 
   const query = new URLSearchParams()
   appendEntries(query, parsed)
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>(
-    `/frontend/wallets/logs?${query}`,
-    {
-      method: 'GET',
+  const res = await apiClientWithToken
+    .get<SuccessResponseJson<Data>>(`frontend/wallets/logs?${query}`, {
       next: { tags: ['wallets'] },
-    },
-  )
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   return res
 }

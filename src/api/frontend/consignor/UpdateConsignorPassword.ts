@@ -1,10 +1,11 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { appendEntries } from '@/domain/crud/appendEntries'
 import { z } from 'zod'
-import { apiClient } from '../../apiClient'
-import { throwIfInvalid } from '../../helpers/throwIfInvalid'
-import { withAuth } from '../../withAuth'
+import { throwIfInvalid } from '@/api/core/static'
 
 const ReqSchema = z.object({
   oldPassword: z.string().min(1),
@@ -13,25 +14,18 @@ const ReqSchema = z.object({
 
 type Data = 'Success'
 
-type ErrorCode =
-  // password cannot be same as old password
-  | '11'
-  // old password incorrect
-  | '1004'
-
 export async function UpdateConsignorPassword(payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const urlencoded = new URLSearchParams()
   appendEntries(urlencoded, data)
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>(
-    '/frontend/consignor/password',
-    {
-      method: 'PATCH',
+  const res = await apiClientWithToken
+    .patch<SuccessResponseJson<Data>>('frontend/consignor/password', {
       body: urlencoded,
-    },
-  )
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   return res
 }

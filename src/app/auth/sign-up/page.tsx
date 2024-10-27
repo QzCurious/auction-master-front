@@ -14,7 +14,7 @@ export default function Page() {
               <p className='mt-2 text-sm leading-6 text-gray-500'>
                 已經是會員?{' '}
                 <Link
-                  href='/sign-in'
+                  href='/auth/sign-in'
                   className='font-semibold text-indigo-600 hover:text-indigo-500'
                 >
                   立即登入

@@ -1,13 +1,12 @@
 'use server'
 
-import { revalidateTag } from 'next/cache'
-import { apiClient } from '../../apiClient'
-import { withAuth } from '../../withAuth'
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { ITEM_TYPE } from '@/domain/static/static-config-mappers'
+import { revalidateTag } from 'next/cache'
 
 type Data = 'Success'
-
-type ErrorCode = never
 
 export async function CreateItem(formData: FormData) {
   const name = formData.get('name')
@@ -36,10 +35,12 @@ export async function CreateItem(formData: FormData) {
     throw new Error('photo and sorted should have the same length')
   }
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>('/frontend/items', {
-    method: 'POST',
-    body: formData,
-  })
+  const res = await apiClientWithToken
+    .post<SuccessResponseJson<Data>>('frontend/items', {
+      body: formData,
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   revalidateTag('items')
 

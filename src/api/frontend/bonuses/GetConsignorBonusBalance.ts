@@ -1,17 +1,18 @@
 'use server'
 
-import { apiClient } from '../../apiClient'
-import { withAuth } from '../../withAuth'
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 
 type Data = number
 
-type ErrorCode = never
-
 export async function GetConsignorBonusBalance() {
-  const res = await withAuth(apiClient)<Data, ErrorCode>('/frontend/bonuses', {
-    method: 'GET',
-    next: { tags: ['bonuses'] },
-  })
+  const res = await apiClientWithToken
+    .get<SuccessResponseJson<Data>>('frontend/bonuses', {
+      next: { tags: ['bonuses'] },
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   return res
 }

@@ -1,12 +1,13 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { revalidateTag } from 'next/cache'
 
 import { appendEntries } from '@/domain/crud/appendEntries'
 import { z } from 'zod'
-import { apiClient } from '../../apiClient'
-import { throwIfInvalid } from '../../helpers/throwIfInvalid'
-import { withAuth } from '../../withAuth'
+import { throwIfInvalid } from '@/api/core/static'
 import { Record } from './GetRecords'
 
 const ReqSchema = z.object({
@@ -14,8 +15,6 @@ const ReqSchema = z.object({
 })
 
 type Data = 'Success'
-
-type ErrorCode = never
 
 export async function ConsignorSubmitPayment(
   id: Record['id'],
@@ -26,13 +25,12 @@ export async function ConsignorSubmitPayment(
   const urlencoded = new URLSearchParams()
   appendEntries(urlencoded, data)
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>(
-    `/frontend/reports/records/${id}/submit-payment`,
-    {
-      method: 'POST',
-      body: urlencoded,
-    },
-  )
+  const res = await apiClientWithToken
+    .post<
+      SuccessResponseJson<Data>
+    >(`frontend/reports/records/${id}/submit-payment`, { body: urlencoded })
+    .json()
+    .catch(createApiErrorServerSide)
 
   revalidateTag('records')
 

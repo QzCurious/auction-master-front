@@ -8,7 +8,7 @@ import { GetConfigsQueryOptions } from '@/api/frontend/GetConfigs.query'
 import { GetJPYRatesQueryOptions } from '@/api/frontend/GetJPYRates.query'
 import { GetConsignorWalletBalanceQueryOptions } from '@/api/frontend/wallets/GetConsignorWalletBalance.query'
 import { Button } from '@/catalyst-ui/button'
-import RedirectAuthError from '@/domain/auth/RedirectAuthError'
+import { HandleApiError, useHandleApiError } from '@/domain/api/HandleApiError'
 import { currencySign } from '@/domain/static/static'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
@@ -53,6 +53,7 @@ function PayFeeDetail({
   const walletQuery = useQuery(GetConsignorWalletBalanceQueryOptions)
   const jpyRatesQuery = useQuery(GetJPYRatesQueryOptions)
   const [isPending, startTransition] = useTransition()
+  const handleApiError = useHandleApiError()
 
   if (
     configsQuery.error ||
@@ -69,13 +70,17 @@ function PayFeeDetail({
   )
     return <section className='w-max'>載入中...</section>
 
-  if (
-    configsQuery.data.error === '1003' ||
-    previewQuery.data.error === '1003' ||
-    walletQuery.data.error === '1003' ||
-    jpyRatesQuery.data.error === '1003'
-  ) {
-    return <RedirectAuthError />
+  if (configsQuery.data.error) {
+    return <HandleApiError error={configsQuery.data.error} />
+  }
+  if (previewQuery.data.error) {
+    return <HandleApiError error={previewQuery.data.error} />
+  }
+  if (walletQuery.data.error) {
+    return <HandleApiError error={walletQuery.data.error} />
+  }
+  if (jpyRatesQuery.data.error) {
+    return <HandleApiError error={jpyRatesQuery.data.error} />
   }
 
   const canPayByWallet =
@@ -126,12 +131,8 @@ function PayFeeDetail({
             onClick={() =>
               startTransition(async () => {
                 const res = await ConsignorPayAuctionItemFee(auctionId)
-                if (res.error === '1703') {
-                  toast.error('大師幣不足')
-                  return
-                }
                 if (res.error) {
-                  toast.error(`操作錯誤: ${res.error}`)
+                  handleApiError(res.error)
                   return
                 }
                 toast.success('已結清手續費')

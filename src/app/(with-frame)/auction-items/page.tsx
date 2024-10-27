@@ -1,7 +1,7 @@
 import { GetConsignorAuctionItems } from '@/api/frontend/auction-items/GetConsignorAuctionItems'
 import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
 import { Heading } from '@/catalyst-ui/heading'
-import RedirectAuthError from '@/domain/auth/RedirectAuthError'
+import { HandleApiError } from '@/domain/api/HandleApiError'
 import { parseSearchParams } from '@/domain/crud/parseSearchParams'
 import { PAGE, ROWS_PER_PAGE, SITE_NAME } from '@/domain/static/static'
 import { CONSIGNOR_STATUS } from '@/domain/static/static-config-mappers'
@@ -32,8 +32,11 @@ export default async function Page({ searchParams }: PageProps) {
     }),
   ])
 
-  if (auctionItemsRes.error === '1003' || consignorRes.error === '1003') {
-    return <RedirectAuthError />
+  if (auctionItemsRes.error) {
+    return <HandleApiError error={auctionItemsRes.error} />
+  }
+  if (consignorRes.error) {
+    return <HandleApiError error={consignorRes.error} />
   }
 
   if (

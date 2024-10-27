@@ -1,20 +1,23 @@
 import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
 import { GetConfigs } from '@/api/frontend/GetConfigs'
-import RedirectAuthError from '@/domain/auth/RedirectAuthError'
+import { Heading } from '@/catalyst-ui/heading'
+import { HandleApiError } from '@/domain/api/HandleApiError'
 import { SITE_NAME } from '@/domain/static/static'
 import { Metadata } from 'next'
 import AccountInfoForm from './AccountInfoForm'
 import ChangePasswordForm from './ChangePasswordForm'
 import IdentityForm from './IdentityForm'
-import { Heading } from '@/catalyst-ui/heading'
 
 export const metadata = { title: `帳號設定 | ${SITE_NAME}` } satisfies Metadata
 
 export default async function Example() {
   const [consignorRes, configsRes] = await Promise.all([GetConsignor(), GetConfigs()])
 
-  if (consignorRes.error === '1003' || configsRes.error === '1003') {
-    return <RedirectAuthError />
+  if (consignorRes.error) {
+    return <HandleApiError error={consignorRes.error} />
+  }
+  if (configsRes.error) {
+    return <HandleApiError error={configsRes.error} />
   }
 
   return (

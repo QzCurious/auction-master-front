@@ -1,13 +1,14 @@
 'use client'
 
 import { CreateConsignor } from '@/api/CreateConsignor'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Button } from '../../catalyst-ui/button'
-import { ErrorMessage, Field, Label } from '../../catalyst-ui/fieldset'
-import { Input } from '../../catalyst-ui/input'
+import { Button } from '../../../catalyst-ui/button'
+import { ErrorMessage, Field, Label } from '../../../catalyst-ui/fieldset'
+import { Input } from '../../../catalyst-ui/input'
 
 const Schema = z
   .object({
@@ -40,18 +41,15 @@ export function SignUpForm() {
     resolver: zodResolver(Schema),
   })
   const router = useRouter()
+  const handleApiError = useHandleApiError()
 
   return (
     <form
       className='space-y-6'
       onSubmit={handleSubmit(async (data) => {
-        const result = await CreateConsignor(data)
-        if (result.error === '1028') {
-          setError('account', { message: '此帳號已存在' })
-          return
-        }
-        if (result.error === '1032') {
-          setError('account', { message: '只能包含數字、英文字母及 _ . - 符號' })
+        const res = await CreateConsignor(data)
+        if (res?.error) {
+          handleApiError(res.error)
           return
         }
         router.push('/')

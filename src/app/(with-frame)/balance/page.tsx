@@ -5,6 +5,7 @@ import { GetConfigs } from '@/api/frontend/GetConfigs'
 import { GetJPYRates } from '@/api/frontend/GetJPYRates'
 import { GetConsignorWalletBalance } from '@/api/frontend/wallets/GetConsignorWalletBalance'
 import { GetWalletLogs, WalletLog } from '@/api/frontend/wallets/GetWalletLogs'
+import { Heading } from '@/catalyst-ui/heading'
 import {
   Table,
   TableBody,
@@ -14,7 +15,7 @@ import {
   TableRow,
 } from '@/catalyst-ui/table'
 import { SearchParamsPagination } from '@/components/SearchParamsPagination'
-import RedirectAuthError from '@/domain/auth/RedirectAuthError'
+import { HandleApiError } from '@/domain/api/HandleApiError'
 import {
   DATE_TIME_FORMAT,
   PAGE,
@@ -38,7 +39,6 @@ import * as R from 'remeda'
 import { z } from 'zod'
 import DateRangeFilter from './DateRangeFilter'
 import WithdrawDialog from './WithdrawDialog'
-import { Heading } from '@/catalyst-ui/heading'
 
 export const metadata = { title: `帳戶紀錄 | ${SITE_NAME}` } satisfies Metadata
 
@@ -154,16 +154,26 @@ export default async function Page({ searchParams }: PageProps) {
       : null,
   ])
 
-  if (
-    consignorRes.error === '1003' ||
-    configsRes.error === '1003' ||
-    jpyRatesRes.error === '1003' ||
-    balanceRes.error === '1003' ||
-    walletLogsRes?.error === '1003' ||
-    bonusRes.error === '1003' ||
-    bonusLogsRes?.error === '1003'
-  ) {
-    return <RedirectAuthError />
+  if (consignorRes.error) {
+    return <HandleApiError error={consignorRes.error} />
+  }
+  if (configsRes.error) {
+    return <HandleApiError error={configsRes.error} />
+  }
+  if (jpyRatesRes.error) {
+    return <HandleApiError error={jpyRatesRes.error} />
+  }
+  if (balanceRes.error) {
+    return <HandleApiError error={balanceRes.error} />
+  }
+  if (walletLogsRes?.error) {
+    return <HandleApiError error={walletLogsRes.error} />
+  }
+  if (bonusRes.error) {
+    return <HandleApiError error={bonusRes.error} />
+  }
+  if (bonusLogsRes?.error) {
+    return <HandleApiError error={bonusLogsRes.error} />
   }
 
   if (

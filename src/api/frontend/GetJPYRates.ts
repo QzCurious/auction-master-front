@@ -1,7 +1,8 @@
 'use server'
 
-import { apiClient } from '../apiClient'
-import { withAuth } from '../withAuth'
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 
 export interface ExchangeRate {
   buying: number
@@ -10,13 +11,13 @@ export interface ExchangeRate {
 
 interface Data extends ExchangeRate {}
 
-type ErrorCode = never
-
 export async function GetJPYRates() {
-  const res = await withAuth(apiClient)<Data, ErrorCode>('/frontend/jpy-rates', {
-    method: 'GET',
-    next: { tags: ['jpy-rates'] },
-  })
+  const res = await apiClientWithToken
+    .get<SuccessResponseJson<Data>>('frontend/jpy-rates', {
+      next: { tags: ['jpy-rates'] },
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   return res
 }

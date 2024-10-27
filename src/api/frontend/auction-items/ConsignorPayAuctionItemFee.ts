@@ -1,24 +1,19 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { revalidateTag } from 'next/cache'
 
-import { apiClient } from '../../apiClient'
-import { withAuth } from '../../withAuth'
 import { AuctionItem } from './GetConsignorAuctionItems'
 
 type Data = 'Success'
 
-type ErrorCode =
-  // 大師幣不足
-  '1703'
-
 export async function ConsignorPayAuctionItemFee(id: AuctionItem['auctionId']) {
-  const res = await withAuth(apiClient)<Data, ErrorCode>(
-    `/frontend/auction-items/${id}/payment/fee`,
-    {
-      method: 'POST',
-    },
-  )
+  const res = await apiClientWithToken
+    .post<SuccessResponseJson<Data>>(`frontend/auction-items/${id}/payment/fee`)
+    .json()
+    .catch(createApiErrorServerSide)
 
   revalidateTag('auction-items')
 

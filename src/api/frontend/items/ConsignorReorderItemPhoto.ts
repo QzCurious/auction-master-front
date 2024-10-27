@@ -1,11 +1,12 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { appendEntries } from '@/domain/crud/appendEntries'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
-import { apiClient } from '../../apiClient'
-import { throwIfInvalid } from '../../helpers/throwIfInvalid'
-import { withAuth } from '../../withAuth'
+import { throwIfInvalid } from '@/api/core/static'
 
 const ReqSchema = z.object({
   originalSorted: z.number(),
@@ -13,8 +14,6 @@ const ReqSchema = z.object({
 })
 
 type Data = 'Success'
-
-type ErrorCode = never
 
 export async function ConsignorReorderItemPhoto(
   id: number,
@@ -25,13 +24,12 @@ export async function ConsignorReorderItemPhoto(
   const urlencoded = new URLSearchParams()
   appendEntries(urlencoded, data)
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>(
-    `/frontend/items/${id}/photos`,
-    {
-      method: 'PATCH',
+  const res = await apiClientWithToken
+    .patch<SuccessResponseJson<Data>>(`frontend/items/${id}/photos`, {
       body: urlencoded,
-    },
-  )
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   revalidateTag('items')
 

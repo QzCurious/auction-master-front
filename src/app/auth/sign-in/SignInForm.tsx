@@ -1,14 +1,15 @@
 'use client'
 
 import { ConsignorLogin } from '@/api/ConsignorLogin'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { XCircleIcon } from '@heroicons/react/20/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Button } from '../../catalyst-ui/button'
-import { ErrorMessage, Field, Label } from '../../catalyst-ui/fieldset'
-import { Input } from '../../catalyst-ui/input'
+import { Button } from '../../../catalyst-ui/button'
+import { ErrorMessage, Field, Label } from '../../../catalyst-ui/fieldset'
+import { Input } from '../../../catalyst-ui/input'
 
 const Schema = z.object({
   account: z.string().min(1, { message: '必填' }),
@@ -29,6 +30,7 @@ export function SignInForm() {
     resolver: zodResolver(Schema),
   })
   const router = useRouter()
+  const handleApiError = useHandleApiError()
 
   return (
     <>
@@ -51,14 +53,11 @@ export function SignInForm() {
         className='space-y-6'
         onSubmit={handleSubmit(async (data) => {
           const res = await ConsignorLogin(data)
-          if (res.error === '1002') {
-            setError('root', { message: '被封鎖的帳號，請聯繫客服' })
+          if (res?.error) {
+            handleApiError(res.error)
             return
           }
-          if (res.error === '1004' || res.error === '1602') {
-            setError('root', { message: '帳號或密碼錯誤' })
-            return
-          }
+
           const goto = new URLSearchParams(location.search).get('goto')
           router.replace(goto || '/')
         })}

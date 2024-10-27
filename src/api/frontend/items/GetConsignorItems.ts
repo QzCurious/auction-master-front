@@ -1,11 +1,12 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { appendEntries } from '@/domain/crud/appendEntries'
-import { z } from 'zod'
-import { apiClient } from '../../apiClient'
-import { throwIfInvalid } from '../../helpers/throwIfInvalid'
-import { withAuth } from '../../withAuth'
 import { ITEM_STATUS, ITEM_TYPE } from '@/domain/static/static-config-mappers'
+import { z } from 'zod'
+import { throwIfInvalid } from '@/api/core/static'
 
 const ReqSchema = z.object({
   status: z.coerce.number().array().optional(),
@@ -57,18 +58,18 @@ interface Data {
   statusCounts: StatusCounts
 }
 
-type ErrorCode = never
-
 export async function GetConsignorItems(payload: z.input<typeof ReqSchema>) {
   const data = throwIfInvalid(payload, ReqSchema)
 
   const query = new URLSearchParams()
   appendEntries(query, data)
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>(`/frontend/items?${query}`, {
-    method: 'GET',
-    next: { tags: ['items'] },
-  })
+  const res = await apiClientWithToken
+    .get<SuccessResponseJson<Data>>(`frontend/items?${query}`, {
+      next: { tags: ['items'] },
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   return res
 }

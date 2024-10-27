@@ -19,7 +19,7 @@ import {
   TableRow,
 } from '@/catalyst-ui/table'
 import { SearchParamsPagination } from '@/components/SearchParamsPagination'
-import RedirectAuthError from '@/domain/auth/RedirectAuthError'
+import { HandleApiError } from '@/domain/api/HandleApiError'
 import { parseSearchParams } from '@/domain/crud/parseSearchParams'
 import {
   currencySign,
@@ -86,14 +86,20 @@ export default async function Page({ searchParams }: PageProps) {
     query['submit-payment'] && GetRecord(query['submit-payment']),
   ])
 
-  if (
-    consignorRes.error === '1003' ||
-    recordsSummaryRes.error === '1003' ||
-    recordsRes.error === '1003' ||
-    configsRes.error === '1003' ||
-    (submitPaymentRecordRes && submitPaymentRecordRes.error === '1003')
-  ) {
-    return <RedirectAuthError />
+  if (consignorRes.error) {
+    return <HandleApiError error={consignorRes.error} />
+  }
+  if (recordsSummaryRes.error) {
+    return <HandleApiError error={recordsSummaryRes.error} />
+  }
+  if (recordsRes.error) {
+    return <HandleApiError error={recordsRes.error} />
+  }
+  if (configsRes.error) {
+    return <HandleApiError error={configsRes.error} />
+  }
+  if (submitPaymentRecordRes && submitPaymentRecordRes.error) {
+    return <HandleApiError error={submitPaymentRecordRes.error} />
   }
 
   if (

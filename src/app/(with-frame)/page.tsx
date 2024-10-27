@@ -1,6 +1,7 @@
 import { GetConfigs } from '@/api/frontend/GetConfigs'
 import { Button } from '@/catalyst-ui/button'
-import { getToken } from '@/domain/auth/getToken'
+import { HandleApiError } from '@/domain/api/HandleApiError'
+import { getJwt } from '@/domain/auth/getJwt'
 import { toPercent } from '@/domain/static/static'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline'
@@ -215,15 +216,15 @@ export default async function Page() {
 }
 
 async function JoinButtons() {
-  const { token } = await getToken()
+  const jwt = await getJwt()
 
-  if (token) {
+  if (jwt) {
     return null
   }
 
   return (
     <div className='mt-10 flex items-center justify-center gap-x-6'>
-      <Button href='/sign-up' color='indigo'>
+      <Button href='/auth/sign-up' color='indigo'>
         立即加入
       </Button>
       <Button plain>
@@ -235,6 +236,9 @@ async function JoinButtons() {
 
 async function FaqSection() {
   const configs = await GetConfigs()
+  if (configs.error) {
+    return <HandleApiError error={configs.error} />
+  }
 
   return (
     <div className=''>

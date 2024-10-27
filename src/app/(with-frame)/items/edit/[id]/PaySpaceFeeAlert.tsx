@@ -6,8 +6,9 @@ import { ConsignorPayItemSpaceFee } from '@/api/frontend/items/ConsignorPayItemS
 import { ConsignorPayItemSpaceFeeByTransfer } from '@/api/frontend/items/ConsignorPayItemSpaceFeeByTransfer'
 import { Item } from '@/api/frontend/items/GetConsignorItem'
 import { Button } from '@/catalyst-ui/button'
-import { useUntil } from '@/helper/useUntil'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { currencySign, DATE_FORMAT } from '@/domain/static/static'
+import { useUntil } from '@/helper/useUntil'
 import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import { format } from 'date-fns'
 import { useRouter } from 'next/navigation'
@@ -29,6 +30,7 @@ export default function PaySpaceFeeAlert({
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const expired = useUntil(item.expireAt, { onFalsy: false })
+  const handleApiError = useHandleApiError()
 
   if (item.expireAt === null) {
     return null
@@ -94,12 +96,8 @@ export default function PaySpaceFeeAlert({
                 onClick={() =>
                   startTransition(async () => {
                     const res = await ConsignorPayItemSpaceFee(item.id)
-                    if (res.error === '1703') {
-                      toast.error('大師幣不足')
-                      return
-                    }
                     if (res.error) {
-                      toast.error(`操作錯誤: ${res.error}`)
+                      handleApiError(res.error)
                       return
                     }
                     toast.success('已結清留倉費')

@@ -10,7 +10,7 @@ import {
 } from '@/catalyst-ui/description-list'
 import { Subheading } from '@/catalyst-ui/heading'
 import InfoPopover, { InfoPopoverPanel } from '@/components/InfoPopover'
-import RedirectAuthError from '@/domain/auth/RedirectAuthError'
+import { HandleApiError } from '@/domain/api/HandleApiError'
 import { currencySign, DATE_FORMAT, SITE_NAME } from '@/domain/static/static'
 import {
   ITEM_STATUS,
@@ -75,12 +75,14 @@ async function Content({ params }: PageProps) {
     GetJPYRates(),
   ])
 
-  if (
-    configsRes.error === '1003' ||
-    itemRes.error === '1003' ||
-    jpyRatesRes.error === '1003'
-  ) {
-    return <RedirectAuthError />
+  if (configsRes.error) {
+    return <HandleApiError error={configsRes.error} />
+  }
+  if (itemRes.error) {
+    return <HandleApiError error={itemRes.error} />
+  }
+  if (jpyRatesRes.error) {
+    return <HandleApiError error={jpyRatesRes.error} />
   }
 
   if (itemRes.error === '1801') {
@@ -154,8 +156,8 @@ async function Content({ params }: PageProps) {
         }
 
         const recordRes = await GetRecord(itemRes.data.recordId)
-        if (recordRes.error === '1003') {
-          return <RedirectAuthError />
+        if (recordRes.error) {
+          return <HandleApiError error={recordRes.error} />
         }
 
         return (
@@ -201,8 +203,8 @@ async function Content({ params }: PageProps) {
 
         if (itemRes.data.recordId) {
           const recordRes = await GetRecord(itemRes.data.recordId)
-          if (recordRes.error === '1003') {
-            return <RedirectAuthError />
+          if (recordRes.error) {
+            return <HandleApiError error={recordRes.error} />
           }
 
           return (
@@ -254,8 +256,8 @@ async function Content({ params }: PageProps) {
 
         const balanceRes = await GetConsignorWalletBalance()
 
-        if (balanceRes.error === '1003') {
-          return <RedirectAuthError />
+        if (balanceRes.error) {
+          return <HandleApiError error={balanceRes.error} />
         }
 
         return (

@@ -12,6 +12,7 @@ import {
   Label,
 } from '@/catalyst-ui/fieldset'
 import { Input, InputGroup } from '@/catalyst-ui/input'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { currencySign } from '@/domain/static/static'
 import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import { useState } from 'react'
@@ -68,6 +69,7 @@ function WithdrawForm({
       amount: '' as any,
     },
   })
+  const handleApiError = useHandleApiError()
 
   const amount = watch('amount')
   const feeInJpy = Math.ceil(withdrawalTransferFee / jpyExchangeRate.buying)
@@ -77,12 +79,8 @@ function WithdrawForm({
     <form
       onSubmit={handleSubmit(async () => {
         const res = await ConsignorWalletWithdrawal({ amount })
-        if (res.error === '1703') {
-          toast.error('餘額不足')
-          return
-        }
         if (res.error) {
-          toast.error(`操作錯誤: ${res.error}`)
+          handleApiError(res.error)
           return
         }
         toast.success('提領申請已送出')
@@ -128,7 +126,7 @@ function WithdrawForm({
                 if (value <= atLeast) {
                   return '最少需大於 ' + atLeast
                 }
-                if(!Number.isInteger(value)) {
+                if (!Number.isInteger(value)) {
                   return '請輸入整數'
                 }
                 if (value > balance) {

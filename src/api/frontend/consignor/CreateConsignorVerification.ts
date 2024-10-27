@@ -1,10 +1,11 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
-import { apiClient } from '../../apiClient'
-import { throwIfInvalid } from '../../helpers/throwIfInvalid'
-import { withAuth } from '../../withAuth'
+import { throwIfInvalid } from '@/api/core/static'
 
 const ReqSchema = z.object({
   name: z.string().min(1),
@@ -21,8 +22,6 @@ const ReqSchema = z.object({
 })
 
 type Data = 'Success'
-
-type ErrorCode = never
 
 export async function CreateConsignorVerification(formData: FormData) {
   throwIfInvalid(
@@ -46,13 +45,12 @@ export async function CreateConsignorVerification(formData: FormData) {
     throw new Error('identificationPhoto is required')
   }
 
-  const res = await withAuth(apiClient)<Data, ErrorCode>(
-    '/frontend/consignor/verifications',
-    {
-      method: 'POST',
+  const res = await apiClientWithToken
+    .post<SuccessResponseJson<Data>>('frontend/consignor/verifications', {
       body: formData,
-    },
-  )
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   revalidateTag('consignor')
   revalidateTag('items')

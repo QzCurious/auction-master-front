@@ -7,6 +7,7 @@ import { Button } from '@/catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '@/catalyst-ui/fieldset'
 import { Input } from '@/catalyst-ui/input'
 import { Listbox, ListboxLabel, ListboxOption } from '@/catalyst-ui/listbox'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { database } from '@/domain/static/address.data'
 import { DATE_FORMAT } from '@/domain/static/static'
 import { CONSIGNOR_STATUS } from '@/domain/static/static-config-mappers'
@@ -225,6 +226,7 @@ function Form({ consignor }: { consignor: Consignor }) {
     },
     resolver: zodResolver(Schema),
   })
+  const handleApiError = useHandleApiError()
 
   return (
     <form
@@ -232,8 +234,8 @@ function Form({ consignor }: { consignor: Consignor }) {
         const formData = new FormData(e?.target)
         formData.append('birthday', data.birthday.toISOString())
         const res = await CreateConsignorVerification(formData)
-        if (res.error === '1003') {
-          toast.error('請重新登入')
+        if (res.error) {
+          handleApiError(res.error)
           return
         }
 

@@ -125,7 +125,7 @@ export function MobileMenu() {
                 </>
               ) : (
                 <Link
-                  href='/sign-in'
+                  href='/auth-sign-in'
                   className='-mx-3 flex items-center gap-x-1 rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
                 >
                   <span>登入</span>

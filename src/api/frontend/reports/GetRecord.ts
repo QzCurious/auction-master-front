@@ -1,8 +1,9 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { Currency } from '@/domain/static/static'
-import { apiClient } from '../../apiClient'
-import { withAuth } from '../../withAuth'
 import {
   type RECORD_STATUS,
   type RECORD_TYPE,
@@ -41,18 +42,15 @@ export interface Record {
 
 type Data = Record
 
-type ErrorCode = never
-
 export async function GetRecord(id: Record['id']) {
-  const res = await withAuth(apiClient)<Data, ErrorCode>(
-    `/frontend/reports/records/${id}`,
-    {
-      method: 'GET',
+  const res = await apiClientWithToken
+    .get<SuccessResponseJson<Data>>(`frontend/reports/records/${id}`, {
       next: {
         tags: ['records'],
       },
-    },
-  )
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   return res
 }

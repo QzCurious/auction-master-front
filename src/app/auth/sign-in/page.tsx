@@ -1,15 +1,7 @@
-import { GetConsignor } from '@/api/frontend/consignor/GetConsignor'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import { SignInForm } from './SignInForm'
 
 export default async function Page() {
-  const consignor = await GetConsignor()
-
-  if (consignor.data) {
-    redirect('/items')
-  }
-
   return (
     <>
       <div className='flex min-h-screen flex-1'>
@@ -22,7 +14,7 @@ export default async function Page() {
               <p className='mt-2 text-sm leading-6 text-gray-500'>
                 還不是會員?{' '}
                 <Link
-                  href='/sign-up'
+                  href='/auth/sign-up'
                   className='font-semibold text-indigo-600 hover:text-indigo-500'
                 >
                   馬上註冊

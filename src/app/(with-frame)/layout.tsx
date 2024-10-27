@@ -4,7 +4,6 @@ import Script from 'next/script'
 import React from 'react'
 import Frame from './_components/Frame'
 import LineFloatBtn from './_components/LineFloatBtn'
-import ToastContainer from './_components/ToastContainer'
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const consignorRes = await GetConsignor()
@@ -13,7 +12,6 @@ export default async function Layout({ children }: { children: React.ReactNode }
     <ConsignorContextProvider consignor={consignorRes.data}>
       <Frame>{children}</Frame>
 
-      <ToastContainer />
       <LineFloatBtn />
       <Script id='noWheel-on-number-input'>
         {`

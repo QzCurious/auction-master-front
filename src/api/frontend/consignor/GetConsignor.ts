@@ -1,8 +1,9 @@
 'use server'
 
+import { apiClientWithToken } from '@/api/core/apiClientWithToken'
+import { createApiErrorServerSide } from '@/api/core/ApiError/createApiErrorServerSide'
+import { SuccessResponseJson } from '@/api/core/static'
 import { CONSIGNOR_STATUS } from '@/domain/static/static-config-mappers'
-import { apiClient } from '../../apiClient'
-import { withAuth } from '../../withAuth'
 
 export interface Consignor {
   id: number
@@ -50,13 +51,13 @@ export interface Consignor {
 
 type Data = Consignor
 
-type ErrorCode = never
-
 export async function GetConsignor() {
-  const res = await withAuth(apiClient)<Data, ErrorCode>('/frontend/consignor', {
-    method: 'GET',
-    next: { tags: ['consignor'] },
-  })
+  const res = await apiClientWithToken
+    .get<SuccessResponseJson<Data>>('frontend/consignor', {
+      next: { tags: ['consignor'] },
+    })
+    .json()
+    .catch(createApiErrorServerSide)
 
   return res
 }

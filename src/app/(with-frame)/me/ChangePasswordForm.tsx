@@ -4,6 +4,7 @@ import { UpdateConsignorPassword } from '@/api/frontend/consignor/UpdateConsigno
 import { Button } from '@/catalyst-ui/button'
 import { ErrorMessage, Field, Label } from '@/catalyst-ui/fieldset'
 import { Input } from '@/catalyst-ui/input'
+import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
@@ -38,6 +39,7 @@ export default function ChangePasswordForm() {
     },
     resolver: zodResolver(Schema),
   })
+  const handleApiError = useHandleApiError()
 
   return (
     <div className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3'>
@@ -56,17 +58,8 @@ export default function ChangePasswordForm() {
             password: data.password,
           })
 
-          if (res.error === '11') {
-            setError('password', { message: '新密碼不能與舊密碼相同' })
-            return
-          }
-          if (res.error === '1003') {
-            toast.error('請重新登入')
-            router.push('/auth/sign-in')
-            return
-          }
-          if (res.error === '1004') {
-            setError('oldPassword', { message: '舊密碼錯誤' })
+          if (res.error) {
+            handleApiError(res.error)
             return
           }
 
