@@ -14,6 +14,10 @@ export async function middleware(request: NextRequest) {
   // refresh token and set cookie
   const response = NextResponse.next()
 
+  if (request.nextUrl.pathname === '/') {
+    return response
+  }
+
   const jwt = await getJwt()
   if (!jwt) {
     console.log('middleware: token not found')
