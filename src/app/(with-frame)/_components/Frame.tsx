@@ -36,7 +36,7 @@ export default function Frame({ children }: { children: React.ReactNode }) {
   return (
     <StackedLayout
       navbar={
-        <Navbar className='relative z-10 -mx-4 px-4 lg:shadow'>
+        <Navbar>
           <Link className='ml-4 flex items-center gap-x-2 lg:ml-0' href='/'>
             <div className='size-4 rounded-full bg-indigo-400' />
             <Heading>日拍大師</Heading>
