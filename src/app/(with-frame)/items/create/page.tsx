@@ -10,7 +10,7 @@ export const metadata = { title: `新增物品 | ${SITE_NAME}` } satisfies Metad
 
 async function Page() {
   return (
-    <div className='mx-auto max-w-3xl px-8'>
+    <div className='mx-auto max-w-3xl'>
       <Link
         className='inline-flex items-center gap-x-1 text-sm text-indigo-600 hover:text-indigo-500'
         href='/items'

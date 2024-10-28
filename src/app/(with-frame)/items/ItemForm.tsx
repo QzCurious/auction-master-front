@@ -129,7 +129,7 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
         )}
       >
         <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
-          <div className='col-span-full flex gap-x-12'>
+          <div className='col-span-full flex flex-wrap gap-x-12 gap-y-4'>
             <Controller
               control={control}
               name='type'

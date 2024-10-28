@@ -42,7 +42,7 @@ interface PageProps {
 async function Page(pageProps: PageProps) {
   const params = await pageProps.params
   return (
-    <div className='mx-auto max-w-4xl px-8'>
+    <div className='mx-auto max-w-4xl'>
       <Link
         className='inline-flex items-center gap-x-1 text-sm text-indigo-600 hover:text-indigo-500'
         href='/items'
@@ -296,11 +296,11 @@ async function Content({ params }: { params: Awaited<PageProps['params']> }) {
           </section>
         </div>
 
-        <div className='min-w-40'>
+        <div className='min-w-40 flex-none'>
           <section>
-            <DescriptionList className='whitespace-nowrap'>
+            <DescriptionList className='!sm:grid-cols-[auto_auto] whitespace-nowrap'>
               <DescriptionTerm>類別</DescriptionTerm>
-              <DescriptionDetails>
+              <DescriptionDetails className='sm:text-end'>
                 {ITEM_TYPE.data.find(({ value }) => value === itemRes.data.type)
                   ?.message ?? '(待定)'}
               </DescriptionDetails>
@@ -313,7 +313,9 @@ async function Content({ params }: { params: Awaited<PageProps['params']> }) {
               }).length && (
                 <>
                   <DescriptionTerm>佔用空間</DescriptionTerm>
-                  <DescriptionDetails>{itemRes.data.space}</DescriptionDetails>
+                  <DescriptionDetails className='sm:text-end'>
+                    {itemRes.data.space}
+                  </DescriptionDetails>
                 </>
               )}
 
@@ -325,7 +327,7 @@ async function Content({ params }: { params: Awaited<PageProps['params']> }) {
                   </InfoPopoverPanel>
                 </InfoPopover>
               </DescriptionTerm>
-              <DescriptionDetails className='text-end'>
+              <DescriptionDetails className='sm:text-end'>
                 {currencySign('JPY')}
                 {itemRes.data.reservePrice.toLocaleString()}
                 <p className='whitespace-nowrap text-zinc-500'>
@@ -414,16 +416,18 @@ async function Content({ params }: { params: Awaited<PageProps['params']> }) {
               ITEM_STATUS.enum('AppraiserConfirmedStatus'),
               ITEM_STATUS.enum('ConsignorConfirmedStatus'),
             ]) && (
-              <div className='mb-4 flex justify-end'>
+              <section className='mb-4 flex justify-end'>
                 <ReturnItemDialog item={itemRes.data} />
-              </div>
+              </section>
             )}
+          </div>
 
+          <section>
             <Subheading level={2}>物品進度</Subheading>
             <div className='mt-3'>
               <StatusFlowUI item={itemRes.data} />
             </div>
-          </div>
+          </section>
         </div>
       </div>
     </>
