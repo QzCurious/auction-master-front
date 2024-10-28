@@ -11,6 +11,8 @@ import LineFloatBtn from './_components/LineFloatBtn'
 import heroImg1 from './_components/hero-img-1.jpg'
 import heroImg2 from './_components/hero-img-2.png'
 import heroImg3 from './_components/hero-img-3.png'
+import m_heroImg1 from './_components/mobile-hero-img-1.png'
+import m_heroImg2 from './_components/mobile-hero-img-2.png'
 
 const footerNavigation = {
   solutions: [
@@ -71,7 +73,32 @@ export default async function Page() {
 
                 {!process.env.NEXT_PUBLIC_IS_MAINTENANCE && <JoinButtons />}
 
-                <div className='mt-10 rounded-lg bg-gray-100 p-2 shadow-md'>
+                {/* mobile carousel */}
+                <div className='-mx-10 mt-10 sm:hidden'>
+                  <div className='mx-auto max-w-md'>
+                    <div className='rounded-lg bg-gray-100 p-2 shadow-md'>
+                      <HeroCarousel>
+                        <HeroCarouselItem>
+                          <img
+                            src={m_heroImg1.src}
+                            className='size-full object-contain object-center'
+                            alt=''
+                          />
+                        </HeroCarouselItem>
+                        <HeroCarouselItem>
+                          <img
+                            src={m_heroImg2.src}
+                            className='size-full object-contain object-center'
+                            alt=''
+                          />
+                        </HeroCarouselItem>
+                      </HeroCarousel>
+                    </div>
+                  </div>
+                </div>
+
+                {/* desktop carousel */}
+                <div className='mt-10 hidden rounded-lg bg-gray-100 p-2 shadow-md sm:block'>
                   <HeroCarousel>
                     <HeroCarouselItem>
                       <img
