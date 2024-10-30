@@ -31,7 +31,7 @@ const apiClientBase = ky.extend({
             )
           }
         }
-        return response
+        return response.clone()
       },
     ],
   },
