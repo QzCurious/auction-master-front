@@ -126,6 +126,9 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
                 }
                 toast.success('更新成功')
               },
+          (err) => {
+            console.log(err)
+          },
         )}
       >
         <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
@@ -390,7 +393,11 @@ function UploadImage({
                       alt=''
                     />
                   </article>
-                  {/* {error && <p className='text-end text-sm text-red-600'>{error}</p>} */}
+                  {formState.errors['photos']?.[i] && (
+                    <p className='text-end text-sm text-red-600'>
+                      {formState.errors['photos']?.[i]?.message}
+                    </p>
+                  )}
 
                   <div className='absolute right-0 top-0 z-20 flex w-fit items-center gap-x-2 pr-3 pt-1'>
                     <DraggableHandler>
