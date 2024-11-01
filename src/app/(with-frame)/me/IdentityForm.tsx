@@ -189,7 +189,10 @@ function ConsignorInfoDescriptionList({
 const Schema = z.object({
   identificationPhoto: z
     .instanceof(File, { message: '必填' })
-    .refine((file) => file.size <= 20 * 1024 * 1024, { message: '上限 20MB' }),
+    .refine((file) => file.size <= 20 * 1024 * 1024, { message: '上限 20MB' })
+    .refine((file) => file.type === 'image/jpeg' || file.type === 'image/png', {
+      message: '請上傳 JPG, PNG 格式圖片',
+    }),
   name: z.string().min(1, { message: '必填' }),
   identification: z.string().min(1, { message: '必填' }),
   gender: z.number().refine((v) => v === 1 || v === 2, { message: '必填' }),
@@ -269,7 +272,7 @@ function Form({ consignor }: { consignor: Consignor }) {
                               aria-hidden='true'
                             />
                             <p className='text-xs leading-5 text-gray-600'>
-                              支援 PNG, JPG, JPEG
+                              支援 PNG, JPG
                             </p>
                           </div>
                         </div>

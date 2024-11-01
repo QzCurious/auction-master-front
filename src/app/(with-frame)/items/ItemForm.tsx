@@ -52,13 +52,16 @@ const Schema = z.object({
           .object({
             file: z.instanceof(File, { message: '必填' }),
           })
+          .refine(({ file }) => file.type === 'image/jpeg', {
+            message: '請上傳 JPG 格式圖片',
+          })
           .refine(({ file }) => file.size <= 20 * 1024 * 1024, {
             message: '上限 20MB',
           }),
       ]),
     )
     .min(1, { message: '必填' })
-    .max(30, { message: '上限 30 張' }),
+    .max(10, { message: '上限 10 張' }),
   description: z.string().default(''),
 })
 
@@ -305,13 +308,17 @@ function UploadImage({
         type='file'
         id='file-upload'
         hidden
-        accept='image/png, image/jpeg, image/jpg'
+        accept='image/jpeg'
         multiple
         onChange={
           !item
             ? (e) => {
-                const files = e.target.files
-                if (!files) return
+                const files =
+                  e.target.files &&
+                  Array.from(e.target.files).filter(
+                    (file) => file.type === 'image/jpeg',
+                  )
+                if (!files?.length) return
                 for (const file of Array.from(files).slice(
                   0,
                   LIMIT - fields.length,
@@ -320,8 +327,12 @@ function UploadImage({
                 }
               }
             : (e) => {
-                const files = e.target.files
-                if (!files) return
+                const files =
+                  e.target.files &&
+                  Array.from(e.target.files).filter(
+                    (file) => file.type === 'image/jpeg',
+                  )
+                if (!files?.length) return
                 if (item) {
                   const formData = new FormData()
                   for (
@@ -363,9 +374,7 @@ function UploadImage({
                   className='mx-auto h-12 w-12 text-gray-300'
                   aria-hidden='true'
                 />
-                <p className='mt-2 text-xs leading-5 text-gray-600'>
-                  支援 PNG, JPG, JPEG
-                </p>
+                <p className='mt-2 text-xs leading-5 text-gray-600'>支援 JPG</p>
               </div>
             </div>
           ) : (

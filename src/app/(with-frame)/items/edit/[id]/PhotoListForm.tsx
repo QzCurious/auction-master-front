@@ -14,7 +14,7 @@ import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { ArrowsOutLineHorizontal } from '@phosphor-icons/react/dist/ssr/ArrowsOutLineHorizontal'
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import * as R from 'remeda'
 
 interface PhotoListFormProps {
@@ -45,12 +45,14 @@ export default function PhotoListForm({ item }: PhotoListFormProps) {
           id='file-upload'
           name='file-upload'
           type='file'
-          accept='image/png, image/jpeg, image/jpg'
+          accept='image/jpeg'
           hidden
           multiple
           onChange={async (e) => {
-            const files = e.target.files
-            if (!files) return
+            const files =
+              e.target.files &&
+              Array.from(e.target.files).filter((file) => file.type === 'image/jpeg')
+            if (!files?.length) return
             const formData = new FormData()
             for (let i = 0; i < files.length; i++) {
               formData.append('photo', files[i])
@@ -82,9 +84,7 @@ export default function PhotoListForm({ item }: PhotoListFormProps) {
                   className='mx-auto h-12 w-12 text-gray-300'
                   aria-hidden='true'
                 />
-                <p className='mt-2 text-xs leading-5 text-gray-600'>
-                  支援 PNG, JPG, JPEG
-                </p>
+                <p className='mt-2 text-xs leading-5 text-gray-600'>支援 JPG</p>
               </div>
             </div>
           ) : (
