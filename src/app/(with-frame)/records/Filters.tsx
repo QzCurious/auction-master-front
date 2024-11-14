@@ -1,10 +1,10 @@
 'use client'
 
-import { RECORD_STATUS, RECORD_TYPE } from '@/domain/static/static-config-mappers'
 import { Field, Label } from '@/catalyst-ui/fieldset'
 import { Input } from '@/catalyst-ui/input'
 import { Text } from '@/catalyst-ui/text'
-import { DATE_FORMAT } from '@/domain/static/static'
+import { DATE_FORMAT, PAGE } from '@/domain/static/static'
+import { RECORD_STATUS, RECORD_TYPE } from '@/domain/static/static-config-mappers'
 import {
   Dialog,
   DialogBackdrop,
@@ -161,7 +161,7 @@ export function DesktopFilters(props: FilterProps) {
 
   return (
     <div className='hidden min-w-fit lg:block'>
-      <DateRangeFilter canCancel startAt={props.startAt} endAt={props.endAt} />
+      <DateRangeFilter startAt={props.startAt} endAt={props.endAt} />
       <form className='mt-6 space-y-10 divide-y divide-gray-200'>
         {R.entries(filters).map(([field, section], sectionIdx) => (
           <div key={section.label} className={clsx(sectionIdx !== 0 && 'pt-10')}>
@@ -170,10 +170,11 @@ export function DesktopFilters(props: FilterProps) {
               options={section.options}
               selected={props[field]}
               onChange={(value) => {
-                const newSearch = new URLSearchParams(searchParams)
-                newSearch.delete(field)
-                value.forEach((v) => newSearch.append(field, v.toString()))
-                router.replace(`?${newSearch.toString()}`)
+                const newSearchParams = new URLSearchParams(searchParams)
+                newSearchParams.delete(PAGE)
+                newSearchParams.delete(field)
+                value.forEach((v) => newSearchParams.append(field, v.toString()))
+                router.replace(`?${newSearchParams.toString()}`)
               }}
             />
           </div>
@@ -300,7 +301,7 @@ export function MobileFilters(props: FilterProps) {
             {/* Filters */}
             <div className='my-4 px-4'>
               <DateRangeFilter
-                canCancel
+                // canCancel
                 zIndex={50}
                 startAt={props.startAt}
                 endAt={props.endAt}
@@ -315,10 +316,11 @@ export function MobileFilters(props: FilterProps) {
                   options={section.options}
                   selected={props[field]}
                   onChange={(value) => {
-                    const newSearch = new URLSearchParams(searchParams)
-                    newSearch.delete(field)
-                    value.forEach((v) => newSearch.append(field, v.toString()))
-                    router.replace(`?${newSearch.toString()}`)
+                    const newSearchParams = new URLSearchParams(searchParams)
+                    newSearchParams.delete(PAGE)
+                    newSearchParams.delete(field)
+                    value.forEach((v) => newSearchParams.append(field, v.toString()))
+                    router.replace(`?${newSearchParams.toString()}`)
                   }}
                 />
               ))}

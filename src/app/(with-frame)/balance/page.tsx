@@ -56,15 +56,9 @@ function validRange(startAt?: Date, endAt?: Date) {
 }
 
 function fixRange(startAt?: Date, endAt?: Date) {
-  const wasValid = validRange(startAt, endAt)
-
-  if (wasValid) {
-    return { wasValid, startAt, endAt }
-  }
-
   const defaultEndAt = startOfDay(addDays(new Date(), 1))
   const defaultStartAt = startOfDay(subDays(defaultEndAt, 7))
-  return { wasValid, startAt: defaultStartAt, endAt: defaultEndAt }
+  return { startAt: startAt ?? defaultStartAt, endAt: endAt ?? defaultEndAt }
 }
 
 const querySchema = z.intersection(
@@ -117,7 +111,7 @@ export default async function Page(props: PageProps) {
   const searchParams = await props.searchParams
   const query = querySchema.parse(searchParams)
   const pagination = PaginationSchema.parse(searchParams)
-  const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
+  const { startAt, endAt } = fixRange(query.startAt, query.endAt)
 
   const [
     consignorRes,
@@ -231,11 +225,7 @@ export default async function Page(props: PageProps) {
 
       <div className='mt-4'>
         {/* {query.type === 'balance' && <AuctionFilter selected={query.action} />} */}
-        <DateRangeFilter
-          canCancel
-          startAt={wasValid ? startAt : undefined}
-          endAt={wasValid ? endAt : undefined}
-        />
+        <DateRangeFilter startAt={startAt} endAt={endAt} />
       </div>
 
       <div className='mt-4'>

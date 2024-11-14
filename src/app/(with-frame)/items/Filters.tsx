@@ -1,8 +1,9 @@
 'use client'
 
 import { StatusCounts } from '@/api/frontend/items/GetConsignorItems'
-import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { Text } from '@/catalyst-ui/text'
+import { PAGE } from '@/domain/static/static'
+import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { StatusFlow } from '@/domain/static/StatusFlow'
 import {
   Dialog,
@@ -100,19 +101,20 @@ export function DesktopFilters({ selected, statusCount }: StatusFilterProps) {
                     className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
                     onChange={(e) => {
                       const { checked } = e.target
-                      const newSearch = new URLSearchParams(searchParams)
+                      const newSearchParams = new URLSearchParams(searchParams)
+                      newSearchParams.delete(PAGE)
                       if (checked) {
-                        newSearch.append(section.field, option.value.toString())
-                        router.replace(`?${newSearch.toString()}`)
+                        newSearchParams.append(section.field, option.value.toString())
+                        router.replace(`?${newSearchParams.toString()}`)
                       } else {
-                        const values = newSearch
+                        const values = newSearchParams
                           .getAll(section.field)
                           .filter((value) => value !== option.value.toString())
-                        newSearch.delete(section.field)
+                        newSearchParams.delete(section.field)
                         for (const value of values) {
-                          newSearch.append(section.field, value)
+                          newSearchParams.append(section.field, value)
                         }
-                        router.replace(`?${newSearch.toString()}`)
+                        router.replace(`?${newSearchParams.toString()}`)
                       }
                     }}
                   />
@@ -231,24 +233,27 @@ export function MobileFilters({ selected, statusCount }: StatusFilterProps) {
                                 className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
                                 onChange={(e) => {
                                   const { checked } = e.target
-                                  const newSearch = new URLSearchParams(searchParams)
+                                  const newSearchParams = new URLSearchParams(
+                                    searchParams,
+                                  )
+                                  newSearchParams.delete(PAGE)
                                   if (checked) {
-                                    newSearch.append(
+                                    newSearchParams.append(
                                       section.field,
                                       option.value.toString(),
                                     )
-                                    router.replace(`?${newSearch.toString()}`)
+                                    router.replace(`?${newSearchParams.toString()}`)
                                   } else {
-                                    const values = newSearch
+                                    const values = newSearchParams
                                       .getAll(section.field)
                                       .filter(
                                         (value) => value !== option.value.toString(),
                                       )
-                                    newSearch.delete(section.field)
+                                    newSearchParams.delete(section.field)
                                     for (const value of values) {
-                                      newSearch.append(section.field, value)
+                                      newSearchParams.append(section.field, value)
                                     }
-                                    router.replace(`?${newSearch.toString()}`)
+                                    router.replace(`?${newSearchParams.toString()}`)
                                   }
                                 }}
                               />
