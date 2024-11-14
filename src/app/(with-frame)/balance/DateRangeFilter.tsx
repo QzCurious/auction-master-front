@@ -117,6 +117,7 @@ export default function DateRangeFilter({
                     return
                   }
                   const newSearchParams = new URLSearchParams(searchParams)
+                  newSearchParams.delete(PAGE)
                   newSearchParams.set('startAt', startOfDay(r.from).toISOString())
                   newSearchParams.set('endAt', endOfDay(r.to).toISOString())
                   newSearchParams.delete(PAGE)

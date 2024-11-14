@@ -1,7 +1,8 @@
 'use client'
 
-import { AUCTION_ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import { Text } from '@/catalyst-ui/text'
+import { PAGE } from '@/domain/static/static'
+import { AUCTION_ITEM_STATUS } from '@/domain/static/static-config-mappers'
 import {
   Dialog,
   DialogBackdrop,
@@ -70,16 +71,17 @@ export function DesktopFilters({ selected }: StatusFilterProps) {
                     className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
                     onChange={(e) => {
                       const { checked } = e.target
-                      const newSearch = new URLSearchParams(searchParams)
-                      newSearch.delete(section.field)
+                      const newSearchParams = new URLSearchParams(searchParams)
+                      newSearchParams.delete(PAGE)
+                      newSearchParams.delete(section.field)
 
                       const newSelected = checked
                         ? [...selected, option.value]
                         : selected.filter((v) => v !== option.value)
                       for (const v of newSelected) {
-                        newSearch.append(section.field, v.toString())
+                        newSearchParams.append(section.field, v.toString())
                       }
-                      router.replace(`?${newSearch}`)
+                      router.replace(`?${newSearchParams}`)
                     }}
                   />
                   <label
@@ -189,16 +191,22 @@ export function MobileFilters({ selected }: StatusFilterProps) {
                                 className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
                                 onChange={(e) => {
                                   const { checked } = e.target
-                                  const newSearch = new URLSearchParams(searchParams)
-                                  newSearch.delete(section.field)
+                                  const newSearchParams = new URLSearchParams(
+                                    searchParams,
+                                  )
+                                  newSearchParams.delete(PAGE)
+                                  newSearchParams.delete(section.field)
 
                                   const newSelected = checked
                                     ? [...selected, option.value]
                                     : selected.filter((v) => v !== option.value)
                                   for (const v of newSelected) {
-                                    newSearch.append(section.field, v.toString())
+                                    newSearchParams.append(
+                                      section.field,
+                                      v.toString(),
+                                    )
                                   }
-                                  router.replace(`?${newSearch}`)
+                                  router.replace(`?${newSearchParams}`)
                                 }}
                               />
                               <label
