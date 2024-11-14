@@ -113,9 +113,10 @@ export function RowsPerPageSelect({
 
           <ListboxOptions
             transition
+            anchor={{ to: 'top', gap: 12 }}
             className='absolute z-10 mt-1 max-h-60 min-w-[var(--button-width)] overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in sm:text-sm'
           >
-            {unique([value, 5, 10, 20, 30])
+            {unique([value, 50, 100])
               .sort((a, b) => a - b)
               .map((v) => (
                 <ListboxOption
