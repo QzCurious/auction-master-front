@@ -161,7 +161,7 @@ export function DesktopFilters(props: FilterProps) {
 
   return (
     <div className='hidden min-w-fit lg:block'>
-      <DateRangeFilter canCancel startAt={props.startAt} endAt={props.endAt} />
+      <DateRangeFilter startAt={props.startAt} endAt={props.endAt} />
       <form className='mt-6 space-y-10 divide-y divide-gray-200'>
         {R.entries(filters).map(([field, section], sectionIdx) => (
           <div key={section.label} className={clsx(sectionIdx !== 0 && 'pt-10')}>
@@ -300,7 +300,7 @@ export function MobileFilters(props: FilterProps) {
             {/* Filters */}
             <div className='my-4 px-4'>
               <DateRangeFilter
-                canCancel
+                // canCancel
                 zIndex={50}
                 startAt={props.startAt}
                 endAt={props.endAt}

@@ -57,7 +57,7 @@ interface PageProps {
 export default async function Page(props: PageProps) {
   const searchParams = await props.searchParams
   const query = parseSearchParams(SearchParamsSchema, searchParams)
-  const { wasValid, startAt, endAt } = fixRange(query.startAt, query.endAt)
+  const { startAt, endAt } = fixRange(query.startAt, query.endAt)
 
   const [
     consignorRes,
@@ -116,8 +116,8 @@ export default async function Page(props: PageProps) {
 
       <div className='mt-2.5'>
         <MobileFilters
-          startAt={wasValid ? startAt : undefined}
-          endAt={wasValid ? endAt : undefined}
+          startAt={startAt}
+          endAt={endAt}
           type={query.type}
           status={query.status}
         />
@@ -125,8 +125,8 @@ export default async function Page(props: PageProps) {
 
       <div className='mt-6 sm:flex sm:gap-16'>
         <DesktopFilters
-          startAt={wasValid ? startAt : undefined}
-          endAt={wasValid ? endAt : undefined}
+          startAt={startAt}
+          endAt={endAt}
           type={query.type}
           status={query.status}
         />
