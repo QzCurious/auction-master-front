@@ -4,7 +4,6 @@ import { StatusCounts } from '@/api/frontend/items/GetConsignorItems'
 import { Text } from '@/catalyst-ui/text'
 import { PAGE } from '@/domain/static/static'
 import { ITEM_STATUS } from '@/domain/static/static-config-mappers'
-import { StatusFlow } from '@/domain/static/StatusFlow'
 import {
   Dialog,
   DialogBackdrop,
@@ -19,8 +18,7 @@ import clsx from 'clsx'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import * as R from 'remeda'
-
-const side = 'consignor'
+import { SHOW_COUNT_STATUS } from './SHOW_COUNT_STATUS'
 
 const filters = [
   {
@@ -67,10 +65,6 @@ const filters = [
 ]
 
 filters[0].options.length satisfies typeof ITEM_STATUS.data.length
-
-const showCountStatus = Object.values(StatusFlow.flow)
-  .filter((v) => 'adjudicator' in v && v.adjudicator === side)
-  .map((v) => ITEM_STATUS.enum(v.status))
 
 interface StatusFilterProps {
   selected: Array<ITEM_STATUS['value']>
@@ -122,13 +116,13 @@ export function DesktopFilters({ selected, statusCount }: StatusFilterProps) {
                     htmlFor={`${section.field}-${optionIdx}`}
                     className={clsx(
                       'ml-3 text-sm',
-                      R.isIncludedIn(option.value, showCountStatus)
+                      R.isIncludedIn(option.value, SHOW_COUNT_STATUS)
                         ? 'text-gray-900'
                         : 'text-gray-500',
                     )}
                   >
                     {option.label}{' '}
-                    {R.isIncludedIn(option.value, showCountStatus) && (
+                    {R.isIncludedIn(option.value, SHOW_COUNT_STATUS) && (
                       <span>({statusCount[option.value] ?? 0})</span>
                     )}
                   </label>
@@ -261,13 +255,13 @@ export function MobileFilters({ selected, statusCount }: StatusFilterProps) {
                                 htmlFor={`${section.field}-${optionIdx}-mobile`}
                                 className={clsx(
                                   'ml-3 text-sm',
-                                  R.isIncludedIn(option.value, showCountStatus)
+                                  R.isIncludedIn(option.value, SHOW_COUNT_STATUS)
                                     ? 'text-gray-900'
                                     : 'text-gray-500',
                                 )}
                               >
                                 {option.label}{' '}
-                                {R.isIncludedIn(option.value, showCountStatus) && (
+                                {R.isIncludedIn(option.value, SHOW_COUNT_STATUS) && (
                                   <span>({statusCount[option.value] ?? 0})</span>
                                 )}
                               </label>

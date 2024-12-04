@@ -13,8 +13,10 @@ import { PlusIcon } from '@heroicons/react/24/outline'
 import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
 import { Metadata } from 'next'
 import Link from 'next/link'
+import * as R from 'remeda'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { SearchParamsSchema } from './SearchParamsSchema'
+import { SHOW_COUNT_STATUS } from './SHOW_COUNT_STATUS'
 
 export const metadata = { title: `我的物品 | ${SITE_NAME}` } satisfies Metadata
 
@@ -90,6 +92,9 @@ export default async function Page(props: PageProps) {
                 </div>
               </Link>
 
+              {R.isIncludedIn(item.status, SHOW_COUNT_STATUS) && (
+                <div className='absolute right-2 top-2 size-4 animate-pulse rounded-full bg-red-400'></div>
+              )}
               {!!item.expireAt && !item.recordId && (
                 <Until date={new Date(item.expireAt)}>
                   <div className='absolute right-2 top-2'>
