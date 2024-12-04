@@ -14,7 +14,7 @@ export default async function LineFloatBtn() {
       href={data.lineURL}
       target='_blank'
       rel='noopener noreferrer'
-      className='fixed bottom-12 right-4 block size-12 transition-opacity hover:opacity-70'
+      className='fixed bottom-20 right-4 block size-12 transition-opacity hover:opacity-70 lg:bottom-12'
     >
       <Image src={img} alt='Contact by LINE' />
     </a>
