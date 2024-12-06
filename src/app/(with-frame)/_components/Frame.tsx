@@ -21,6 +21,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useContext } from 'react'
 import { UserMenu } from './UserMenu'
+import Image from 'next/image'
+import logo from './日拍大師LOGO.jpg'
 
 const navItems = [
   { label: '我的物品', url: '/items' },
@@ -37,8 +39,8 @@ export default function Frame({ children }: { children: React.ReactNode }) {
     <StackedLayout
       navbar={
         <Navbar>
-          <Link className='ml-4 flex items-center gap-x-2 lg:ml-0' href='/'>
-            <div className='size-4 rounded-full bg-indigo-400' />
+          <Link className='ml-4 flex items-center lg:ml-0' href='/'>
+            <Image src={logo} width={52} height={52} className='-my-20' alt='' />
             <Heading>日拍大師</Heading>
           </Link>
           <NavbarDivider className='max-lg:hidden' />
