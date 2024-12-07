@@ -96,7 +96,12 @@ export function AuctionItemsTable({ rows, count }: AuctionItemsTableProps) {
                 >
                   {row.currentPrice.toLocaleString()}
                 </span>{' '}
-                <span title='期望金額' className='text-zinc-500'>
+                <span
+                  title={
+                    process.env.NODE_ENV === 'development' ? '期望金額' : undefined
+                  }
+                  className='text-zinc-500'
+                >
                   / {row.reservePrice.toLocaleString()}
                 </span>
               </TableCell>
