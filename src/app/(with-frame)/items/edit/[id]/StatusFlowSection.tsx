@@ -39,8 +39,8 @@ export function StatusFlowUI({ item }: { item: Item }) {
 
   const actionMap = StatusFlow.makeActionMap('consignor', {
     AppraisedStatus: (
-      <div>
-        <div className='flex flex-col gap-y-3'>
+      <div className='w-full'>
+        <div className='flex w-full flex-col gap-y-3'>
           <CompanyDirectPurchaseBtn item={item} />
           <ApproveConsignmentBtn item={item} />
           <DoubleCheckPopover
@@ -219,13 +219,15 @@ function ApproveConsignmentBtn({ item }: { item: Item }) {
     <>
       <Button
         color='indigo'
-        className='h-9 min-w-20'
+        className='relative h-9 min-w-20'
         onClick={() => setOpen(true)}
         disabled={
           consignor.status ===
           CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
         }
       >
+        <div className='absolute -inset-1 animate-pulse rounded-xl border-2 border-indigo-400'></div>
+        <div className='absolute right-1 top-1 size-2 rounded-full bg-red-500'></div>
         託售
       </Button>
       <Dialog open={open} onClose={() => {}}>
@@ -321,13 +323,15 @@ function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
     <>
       <Button
         color='sky'
-        className='h-9 min-w-20'
+        className='relative block h-9 w-full min-w-20'
         onClick={() => setOpen(true)}
         disabled={
           consignor.status ===
           CONSIGNOR_STATUS.enum('AwaitingVerificationCompletionStatus')
         }
       >
+        <div className='absolute -inset-1 animate-pulse rounded-xl border-2 border-sky-400'></div>
+        <div className='absolute right-1 top-1 size-2 rounded-full bg-red-500'></div>
         現金收購
       </Button>
       <Dialog open={open} onClose={() => {}}>

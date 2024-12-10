@@ -17,6 +17,7 @@ import * as R from 'remeda'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { SearchParamsSchema } from './SearchParamsSchema'
 import { SHOW_COUNT_STATUS } from './SHOW_COUNT_STATUS'
+import clsx from 'clsx'
 
 export const metadata = { title: `我的物品 | ${SITE_NAME}` } satisfies Metadata
 
@@ -77,8 +78,17 @@ export default async function Page(props: PageProps) {
           {itemsRes.data.items.map((item) => (
             <article key={item.id} className='relative'>
               <Link href={`/items/edit/${item.id}`}>
-                <div className='aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg border border-gray-200 group-hover:opacity-75'>
-                  <div className='min-w-0 shrink-0 basis-full'>
+                <div
+                  className={clsx(
+                    'aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg group-hover:opacity-75',
+                    !R.isIncludedIn(item.status, SHOW_COUNT_STATUS) &&
+                      'border border-gray-200',
+                  )}
+                >
+                  {R.isIncludedIn(item.status, SHOW_COUNT_STATUS) && (
+                    <div className='absolute inset-0 z-10 animate-pulse rounded-lg border-2 border-red-300'></div>
+                  )}
+                  <div className={clsx('min-w-0 shrink-0 basis-full')}>
                     {item.photos.length > 0 ? (
                       <img
                         src={item.photos[0].photo}
@@ -92,9 +102,6 @@ export default async function Page(props: PageProps) {
                 </div>
               </Link>
 
-              {R.isIncludedIn(item.status, SHOW_COUNT_STATUS) && (
-                <div className='absolute right-2 top-2 size-4 animate-pulse rounded-full bg-red-400'></div>
-              )}
               {!!item.expireAt && !item.recordId && (
                 <Until date={new Date(item.expireAt)}>
                   <div className='absolute right-2 top-2'>
@@ -113,7 +120,14 @@ export default async function Page(props: PageProps) {
                   {item.name}
                 </h2>
 
-                <p className='ml-auto inline-flex flex-none cursor-default items-center rounded-md bg-gray-50 px-2 py-1 text-sm text-gray-800 ring-1 ring-inset ring-gray-500/10'>
+                <p
+                  className={clsx(
+                    'ml-auto inline-flex flex-none cursor-default items-center rounded-md px-2 py-1 text-sm ring-1 ring-inset ring-gray-500/10',
+                    R.isIncludedIn(item.status, SHOW_COUNT_STATUS)
+                      ? 'bg-red-50 text-red-700'
+                      : 'bg-gray-50 text-gray-800',
+                  )}
+                >
                   {ITEM_STATUS.get('value', item.status).message}
                 </p>
               </div>
