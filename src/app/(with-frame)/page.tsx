@@ -1,18 +1,19 @@
 import { GetConfigs } from '@/api/frontend/GetConfigs'
 import { Button } from '@/catalyst-ui/button'
+import { getDb } from '@/db'
+import { carousel, carouselGroup } from '@/db/schema'
 import { HandleApiError } from '@/domain/api/HandleApiError'
 import { getJwt } from '@/domain/auth/getJwt'
 import { toPercent } from '@/domain/static/static'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
+import { eq, getTableColumns, lt } from 'drizzle-orm'
+import Link from 'next/link'
 import React from 'react'
+import * as R from 'remeda'
 import { HeroCarousel, HeroCarouselItem } from './_components/HeroCarousel'
 import LineFloatBtn from './_components/LineFloatBtn'
-import heroImg1 from './_components/hero-img-1.jpg'
-import heroImg2 from './_components/hero-img-2.png'
-import heroImg3 from './_components/hero-img-3.png'
-import m_heroImg1 from './_components/mobile-hero-img-1.png'
-import m_heroImg2 from './_components/mobile-hero-img-2.png'
 
 const footerNavigation = {
   solutions: [
@@ -41,7 +42,92 @@ const footerNavigation = {
   ],
 }
 
-export default async function Page() {
+async function HeroCarouselTabs({
+  selectedGroupId,
+}: {
+  selectedGroupId?: number
+}) {
+  const db = await getDb()
+  const carousels = await db
+    .select({ ...getTableColumns(carousel), group: carouselGroup.name })
+    .from(carousel)
+    .innerJoin(carouselGroup, eq(carousel.groupId, carouselGroup.id))
+    .where(lt(carousel.publishAt, new Date()))
+
+  if (carousels.length === 0) {
+    return null
+  }
+
+  selectedGroupId ??= carousels[0].groupId
+
+  const carouselGroups = R.groupBy(carousels, (x) => x.groupId)
+
+  return (
+    <section className='mt-10'>
+      <div className='overflow-x-auto'>
+        <nav aria-label='Tabs' className='flex space-x-2'>
+          {Object.entries(carouselGroups).map(([groupId, carousels]) => (
+            <Link
+              key={groupId}
+              href={`?carousel-group=${groupId}`}
+              className={clsx(
+                'px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700',
+                Number(groupId) === selectedGroupId
+                  ? 'border-b-2 border-indigo-500 text-gray-900'
+                  : '',
+              )}
+              scroll={false}
+            >
+              {carousels[0].group}
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      {/* mobile carousel */}
+      <div className='-mx-10 mt-4 sm:hidden'>
+        <div className='mx-auto max-w-md'>
+          <div className='rounded-lg bg-gray-100 p-2 shadow-md'>
+            <HeroCarousel>
+              {carouselGroups[selectedGroupId].map((carousel) => (
+                <HeroCarouselItem key={carousel.id}>
+                  <img
+                    src={carousel.mobileImageUrl}
+                    className='size-full object-contain object-center'
+                    alt=''
+                  />
+                </HeroCarouselItem>
+              ))}
+            </HeroCarousel>
+          </div>
+        </div>
+      </div>
+
+      {/* desktop carousel */}
+      <div className='mt-4 hidden rounded-lg bg-gray-100 p-2 shadow-md sm:block'>
+        <HeroCarousel>
+          {carouselGroups[selectedGroupId].map((carousel) => (
+            <HeroCarouselItem key={carousel.id}>
+              <img
+                src={carousel.desktopImageUrl}
+                className='size-full object-contain object-center'
+                alt=''
+              />
+            </HeroCarouselItem>
+          ))}
+        </HeroCarousel>
+      </div>
+    </section>
+  )
+}
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>
+}) {
+  const selectedGroupId = (await searchParams)['carousel-group']
+
   return (
     <>
       <main className='isolate'>
@@ -73,56 +159,13 @@ export default async function Page() {
 
                 {!process.env.NEXT_PUBLIC_IS_MAINTENANCE && <JoinButtons />}
 
-                {/* mobile carousel */}
-                <div className='-mx-10 mt-10 sm:hidden'>
-                  <div className='mx-auto max-w-md'>
-                    <div className='rounded-lg bg-gray-100 p-2 shadow-md'>
-                      <HeroCarousel>
-                        <HeroCarouselItem>
-                          <img
-                            src={m_heroImg1.src}
-                            className='size-full object-contain object-center'
-                            alt=''
-                          />
-                        </HeroCarouselItem>
-                        <HeroCarouselItem>
-                          <img
-                            src={m_heroImg2.src}
-                            className='size-full object-contain object-center'
-                            alt=''
-                          />
-                        </HeroCarouselItem>
-                      </HeroCarousel>
-                    </div>
-                  </div>
-                </div>
-
-                {/* desktop carousel */}
-                <div className='mt-10 hidden rounded-lg bg-gray-100 p-2 shadow-md sm:block'>
-                  <HeroCarousel>
-                    <HeroCarouselItem>
-                      <img
-                        src={heroImg1.src}
-                        className='size-full object-contain object-center'
-                        alt=''
-                      />
-                    </HeroCarouselItem>
-                    <HeroCarouselItem>
-                      <img
-                        src={heroImg2.src}
-                        className='size-full object-contain object-center'
-                        alt=''
-                      />
-                    </HeroCarouselItem>
-                    <HeroCarouselItem>
-                      <img
-                        src={heroImg3.src}
-                        className='size-full object-contain object-center'
-                        alt=''
-                      />
-                    </HeroCarouselItem>
-                  </HeroCarousel>
-                </div>
+                <HeroCarouselTabs
+                  selectedGroupId={
+                    !selectedGroupId || Number.isNaN(selectedGroupId)
+                      ? undefined
+                      : Number(selectedGroupId)
+                  }
+                />
               </div>
             </div>
           </div>
