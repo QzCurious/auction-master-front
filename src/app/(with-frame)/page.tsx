@@ -1,4 +1,5 @@
 import { GetConfigs } from '@/api/frontend/GetConfigs'
+import { unstable_cache } from 'next/cache'
 import { Button } from '@/catalyst-ui/button'
 import { getDb } from '@/db'
 import { carousel, carouselGroup } from '@/db/schema'
@@ -42,13 +43,22 @@ const footerNavigation = {
   ],
 }
 
+const getCarousels = unstable_cache(
+  async () => {
+    const db = await getDb()
+    const carousels = await db
+      .select({ ...getTableColumns(carousel), group: carouselGroup.name })
+      .from(carousel)
+      .innerJoin(carouselGroup, eq(carousel.groupId, carouselGroup.id))
+      .where(lt(carousel.publishAt, new Date()))
+    return carousels
+  },
+  ['carousels'],
+  { revalidate: 60, tags: ['carousels'] },
+)
+
 async function HeroCarouselTabs({ selectedGroupId }: { selectedGroupId?: number }) {
-  const db = await getDb()
-  const carousels = await db
-    .select({ ...getTableColumns(carousel), group: carouselGroup.name })
-    .from(carousel)
-    .innerJoin(carouselGroup, eq(carousel.groupId, carouselGroup.id))
-    .where(lt(carousel.publishAt, new Date()))
+  const carousels = await getCarousels()
 
   if (carousels.length === 0) {
     return null

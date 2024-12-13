@@ -8,7 +8,9 @@ import { drizzle } from 'drizzle-orm/mysql2'
 const getDb = lazyAsyncSingleton(async () => {
   const kv = await getMysqlKv()
   if (process.env.NODE_ENV === 'development') {
-    return drizzle(`${process.env.DATABASE_URL}/${kv.dbname}`)
+    return drizzle(`${process.env.DATABASE_URL}/${kv.dbname}`, {
+      logger: true,
+    })
   }
 
   return drizzle(
