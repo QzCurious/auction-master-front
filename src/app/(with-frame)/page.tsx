@@ -42,11 +42,7 @@ const footerNavigation = {
   ],
 }
 
-async function HeroCarouselTabs({
-  selectedGroupId,
-}: {
-  selectedGroupId?: number
-}) {
+async function HeroCarouselTabs({ selectedGroupId }: { selectedGroupId?: number }) {
   const db = await getDb()
   const carousels = await db
     .select({ ...getTableColumns(carousel), group: carouselGroup.name })
@@ -57,8 +53,12 @@ async function HeroCarouselTabs({
   if (carousels.length === 0) {
     return null
   }
-
-  selectedGroupId ??= carousels[0].groupId
+  if (!carousels.some((carousel) => carousel.groupId === selectedGroupId)) {
+    selectedGroupId = carousels[0].groupId
+  }
+  if (!selectedGroupId) {
+    selectedGroupId = carousels[0].groupId
+  }
 
   const carouselGroups = R.groupBy(carousels, (x) => x.groupId)
 
