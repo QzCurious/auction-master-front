@@ -73,7 +73,10 @@ async function HeroCarouselTabs({ selectedGroupId }: { selectedGroupId?: number 
           <div className='rounded-lg bg-gray-100 p-2 shadow-md'>
             <HeroCarousel>
               {carouselGroups[selectedGroupId].map((carousel) => (
-                <HeroCarouselItem key={carousel.id}>
+                <HeroCarouselItem
+                  key={carousel.id}
+                  className='h-[calc(100vh-5rem)] max-h-[640px]'
+                >
                   <img
                     src={carousel.mobileImageUrl}
                     className='size-full object-contain object-center'
@@ -90,7 +93,7 @@ async function HeroCarouselTabs({ selectedGroupId }: { selectedGroupId?: number 
       <div className='mt-4 hidden rounded-lg bg-gray-100 p-2 shadow-md sm:block'>
         <HeroCarousel>
           {carouselGroups[selectedGroupId].map((carousel) => (
-            <HeroCarouselItem key={carousel.id}>
+            <HeroCarouselItem key={carousel.id} className='max-h-[540px]'>
               <img
                 src={carousel.desktopImageUrl}
                 className='size-full object-contain object-center'
