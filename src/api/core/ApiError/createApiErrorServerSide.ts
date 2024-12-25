@@ -58,8 +58,8 @@ function createApiError(code: string): ApiError {
     case '1001': {
       return {
         code,
-        type: 'toast',
-        message: '沒有權限',
+        type: 'redirect',
+        url: '/me#identity-form-alert'
       }
     }
     case '1002': {
