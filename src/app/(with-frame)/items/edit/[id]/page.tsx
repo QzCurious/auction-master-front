@@ -345,7 +345,7 @@ async function Content({ params }: { params: Awaited<PageProps['params']> }) {
                     收購金額
                     <InfoPopover>
                       <InfoPopoverPanel>
-                        本金額是由本公司直接以該現金價直接收購您的商品，物品收到後檢查沒問題後立即匯款
+                        本金額是由本公司直接以該現金價直接收購您的商品
                       </InfoPopoverPanel>
                     </InfoPopover>
                   </DescriptionTerm>
