@@ -40,6 +40,8 @@ export function CheckboxField({
         '[&>[data-slot=label]]:col-start-2 [&>[data-slot=label]]:row-start-1 [&>[data-slot=label]]:justify-self-start',
         // Description layout
         '[&>[data-slot=description]]:col-start-2 [&>[data-slot=description]]:row-start-2',
+        // Description layout
+        '[&>[data-slot=error]]:col-start-2 [&>[data-slot=error]]:row-start-2',
         // With description
         '[&_[data-slot=label]]:has-[[data-slot=description]]:font-medium',
       )}

@@ -1,12 +1,20 @@
 'use client'
-
 import { CreateConsignorVerification } from '@/api/frontend/consignor/CreateConsignorVerification'
 import { Consignor } from '@/api/frontend/consignor/GetConsignor'
 import { Configs } from '@/api/frontend/GetConfigs'
 import { Button } from '@/catalyst-ui/button'
-import { ErrorMessage, Field, Label } from '@/catalyst-ui/fieldset'
+import { Checkbox, CheckboxField } from '@/catalyst-ui/checkbox'
+import {
+  Description,
+  ErrorMessage,
+  Field,
+  Fieldset,
+  Label,
+  Legend,
+} from '@/catalyst-ui/fieldset'
 import { Input } from '@/catalyst-ui/input'
 import { Listbox, ListboxLabel, ListboxOption } from '@/catalyst-ui/listbox'
+import { Text } from '@/catalyst-ui/text'
 import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { database } from '@/domain/static/address.data'
 import { DATE_FORMAT } from '@/domain/static/static'
@@ -57,24 +65,28 @@ export default function IdentityForm({
           <div className='ml-8 mt-2'>
             <div className='text-blue-800'>
               <div className='mt-4 sm:mt-2'></div>
-              {consignor.verification ? (
-                <p className='leading-tight'>
-                  已加入我們的官方 Line 嗎？這也是審核確認的一部分哦~
-                </p>
-              ) : (
-                <p className='leading-tight'>
-                  請同步加入我們的
-                  <Link
-                    href={configs.lineURL}
-                    className='text-link'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    官方 Line
-                  </Link>
-                  ，並傳送您的暱稱 {consignor.nickname} 給我們。
-                </p>
-              )}
+              <p className='leading-tight'>
+                {consignor.verification ? (
+                  <>
+                    已加入我們的官方 Line 嗎? 請加入後傳送您的暱稱{' '}
+                    {consignor.nickname} 給我們，這也是審核確認的一部分哦~
+                  </>
+                ) : (
+                  <>
+                    {/* TODO: 改成資料使用範圍、如何保密 */}
+                    請同步加入我們的
+                    <Link
+                      href={configs.lineURL}
+                      className='text-link'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      官方 Line
+                    </Link>
+                    ，並傳送您的暱稱 {consignor.nickname} 給我們。
+                  </>
+                )}
+              </p>
             </div>
           </div>
         </section>
@@ -106,7 +118,7 @@ export default function IdentityForm({
           ) : consignor.verification ? (
             <ConsignorInfoDescriptionList data={consignor.verification} />
           ) : (
-            <Form consignor={consignor} />
+            <Form configs={configs} consignor={consignor} />
           )}
         </div>
       </div>
@@ -204,9 +216,10 @@ const Schema = z.object({
   beneficiaryName: z.string().min(1, { message: '必填' }),
   bankCode: z.string().min(1, { message: '必填' }),
   bankAccount: z.string().min(1, { message: '必填' }),
+  lineAdded: z.boolean().refine((v) => v === true, { message: '請確認完成後勾選' }),
 })
 
-function Form({ consignor }: { consignor: Consignor }) {
+function Form({ configs, consignor }: { configs: Configs; consignor: Consignor }) {
   const {
     control,
     watch,
@@ -226,6 +239,7 @@ function Form({ consignor }: { consignor: Consignor }) {
       beneficiaryName: '',
       bankCode: '',
       bankAccount: '',
+      lineAdded: false,
     },
     resolver: zodResolver(Schema),
   })
@@ -517,6 +531,40 @@ function Form({ consignor }: { consignor: Consignor }) {
                 <ErrorMessage>{fieldState.error.message}</ErrorMessage>
               )}
             </Field>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name='lineAdded'
+          render={({ field, fieldState }) => (
+            <Fieldset className='col-span-full'>
+              <Legend>加入官方 LINE</Legend>
+              <Text>
+                請同步加入我們的
+                <Link
+                  href={configs.lineURL}
+                  className='text-link text-indigo-500 hover:text-indigo-600'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  官方 Line
+                </Link>
+                ，並傳送您的暱稱{' '}
+                <span className='text-indigo-500'>{consignor.nickname}</span> 給我們。
+              </Text>
+              <CheckboxField className='mt-2 !gap-x-3'>
+                <Checkbox
+                  {...field}
+                  checked={field.value}
+                  onChange={(v) => field.onChange(v)}
+                />
+                <Label>我已經加入官方 LINE 並傳送暱稱</Label>
+                {fieldState.error && (
+                  <ErrorMessage>{fieldState.error.message}</ErrorMessage>
+                )}
+              </CheckboxField>
+            </Fieldset>
           )}
         />
       </div>
