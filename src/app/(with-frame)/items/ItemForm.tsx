@@ -148,7 +148,14 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
                       field.onChange(v ? ITEM_TYPE.enum('FixedPriceItemType') : 0)
                     }
                   />
-                  <Label>是否為定價物品</Label>
+                  <Label>
+                    是否為定價物品
+                    <InfoPopover>
+                      <InfoPopoverPanel>
+                        若您的銷售方式不想要採用競標模式而是想要使用定價模式，請直接在這裡打V
+                      </InfoPopoverPanel>
+                    </InfoPopover>
+                  </Label>
                 </CheckboxField>
               )}
             />
@@ -159,7 +166,14 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
               render={({ field: { ref, ...field } }) => (
                 <CheckboxField className=''>
                   <Checkbox {...field} checked={field.value} />
-                  <Label>是否為全新品</Label>
+                  <Label>
+                    是否為全新品
+                    <InfoPopover>
+                      <InfoPopoverPanel>
+                        若您的商品是全新品，請在這裡直接打V
+                      </InfoPopoverPanel>
+                    </InfoPopover>
+                  </Label>
                 </CheckboxField>
               )}
             />
@@ -170,7 +184,14 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
             name='name'
             render={({ field, fieldState }) => (
               <Field className='sm:col-span-3'>
-                <Label>物品名稱</Label>
+                <Label>
+                  物品名稱
+                  <InfoPopover>
+                    <InfoPopoverPanel>
+                      這裡是日拍的標題說明，只需要簡單的說明，我們就會協助翻譯成日文
+                    </InfoPopoverPanel>
+                  </InfoPopover>
+                </Label>
                 <Input type='text' autoComplete='off' {...field} />
                 {fieldState.error && (
                   <ErrorMessage>{fieldState.error.message}</ErrorMessage>
@@ -188,7 +209,7 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
                   期望金額
                   <InfoPopover>
                     <InfoPopoverPanel>
-                      物品上架競拍期望最低售出之價格；若競拍價格低於期望金額，公司將自動拍下此物品並安排下一次競拍
+                      若您銷售的方式是選擇定價，可以在這裡打上您的期望金額，該物品便會依照您的期望金額販售
                     </InfoPopoverPanel>
                   </InfoPopover>
                 </Label>
@@ -229,7 +250,14 @@ export default function ItemForm({ item, jpyBuyingRate }: ItemFormProps) {
             name='description'
             render={({ field, fieldState }) => (
               <Field className='col-span-full'>
-                <Label className='mb-3'>物品描述</Label>
+                <Label className='mb-3'>
+                  物品描述
+                  <InfoPopover className='align-sub'>
+                    <InfoPopoverPanel>
+                      除非您有特殊的情況需要加註，例如缺少物件或是損壞狀況，可以寫在物品描述中。除此之外，我們將會直接套用公版的日文來描述您的物品
+                    </InfoPopoverPanel>
+                  </InfoPopover>
+                </Label>
                 <div data-slot='control'>
                   <QuillTextEditorClientOnly
                     defaultValue={item?.description}
@@ -365,6 +393,12 @@ function UploadImage({
             </button>
           )}
         </Label>
+        <InfoPopover className='ml-1 align-sub'>
+          <InfoPopoverPanel>
+            每建立一個 {'"'}我的物品{'"'}
+            本平台便會新增一個日拍的賣場，除非您本是打算要將物品用大量的方式售賣，否則一個期約收購的商品請放上一個商品的圖片即可
+          </InfoPopoverPanel>
+        </InfoPopover>
 
         <div data-slot='control'>
           {fields.length === 0 ? (
