@@ -52,7 +52,7 @@ export function SignUpForm() {
           handleApiError(res.error)
           return
         }
-        router.push('/')
+        router.push('/items')
       })}
     >
       <Controller

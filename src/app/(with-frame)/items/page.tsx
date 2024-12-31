@@ -10,14 +10,16 @@ import { AutoRefreshEffect } from '@/helper/useAutoRefresh'
 import { Until } from '@/helper/useUntil'
 import { PhotoIcon } from '@heroicons/react/20/solid'
 import { PlusIcon } from '@heroicons/react/24/outline'
-import { FileDashed } from '@phosphor-icons/react/dist/ssr/FileDashed'
+import clsx from 'clsx'
 import { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import * as R from 'remeda'
+import exampleImg from './example-auction-item.png'
+import examplePriceImg from './example-auction-price.png'
 import { DesktopFilters, MobileFilters } from './Filters'
 import { SearchParamsSchema } from './SearchParamsSchema'
 import { SHOW_COUNT_STATUS } from './SHOW_COUNT_STATUS'
-import clsx from 'clsx'
 
 export const metadata = { title: `我的物品 | ${SITE_NAME}` } satisfies Metadata
 
@@ -69,9 +71,37 @@ export default async function Page(props: PageProps) {
         <div className='grid grow grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8'>
           {itemsRes.data.items.length === 0 && (
             <div className='col-span-full grid place-items-center'>
-              <div className='mx-auto w-fit text-zinc-400'>
-                <FileDashed className='mx-auto size-20' />
-                <p className='mt-6 text-center text-lg leading-6'>沒有資料</p>
+              <div className='group relative mx-auto w-96 text-zinc-400'>
+                <Image
+                  src={exampleImg}
+                  className='w-48 rounded-lg bg-slate-200 p-1 transition-all group-hover:rotate-2 group-hover:scale-110'
+                  alt=''
+                />
+                <div className='transition-all group-hover:translate-x-3 group-hover:opacity-0'>
+                  <div className='absolute bottom-6 left-28 w-max rounded-lg border-4 border-slate-100 bg-white p-2 text-center text-lg text-gray-600'>
+                    <p>準備好要高價拍出你的物品了嗎?</p>
+                    <p>快來新增你的第一個物品，交給我們吧!</p>
+                  </div>
+                </div>
+
+                <Image
+                  src={examplePriceImg}
+                  className='absolute bottom-4 left-24 w-80 max-w-none rounded-lg bg-slate-200 p-1 opacity-0 transition-all group-hover:-translate-y-2 group-hover:-rotate-2 group-hover:opacity-100'
+                  alt=''
+                />
+
+                <div className='absolute right-0 top-0 hidden scale-90 transition-all group-hover:scale-100 lg:block'>
+                  <div className='scale-90 justify-center'>
+                    <Button
+                      href='/items/create'
+                      color='indigo'
+                      className='self-start'
+                    >
+                      <PlusIcon className='inline-block !size-5 stroke-2 !text-white' />
+                      <span className='text-base'>新增物品</span>
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
