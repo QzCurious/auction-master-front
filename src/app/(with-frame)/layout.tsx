@@ -4,12 +4,14 @@ import Script from 'next/script'
 import React from 'react'
 import Frame from './_components/Frame'
 import LineFloatBtn from './_components/LineFloatBtn'
+import { NotificationBannerClientOnly } from './NotificationBanner'
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const consignorRes = await GetConsignor()
 
   return (
     <ConsignorContextProvider consignor={consignorRes.data}>
+      <NotificationBannerClientOnly />
       <Frame>{children}</Frame>
 
       <LineFloatBtn />
