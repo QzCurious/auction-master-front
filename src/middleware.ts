@@ -5,6 +5,14 @@ import { getJwt } from './domain/auth/getJwt'
 
 export async function middleware(request: NextRequest) {
   if (
+    request.nextUrl.pathname.startsWith('/faq') ||
+    request.nextUrl.pathname.startsWith('/terms-of-use') ||
+    request.nextUrl.pathname.startsWith('/commission-rules')
+  ) {
+    return NextResponse.next()
+  }
+
+  if (
     process.env.NEXT_PUBLIC_IS_MAINTENANCE &&
     request.nextUrl.pathname !== '/maintenance'
   ) {

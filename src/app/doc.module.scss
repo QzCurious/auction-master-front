@@ -1,0 +1,26 @@
+.doc {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  ol ~ p,
+  ul ~ p {
+    margin-top: 1rem;
+  }
+
+  ul {
+    list-style-type: disc;
+
+    & > li {
+      margin-bottom: 1rem;
+    }
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  .red {
+    color: rgb(248, 7, 1);
+  }
+}
