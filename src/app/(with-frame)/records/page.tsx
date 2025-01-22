@@ -133,7 +133,7 @@ export default async function Page(props: PageProps) {
 
         <div className='min-w-0 grow'>
           {/* <Heading level={2}>總結</Heading> */}
-          <RecordSummary report={recordsSummaryRes.data} />
+          {/* <RecordSummary report={recordsSummaryRes.data} /> */}
 
           <div className='mt-10'>
             <ReportRecordTable
