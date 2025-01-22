@@ -5,6 +5,7 @@ import { ItemChoosesCompanyDirectPurchase } from '@/api/frontend/items/ItemChoos
 import { ItemCompanyDirectPurchase } from '@/api/frontend/items/ItemCompanyDirectPurchase'
 import { ItemConsignmentReview } from '@/api/frontend/items/ItemConsignmentReview'
 import { ItemReady } from '@/api/frontend/items/ItemReady'
+import { Content } from '@/app/(with-frame)/commission-rules/Content'
 import { Button } from '@/catalyst-ui/button'
 import { Dialog, DialogActions, DialogBody, DialogTitle } from '@/catalyst-ui/dialog'
 import { Text } from '@/catalyst-ui/text'
@@ -230,62 +231,11 @@ function ApproveConsignmentBtn({ item }: { item: Item }) {
         <div className='absolute right-1 top-1 size-2 rounded-full bg-red-500'></div>
         期約金額收購
       </Button>
-      <Dialog open={open} onClose={() => {}}>
-        <DialogTitle>收費相關說明規章</DialogTitle>
+      <Dialog open={open} onClose={() => {}} size='2xl'>
+        <DialogTitle>網站使用規約</DialogTitle>
 
         <DialogBody>
-          <p>本公司收費方式</p>
-          <p>我們目前收費詳細如下</p>
-          <ol className='mt-4 list-inside list-decimal space-y-4 leading-snug'>
-            <li>
-              手續費 30%
-              <br />
-              我們將協助您
-              <br />
-              將商品送到日本雅虎競拍
-              <br />
-              收取的手續費為成交價的30%
-              <br />
-              此價格也包含日本雅虎平台會產生的費用
-              <br />
-              以及我們公司合理的利潤
-              <br />
-              所以此價格已經包含所有協助拍賣上架的服務
-              <br />
-              所有款項匯回台灣時 撥款到您戶頭內的日幣兌換台幣之
-              <br />
-              日幣匯率計算將採用台灣銀行當日的牌告現金匯率
-              <br />
-            </li>
-            <li>
-              寄倉費
-              <br />
-              每個物品會有一定的單位數
-              <br />
-              若您的商品上架到日本雅虎競拍後
-              <br />
-              在未產生得標者的情況下
-              <br />
-              我們就會酌收寄倉費
-              <br />
-              寄倉費的部分是一個單位30日100台幣
-              <br />
-              寄倉計算起始日由委售品在日本競標結束後隔日開始計算
-              <br />
-            </li>
-            <li>
-              若商品最後結標價格您不滿意需要取消時
-              <br />
-              那麼 我們將會跟您收取平台的手續費 <br />
-              注意 商品結標價的10%是平台的手續費
-              <br />
-            </li>
-            <li>
-              若商品上架的途中需要停止
-              <br />
-              那麼我們將會收取雅虎的競標停止手續費550日幣
-            </li>
-          </ol>
+          <Content />
         </DialogBody>
 
         <DialogActions>
@@ -334,62 +284,11 @@ function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
         <div className='absolute right-1 top-1 size-2 rounded-full bg-red-500'></div>
         賣斷交易
       </Button>
-      <Dialog open={open} onClose={() => {}}>
-        <DialogTitle>收費相關說明規章</DialogTitle>
+      <Dialog open={open} onClose={() => {}} size='2xl'>
+        <DialogTitle>網站使用規約</DialogTitle>
 
         <DialogBody>
-          <p>本公司收費方式</p>
-          <p>我們目前收費詳細如下</p>
-          <ol className='mt-4 list-inside list-decimal space-y-4 leading-snug'>
-            <li>
-              手續費 30%
-              <br />
-              我們將協助您
-              <br />
-              將商品送到日本雅虎競拍
-              <br />
-              收取的手續費為成交價的30%
-              <br />
-              此價格也包含日本雅虎平台會產生的費用
-              <br />
-              以及我們公司合理的利潤
-              <br />
-              所以此價格已經包含所有協助拍賣上架的服務
-              <br />
-              所有款項匯回台灣時 撥款到您戶頭內的日幣兌換台幣之
-              <br />
-              日幣匯率計算將採用台灣銀行當日的牌告現金匯率
-              <br />
-            </li>
-            <li>
-              寄倉費
-              <br />
-              每個物品會有一定的單位數
-              <br />
-              若您的商品上架到日本雅虎競拍後
-              <br />
-              在未產生得標者的情況下
-              <br />
-              我們就會酌收寄倉費
-              <br />
-              寄倉費的部分是一個單位30日100台幣
-              <br />
-              寄倉計算起始日由委售品在日本競標結束後隔日開始計算
-              <br />
-            </li>
-            <li>
-              若商品最後結標價格您不滿意需要取消時
-              <br />
-              那麼 我們將會跟您收取平台的手續費 <br />
-              注意 商品結標價的10%是平台的手續費
-              <br />
-            </li>
-            <li>
-              若商品上架的途中需要停止
-              <br />
-              那麼我們將會收取雅虎的競標停止手續費550日幣
-            </li>
-          </ol>
+          <Content />
         </DialogBody>
 
         <DialogActions>
