@@ -53,6 +53,7 @@ function NotificationBanner() {
 }
 
 function useNotificationState() {
+  // ReferenceError: Can't find variable: Notification
   const [granted, setGranted] = useState(Notification.permission)
 
   useEffect(() => {

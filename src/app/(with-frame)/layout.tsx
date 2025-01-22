@@ -11,7 +11,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   return (
     <ConsignorContextProvider consignor={consignorRes.data}>
-      <NotificationBannerClientOnly />
+      {/* <NotificationBannerClientOnly /> */}
       <Frame>{children}</Frame>
 
       <LineFloatBtn />
