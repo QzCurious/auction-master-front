@@ -44,7 +44,7 @@ export function StatusFlowUI({ item }: { item: Item }) {
           <CompanyDirectPurchaseBtn item={item} />
           <ApproveConsignmentBtn item={item} />
           <DoubleCheckPopover
-            title='取消託售'
+            title='取消期約金額收購'
             onConfirm={async () => {
               const res = await ItemConsignmentReview(item.id, {
                 action: 'reject',
@@ -53,7 +53,7 @@ export function StatusFlowUI({ item }: { item: Item }) {
                 handleApiError(res.error)
                 return
               }
-              toast.success('託售已取消')
+              toast.success('期約金額收購已取消')
             }}
           >
             <DoubleCheckPopoverButton
@@ -61,7 +61,7 @@ export function StatusFlowUI({ item }: { item: Item }) {
               outline
               className='h-9 w-full min-w-20'
             >
-              取消託售
+              取消期約金額收購
             </DoubleCheckPopoverButton>
           </DoubleCheckPopover>
         </div>
@@ -76,7 +76,7 @@ export function StatusFlowUI({ item }: { item: Item }) {
             >
               身份認證
             </Link>
-            後即可申請現金收購或託售
+            後即可申請賣斷交易或期約金額收購
           </p>
         )}
       </div>
@@ -228,7 +228,7 @@ function ApproveConsignmentBtn({ item }: { item: Item }) {
       >
         <div className='absolute -inset-1 animate-pulse rounded-xl border-2 border-indigo-400'></div>
         <div className='absolute right-1 top-1 size-2 rounded-full bg-red-500'></div>
-        託售
+        期約金額收購
       </Button>
       <Dialog open={open} onClose={() => {}}>
         <DialogTitle>收費相關說明規章</DialogTitle>
@@ -300,12 +300,12 @@ function ApproveConsignmentBtn({ item }: { item: Item }) {
                 handleApiError(res.error)
                 return
               }
-              toast.success('已申請託售')
+              toast.success('已申請期約金額收購')
               setOpen(false)
               window.scrollTo({ top: 0 })
             }}
           >
-            確認託售
+            確認期約金額收購
           </Button>
         </DialogActions>
       </Dialog>
@@ -332,7 +332,7 @@ function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
       >
         <div className='absolute -inset-1 animate-pulse rounded-xl border-2 border-sky-400'></div>
         <div className='absolute right-1 top-1 size-2 rounded-full bg-red-500'></div>
-        現金收購
+        賣斷交易
       </Button>
       <Dialog open={open} onClose={() => {}}>
         <DialogTitle>收費相關說明規章</DialogTitle>
@@ -404,11 +404,11 @@ function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
                 handleApiError(res.error)
                 return
               }
-              toast.success('已申請現金收購')
+              toast.success('已申請賣斷交易')
               setOpen(false)
             }}
           >
-            現金收購
+            賣斷交易
           </Button>
         </DialogActions>
       </Dialog>

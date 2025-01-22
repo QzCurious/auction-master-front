@@ -107,7 +107,7 @@ export default function IdentityForm({
           </h2>
           {consignor.status !== CONSIGNOR_STATUS.enum('EnabledStatus') && (
             <p className='mt-1 text-sm leading-6 text-gray-400'>
-              完成身份認證即可開始託售物品
+              完成身份認證即可開始期約金額收購物品
             </p>
           )}
         </div>

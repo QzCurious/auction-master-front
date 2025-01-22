@@ -93,12 +93,12 @@ export const STATIC_CONFIGS_DATA = {
     },
     {
       key: 'ConsignmentApprovedStatus',
-      message: '同意託售',
+      message: '同意期約金額收購',
       value: 11,
     },
     {
       key: 'ConsignmentCanceledStatus',
-      message: '取消託售',
+      message: '取消期約金額收購',
       value: 12,
     },
     {
