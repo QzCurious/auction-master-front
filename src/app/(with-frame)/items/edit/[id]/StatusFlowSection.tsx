@@ -1,10 +1,13 @@
 'use client'
 
+import { GetConfigs } from '@/api/frontend/GetConfigs'
+import { GetConfigsQueryOptions } from '@/api/frontend/GetConfigs.query'
 import { Item } from '@/api/frontend/items/GetConsignorItem'
 import { ItemChoosesCompanyDirectPurchase } from '@/api/frontend/items/ItemChoosesCompanyDirectPurchase'
 import { ItemCompanyDirectPurchase } from '@/api/frontend/items/ItemCompanyDirectPurchase'
 import { ItemConsignmentReview } from '@/api/frontend/items/ItemConsignmentReview'
 import { ItemReady } from '@/api/frontend/items/ItemReady'
+import { CommissionRulesContent } from '@/app/(with-frame)/commission-rules/CommissionRulesContent'
 import { Button } from '@/catalyst-ui/button'
 import { Dialog, DialogActions, DialogBody, DialogTitle } from '@/catalyst-ui/dialog'
 import { Text } from '@/catalyst-ui/text'
@@ -12,7 +15,7 @@ import {
   DoubleCheckPopover,
   DoubleCheckPopoverButton,
 } from '@/components/DoubleCheckPopover'
-import { useHandleApiError } from '@/domain/api/HandleApiError'
+import { HandleApiError, useHandleApiError } from '@/domain/api/HandleApiError'
 import { ConsignorContext } from '@/domain/auth/ConsignorContext'
 import { DATE_TIME_FORMAT } from '@/domain/static/static'
 import {
@@ -22,21 +25,17 @@ import {
 } from '@/domain/static/static-config-mappers'
 import { StatusFlow } from '@/domain/static/StatusFlow'
 import { useUntil } from '@/helper/useUntil'
+import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import copy from 'copy-to-clipboard'
 import { format } from 'date-fns'
+import Decimal from 'decimal.js-light'
 import Link from 'next/link'
 import type React from 'react'
 import { useContext, useState } from 'react'
 import toast from 'react-hot-toast'
 
-export function StatusFlowUI({
-  item,
-  commissionRulesContent,
-}: {
-  item: Item
-  commissionRulesContent: React.ReactNode
-}) {
+export function StatusFlowUI({ item }: { item: Item }) {
   const consignor = useContext(ConsignorContext)
   const expired = useUntil(item.expireAt, { onFalsy: false })
   const handleApiError = useHandleApiError()
@@ -47,14 +46,8 @@ export function StatusFlowUI({
     AppraisedStatus: (
       <div className='w-full'>
         <div className='flex w-full flex-col gap-y-3'>
-          <CompanyDirectPurchaseBtn
-            item={item}
-            commissionRulesContent={commissionRulesContent}
-          />
-          <ApproveConsignmentBtn
-            item={item}
-            commissionRulesContent={commissionRulesContent}
-          />
+          <CompanyDirectPurchaseBtn item={item} />
+          <ApproveConsignmentBtn item={item} />
           <DoubleCheckPopover
             title='取消期約金額收購'
             onConfirm={async () => {
@@ -221,16 +214,11 @@ function StatusStep({
   )
 }
 
-function ApproveConsignmentBtn({
-  item,
-  commissionRulesContent,
-}: {
-  item: Item
-  commissionRulesContent: React.ReactNode
-}) {
+function ApproveConsignmentBtn({ item }: { item: Item }) {
   const [open, setOpen] = useState(false)
   const consignor = useContext(ConsignorContext)
   const handleApiError = useHandleApiError()
+  GetConfigs
   if (!consignor) return null
 
   return (
@@ -251,7 +239,9 @@ function ApproveConsignmentBtn({
       <Dialog open={open} onClose={() => {}} size='2xl'>
         <DialogTitle>網站使用規約</DialogTitle>
 
-        <DialogBody>{commissionRulesContent}</DialogBody>
+        <DialogBody>
+          <CommissionRulesContentWithQuery />
+        </DialogBody>
 
         <DialogActions>
           <Button outline onClick={() => setOpen(false)}>
@@ -278,16 +268,11 @@ function ApproveConsignmentBtn({
   )
 }
 
-function CompanyDirectPurchaseBtn({
-  item,
-  commissionRulesContent,
-}: {
-  item: Item
-  commissionRulesContent: React.ReactNode
-}) {
+function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
   const [open, setOpen] = useState(false)
   const consignor = useContext(ConsignorContext)
   const handleApiError = useHandleApiError()
+
   if (!consignor) return null
 
   return (
@@ -308,7 +293,9 @@ function CompanyDirectPurchaseBtn({
       <Dialog open={open} onClose={() => {}} size='2xl'>
         <DialogTitle>網站使用規約</DialogTitle>
 
-        <DialogBody>{commissionRulesContent}</DialogBody>
+        <DialogBody>
+          <CommissionRulesContentWithQuery />
+        </DialogBody>
 
         <DialogActions>
           <Button outline onClick={() => setOpen(false)}>
@@ -332,4 +319,20 @@ function CompanyDirectPurchaseBtn({
       </Dialog>
     </>
   )
+}
+
+function CommissionRulesContentWithQuery() {
+  const configsQuery = useQuery({ ...GetConfigsQueryOptions })
+
+  if (configsQuery.isError) return null
+  if (configsQuery.isPending) return <div>載入中...</div>
+  if (configsQuery.data.error) {
+    return <HandleApiError error={configsQuery.data.error} />
+  }
+
+  const rate = new Decimal(configsQuery.data.data.commissionRate)
+    .add(configsQuery.data.data.yahooAuctionFeeRate)
+    .toNumber()
+
+  return <CommissionRulesContent rate={rate} />
 }

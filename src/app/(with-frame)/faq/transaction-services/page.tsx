@@ -1,16 +1,30 @@
+import { GetConfigs } from '@/api/frontend/GetConfigs'
 import docStyle from '@/app/doc.module.scss'
+import { HandleApiError } from '@/domain/api/HandleApiError'
+import { toPercent } from '@/domain/static/static'
 import clsx from 'clsx'
+import Decimal from 'decimal.js-light'
 import Image from 'next/image'
-import img1 from './257b28e5-2a45-4ef5-960d-0d5b6cb9bbfb.jpg'
-import img2 from './a016d492-1e10-4896-96f8-babbc0d4ac89.jpg'
-import img4 from './e97cf45b-6137-4b43-b896-87c355d1837c.jpg'
-import img5 from './658b5486-2672-4341-a7e4-f21771dc241f.jpg'
-import img6 from './e4f018bc-8fd4-46de-9a11-8ce1770de945.jpg'
 import img3 from './00ca75c9-d562-4889-940a-7ef70ebe4f5c.jpg'
+import img1 from './257b28e5-2a45-4ef5-960d-0d5b6cb9bbfb.jpg'
+import img5 from './658b5486-2672-4341-a7e4-f21771dc241f.jpg'
+import img2 from './a016d492-1e10-4896-96f8-babbc0d4ac89.jpg'
 import img7 from './a29d1297-f0f4-49c0-9036-ca1594a139f0.jpg'
 import img8 from './b9f218c7-c4e9-4817-81c4-1f66044b4a58.jpg'
+import img6 from './e4f018bc-8fd4-46de-9a11-8ce1770de945.jpg'
+import img4 from './e97cf45b-6137-4b43-b896-87c355d1837c.jpg'
 
-export default function Page() {
+export default async function Page() {
+  const configsRes = await GetConfigs()
+
+  if (configsRes.error) {
+    return <HandleApiError error={configsRes.error} />
+  }
+
+  const rate = new Decimal(configsRes.data.commissionRate)
+    .add(configsRes.data.yahooAuctionFeeRate)
+    .toNumber()
+
   return (
     <main className={clsx('mx-auto max-w-2xl px-4', docStyle.doc)}>
       <h1 className='h1'>交易服務相關</h1>
@@ -29,7 +43,8 @@ export default function Page() {
             </li>
             <li>
               <span className='font-bold'>期約金額收購</span>
-              ：我們會依據您物品的狀況評估價值，設定期約收購價格，並上架至「日本雅虎拍賣」進行標售。拍賣結束後，我們會根據最終結標金額，扣除30%手續費後支付給您，買下您的物品。
+              ：我們會依據您物品的狀況評估價值，設定期約收購價格，並上架至「日本雅虎拍賣」進行標售。拍賣結束後，我們會根據最終結標金額，扣除
+              {toPercent(rate)}手續費後支付給您，買下您的物品。
             </li>
           </ol>
         </li>
@@ -154,7 +169,9 @@ export default function Page() {
               請注意，我方有可能根據物品的實際狀態而調整收購金額，您可以在上述頁面中查詢到完整而透明的現況資訊，用以判斷是否改變交易形式。
             </li>
             <li>
-              若您確定要用定價銷售的形式期約金額收購，則我們會將物品以您設定的期望金額上架至日本雅虎拍賣。若物品成功售出，我們會將拍賣所得款項、扣除30%手續費後撥至您的「會員帳戶」→「帳戶紀錄」，讓您隨時提領；本平台將於當月15日或次月1日，將您所提領的款項匯至您設定的銀行帳戶。
+              若您確定要用定價銷售的形式期約金額收購，則我們會將物品以您設定的期望金額上架至日本雅虎拍賣。若物品成功售出，我們會將拍賣所得款項、扣除
+              {toPercent(rate)}
+              手續費後撥至您的「會員帳戶」→「帳戶紀錄」，讓您隨時提領；本平台將於當月15日或次月1日，將您所提領的款項匯至您設定的銀行帳戶。
             </li>
           </ol>
         </li>
@@ -218,7 +235,9 @@ export default function Page() {
               請注意，我方有可能根據物品的實際狀態而調整收購金額以及估值，您可以在上述頁面中查詢到完整而透明的現況資訊，用以判斷是否改變交易形式。
             </li>
             <li>
-              當您確定同意期約金額收購後，我們會將物品上架至日本雅虎拍賣，供人競標。若物品成功售出，我們會將拍賣所得款項、扣除30%手續費後撥至您的「會員帳戶」→「帳戶紀錄」，讓您隨時提領；本平台將於當月15日或次月1日，將您所提領的款項匯至您設定的銀行帳戶。
+              當您確定同意期約金額收購後，我們會將物品上架至日本雅虎拍賣，供人競標。若物品成功售出，我們會將拍賣所得款項、扣除
+              {toPercent(rate)}
+              手續費後撥至您的「會員帳戶」→「帳戶紀錄」，讓您隨時提領；本平台將於當月15日或次月1日，將您所提領的款項匯至您設定的銀行帳戶。
             </li>
           </ol>
         </li>
@@ -264,7 +283,9 @@ export default function Page() {
             若物品於日本雅虎拍賣結標金額高於本平台估值之最低價格，但出價方最後棄標不完成交易，則本平台有以下3種處理方式可供您選擇：
           </p>
           <ol className='pl-5'>
-            <li>我們以等同於最低估值扣除30%手續費之款項，向您收購此物品。</li>
+            <li>
+              我們以等同於最低估值扣除{toPercent(rate)}手續費之款項，向您收購此物品。
+            </li>
             <li>或者，我們將此物品重新上架至「日本雅虎拍賣」進行標售。</li>
             <li>您若決定不賣了，可主動選擇取消交易。</li>
           </ol>
@@ -276,8 +297,9 @@ export default function Page() {
         <li>
           <p>如果我的物品在拍賣中以低於最低估值的價格結標的話，該怎麼處理？</p>
           <p>
-            我們承諾，將支付等同於最低估值扣除30%手續費之款項給您。例：若物品最低估值為1000日圓，最終結標金額僅100日圓，我們仍將支付您700日圓（1000
-            × (1 - 30%)）
+            我們承諾，將支付等同於最低估值扣除{toPercent(rate)}
+            手續費之款項給您。
+            <CalcExample price={1000} endPrice={100} rate={rate} />
           </p>
         </li>
 
@@ -301,7 +323,8 @@ export default function Page() {
         <li>
           <p>那如果我的物品是期約金額收購，你們會跟我收取哪些費用？</p>
           <p>
-            在期約金額收購的情況下，不管是「定價銷售」的形式，還是「期約金額收購」的形式，只要物品上到了日本雅虎拍賣，一旦成交（註：包含物品不幸被棄標後、您同意由我們以最低估值收購該物品的狀況），我們就是收取成交價格的30%作為手續費。
+            在期約金額收購的情況下，不管是「定價銷售」的形式，還是「期約金額收購」的形式，只要物品上到了日本雅虎拍賣，一旦成交（註：包含物品不幸被棄標後、您同意由我們以最低估值收購該物品的狀況），我們就是收取成交價格的
+            {toPercent(rate)}作為手續費。
           </p>
         </li>
 
@@ -364,5 +387,22 @@ export default function Page() {
         </li>
       </ul>
     </main>
+  )
+}
+
+function CalcExample({
+  price,
+  endPrice,
+  rate,
+}: {
+  price: number
+  endPrice: number
+  rate: number
+}) {
+  return (
+    <>
+      例：若物品最低估值為1000日圓，最終結標金額僅100日圓，我們仍將支付您700日圓（1000
+      × (1 - {toPercent(rate)})）
+    </>
   )
 }

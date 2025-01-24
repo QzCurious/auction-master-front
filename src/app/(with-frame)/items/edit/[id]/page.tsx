@@ -3,7 +3,6 @@ import { GetJPYRates } from '@/api/frontend/GetJPYRates'
 import { GetConsignorItem } from '@/api/frontend/items/GetConsignorItem'
 import { GetRecord } from '@/api/frontend/reports/GetRecord'
 import { GetConsignorWalletBalance } from '@/api/frontend/wallets/GetConsignorWalletBalance'
-import { Content as CommissionRulesContent } from '@/app/(with-frame)/commission-rules/Content'
 import {
   DescriptionDetails,
   DescriptionList,
@@ -42,6 +41,7 @@ interface PageProps {
 
 async function Page(pageProps: PageProps) {
   const params = await pageProps.params
+
   return (
     <div className='mx-auto max-w-4xl'>
       <Link
@@ -426,10 +426,7 @@ async function Content({ params }: { params: Awaited<PageProps['params']> }) {
           <section>
             <Subheading level={2}>物品進度</Subheading>
             <div className='mt-3'>
-              <StatusFlowUI
-                item={itemRes.data}
-                commissionRulesContent={<CommissionRulesContent />}
-              />
+              <StatusFlowUI item={itemRes.data} />
             </div>
           </section>
         </div>
