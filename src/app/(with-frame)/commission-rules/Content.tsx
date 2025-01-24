@@ -1,6 +1,20 @@
+import { GetConfigs } from '@/api/frontend/GetConfigs'
 import docStyle from '@/app/doc.module.scss'
+import { HandleApiError } from '@/domain/api/HandleApiError'
+import Decimal from 'decimal.js-light'
 
-export function Content() {
+export async function Content() {
+  const configsRes = await GetConfigs()
+
+  if (configsRes.error) {
+    return <HandleApiError error={configsRes.error} />
+  }
+
+  const rate = new Decimal(configsRes.data.commissionRate)
+    .add(configsRes.data.yahooAuctionFeeRate)
+    .mul(100)
+    .toString()
+
   return (
     <ul
       style={{ listStyleType: 'upper-alpha' }}
@@ -30,14 +44,16 @@ export function Content() {
             ：賣家與本平台議定價格後，由本平台立刻完成收購。
           </li>
           <li>
-            <span className='font-bold'>定價銷售</span>：賣家自訂價格，
-            <span className={docStyle.red}>
-              物品由本平台上架至「日本雅虎拍賣」，以直購方式銷售。物品若售出，本平台將根據物品價格，扣除手續費後支付款項予賣家，完成物品收購。
-            </span>
+            <span className='font-bold'>定價銷售</span>
+            ：賣家自訂價格，物品由本平台上架至「日本雅虎拍賣」，以直購方式銷售。物品若售出，本平台將根據物品價格，
+            <span className={docStyle.red}>手續費{rate}%</span>
+            後支付款項予賣家，完成物品收購。
           </li>
           <li>
             <span className='font-bold'>期約金額收購</span>
-            ：本平台依據物品狀況評估價值，設定期約收購價格，並上架至「日本雅虎拍賣」進行標售。拍賣結束後，本平台將根據最終結標金額，扣除手續費後支付款項予賣家，完成物品收購。
+            ：本平台依據物品狀況評估價值，設定期約收購價格，並上架至「日本雅虎拍賣」進行標售。拍賣結束後，本平台將根據最終結標金額，扣除
+            <span className={docStyle.red}>手續費{rate}%</span>
+            後支付款項予賣家，完成物品收購。
           </li>
         </ol>
       </li>
