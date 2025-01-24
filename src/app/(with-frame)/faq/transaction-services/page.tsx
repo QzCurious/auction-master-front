@@ -1,9 +1,18 @@
-import clsx from 'clsx'
 import docStyle from '@/app/doc.module.scss'
+import clsx from 'clsx'
+import Image from 'next/image'
+import img1 from './257b28e5-2a45-4ef5-960d-0d5b6cb9bbfb.jpg'
+import img2 from './a016d492-1e10-4896-96f8-babbc0d4ac89.jpg'
+import img4 from './e97cf45b-6137-4b43-b896-87c355d1837c.jpg'
+import img5 from './658b5486-2672-4341-a7e4-f21771dc241f.jpg'
+import img6 from './e4f018bc-8fd4-46de-9a11-8ce1770de945.jpg'
+import img3 from './00ca75c9-d562-4889-940a-7ef70ebe4f5c.jpg'
+import img7 from './a29d1297-f0f4-49c0-9036-ca1594a139f0.jpg'
+import img8 from './b9f218c7-c4e9-4817-81c4-1f66044b4a58.jpg'
 
 export default function Page() {
   return (
-    <main className={clsx('mx-auto max-w-prose px-4', docStyle.doc)}>
+    <main className={clsx('mx-auto max-w-2xl px-4', docStyle.doc)}>
       <h1 className='h1'>交易服務相關</h1>
 
       <ul className='mt-4 pl-6'>
@@ -30,19 +39,52 @@ export default function Page() {
           <ol className='pl-5'>
             <li>
               在網站首頁上方工具列中，點擊進入「我的物品」頁面，選擇「+ 新增物品」。
+              <Image
+                src={img1}
+                className='border border-blue-700'
+                alt=''
+                quality={100}
+              />
             </li>
             <li>
               勾選「是否為定價商品」，並填妥其他資料，按下「送出」，等候我們回覆。
+              <Image
+                src={img2}
+                className='border border-blue-700'
+                alt=''
+                quality={100}
+              />
             </li>
             <li>
               之後您就能在「我的物品」裡面，查詢到自己物品的狀態，包含我們的鑑價結果、待確認事項、物品進度….等等一切資訊，我們都會詳細為您揭露。
             </li>
             <li>
               點擊欲查詢的物品，即可查看物品狀態頁面。若為「已估價」之物品，在頁面右上可以查詢到我們提供的估價結果；在頁面右下的「物品進度」，則列舉出完整的交易流程，並提示您目前進行到哪個階段。
+              <div className='space-y-2'>
+                <Image
+                  src={img4}
+                  className='border border-blue-700'
+                  alt=''
+                  quality={100}
+                />
+                <Image
+                  src={img5}
+                  className='border border-blue-700'
+                  alt=''
+                  quality={100}
+                />
+                <Image
+                  src={img3}
+                  className='border border-blue-700'
+                  alt=''
+                  quality={100}
+                />
+              </div>
             </li>
             <li>
-              若您同意我方所開出的收購金額，即可選擇「賣斷交易」，進行賣斷交易。您必須將物品寄來、或親送至我方倉儲據點，由我方再次確認；若您有超過20個以上、收購金額超過新台幣＄500元的物品，
-              <span className={docStyle.red}>可享有寄件免運費之優惠。</span>
+              若您同意我方所開出的收購金額，即可選擇
+              <span className={docStyle.red}>「賣斷交易」，將商品直接賣給我們。</span>
+              您必須將物品寄來、或親送至我方倉儲據點，由我方再次確認；若您有超過20個以上、收購金額超過新台幣＄500元的物品，可享有寄件免運費之優惠。
             </li>
             <li>
               請注意，我方有可能根據物品的實際狀態而調整收購金額，您可以在上述頁面中查詢到完整而透明的現況資訊，用以判斷是否繼續完成交易。
@@ -58,10 +100,22 @@ export default function Page() {
           <ol className='pl-5'>
             <li>
               在網站首頁上方工具列中，點擊進入「我的物品」頁面，選擇「+ 新增物品」。
+              <Image
+                src={img1}
+                className='border border-blue-700'
+                alt=''
+                quality={100}
+              />
             </li>
 
             <li>
               勾選「是否為定價商品」，並填妥其他資料，按下「送出」，等候我們回覆。
+              <Image
+                src={img2}
+                className='border border-blue-700'
+                alt=''
+                quality={100}
+              />
             </li>
 
             <li>
@@ -69,10 +123,32 @@ export default function Page() {
             </li>
             <li>
               點擊欲查詢的物品，即可查看物品狀態頁面。若為「已估價」之物品，在頁面右上可以查詢到我們提供的估價結果；在頁面右下的「物品進度」，則列舉出完整的交易流程，並提示您目前進行到哪個階段。
+              <div className='space-y-2'>
+                <Image
+                  src={img4}
+                  className='border border-blue-700'
+                  alt=''
+                  quality={100}
+                />
+                <Image
+                  src={img5}
+                  className='border border-blue-700'
+                  alt=''
+                  quality={100}
+                />
+                <Image
+                  src={img7}
+                  className='border border-blue-700'
+                  alt=''
+                  quality={100}
+                />
+              </div>
             </li>
             <li>
-              若希望我們按照您所設定的期望金額上架日本雅虎拍賣，請選擇「期約金額收購」。您必須將物品寄來、或親送至我方倉儲據點，由我方再次確認；若您有超過20個以上、收購金額超過新台幣＄500元的物品，
-              <span className={docStyle.red}>可享有寄件免運費之優惠</span>。
+              若希望我們按照您所設定的期望金額上架日本雅虎拍賣
+              <span className={docStyle.red}>進行直售</span>
+              ，請選擇<span className={docStyle.red}>「定價銷售」</span>
+              。您必須將物品寄來、或親送至我方倉儲據點，由我方再次確認；若您有超過20個以上、收購金額超過新台幣＄500元的物品，可享有寄件免運費之優惠。
             </li>
             <li>
               請注意，我方有可能根據物品的實際狀態而調整收購金額，您可以在上述頁面中查詢到完整而透明的現況資訊，用以判斷是否改變交易形式。
@@ -88,20 +164,55 @@ export default function Page() {
           <ol className='pl-5'>
             <li>
               在網站首頁上方工具列中，點擊進入「我的物品」頁面，選擇「+ 新增物品」。
+              <Image
+                src={img1}
+                className='border border-blue-700'
+                alt=''
+                quality={100}
+              />
             </li>
 
-            <li>請勿勾選「是否為定價商品」，只需填妥其他資料，按下「送出」即可。</li>
+            <li>
+              請勿勾選「是否為定價商品」，只需填妥其他資料，按下「送出」即可。
+              <Image
+                src={img8}
+                className='border border-blue-700'
+                alt=''
+                quality={100}
+              />
+            </li>
 
             <li>
               之後您就能在「我的物品」裡面，查詢到自己物品的狀態，包含我們的鑑價結果、待確認事項、物品進度….等等一切資訊，我們都會詳細為您揭露。
             </li>
             <li>
               點擊欲查詢的物品，即可查看物品狀態頁面。若為「已估價」之物品，在頁面右上可以查詢到我們提供的估價結果；在頁面右下的「物品進度」，則列舉出完整的交易流程，並提示您目前進行到哪個階段。
+              <div className='space-y-2'>
+                <Image
+                  src={img4}
+                  className='border border-blue-700'
+                  alt=''
+                  quality={100}
+                />
+                <Image
+                  src={img5}
+                  className='border border-blue-700'
+                  alt=''
+                  quality={100}
+                />
+                <Image
+                  src={img6}
+                  className='border border-blue-700'
+                  alt=''
+                  quality={100}
+                />
+              </div>
             </li>
 
             <li>
-              若希望我們將物品上架日本雅虎拍賣供人競標，請選擇「期約金額收購」。您必須將物品寄來、或親送至我方倉儲據點，由我方再次確認；若您有超過20個以上、最低估值超過新台幣＄500元的物品，
-              <span className={docStyle.red}>可享有寄件免運費之優惠</span>。
+              若希望我們將物品上架日本雅虎拍賣供人競標，請選擇「
+              <span className={docStyle.red}>期約金額銷售</span>」
+              。您必須將物品寄來、或親送至我方倉儲據點，由我方再次確認；若您有超過20個以上、最低估值超過新台幣＄500元的物品，可享有寄件免運費之優惠。
             </li>
             <li>
               請注意，我方有可能根據物品的實際狀態而調整收購金額以及估值，您可以在上述頁面中查詢到完整而透明的現況資訊，用以判斷是否改變交易形式。
