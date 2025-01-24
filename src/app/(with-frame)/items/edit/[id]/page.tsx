@@ -3,6 +3,7 @@ import { GetJPYRates } from '@/api/frontend/GetJPYRates'
 import { GetConsignorItem } from '@/api/frontend/items/GetConsignorItem'
 import { GetRecord } from '@/api/frontend/reports/GetRecord'
 import { GetConsignorWalletBalance } from '@/api/frontend/wallets/GetConsignorWalletBalance'
+import { Content as CommissionRulesContent } from '@/app/(with-frame)/commission-rules/Content'
 import {
   DescriptionDetails,
   DescriptionList,
@@ -425,7 +426,10 @@ async function Content({ params }: { params: Awaited<PageProps['params']> }) {
           <section>
             <Subheading level={2}>物品進度</Subheading>
             <div className='mt-3'>
-              <StatusFlowUI item={itemRes.data} />
+              <StatusFlowUI
+                item={itemRes.data}
+                commissionRulesContent={<CommissionRulesContent />}
+              />
             </div>
           </section>
         </div>

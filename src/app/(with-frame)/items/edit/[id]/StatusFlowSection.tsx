@@ -5,7 +5,6 @@ import { ItemChoosesCompanyDirectPurchase } from '@/api/frontend/items/ItemChoos
 import { ItemCompanyDirectPurchase } from '@/api/frontend/items/ItemCompanyDirectPurchase'
 import { ItemConsignmentReview } from '@/api/frontend/items/ItemConsignmentReview'
 import { ItemReady } from '@/api/frontend/items/ItemReady'
-import { Content } from '@/app/(with-frame)/commission-rules/Content'
 import { Button } from '@/catalyst-ui/button'
 import { Dialog, DialogActions, DialogBody, DialogTitle } from '@/catalyst-ui/dialog'
 import { Text } from '@/catalyst-ui/text'
@@ -31,7 +30,13 @@ import type React from 'react'
 import { useContext, useState } from 'react'
 import toast from 'react-hot-toast'
 
-export function StatusFlowUI({ item }: { item: Item }) {
+export function StatusFlowUI({
+  item,
+  commissionRulesContent,
+}: {
+  item: Item
+  commissionRulesContent: React.ReactNode
+}) {
   const consignor = useContext(ConsignorContext)
   const expired = useUntil(item.expireAt, { onFalsy: false })
   const handleApiError = useHandleApiError()
@@ -42,8 +47,14 @@ export function StatusFlowUI({ item }: { item: Item }) {
     AppraisedStatus: (
       <div className='w-full'>
         <div className='flex w-full flex-col gap-y-3'>
-          <CompanyDirectPurchaseBtn item={item} />
-          <ApproveConsignmentBtn item={item} />
+          <CompanyDirectPurchaseBtn
+            item={item}
+            commissionRulesContent={commissionRulesContent}
+          />
+          <ApproveConsignmentBtn
+            item={item}
+            commissionRulesContent={commissionRulesContent}
+          />
           <DoubleCheckPopover
             title='取消期約金額收購'
             onConfirm={async () => {
@@ -210,7 +221,13 @@ function StatusStep({
   )
 }
 
-function ApproveConsignmentBtn({ item }: { item: Item }) {
+function ApproveConsignmentBtn({
+  item,
+  commissionRulesContent,
+}: {
+  item: Item
+  commissionRulesContent: React.ReactNode
+}) {
   const [open, setOpen] = useState(false)
   const consignor = useContext(ConsignorContext)
   const handleApiError = useHandleApiError()
@@ -234,9 +251,7 @@ function ApproveConsignmentBtn({ item }: { item: Item }) {
       <Dialog open={open} onClose={() => {}} size='2xl'>
         <DialogTitle>網站使用規約</DialogTitle>
 
-        <DialogBody>
-          <Content />
-        </DialogBody>
+        <DialogBody>{commissionRulesContent}</DialogBody>
 
         <DialogActions>
           <Button outline onClick={() => setOpen(false)}>
@@ -263,7 +278,13 @@ function ApproveConsignmentBtn({ item }: { item: Item }) {
   )
 }
 
-function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
+function CompanyDirectPurchaseBtn({
+  item,
+  commissionRulesContent,
+}: {
+  item: Item
+  commissionRulesContent: React.ReactNode
+}) {
   const [open, setOpen] = useState(false)
   const consignor = useContext(ConsignorContext)
   const handleApiError = useHandleApiError()
@@ -287,9 +308,7 @@ function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
       <Dialog open={open} onClose={() => {}} size='2xl'>
         <DialogTitle>網站使用規約</DialogTitle>
 
-        <DialogBody>
-          <Content />
-        </DialogBody>
+        <DialogBody>{commissionRulesContent}</DialogBody>
 
         <DialogActions>
           <Button outline onClick={() => setOpen(false)}>
