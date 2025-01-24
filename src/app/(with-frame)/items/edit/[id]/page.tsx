@@ -323,7 +323,7 @@ async function Content({ params }: { params: Awaited<PageProps['params']> }) {
                 期望金額
                 <InfoPopover>
                   <InfoPopoverPanel>
-                    物品上架競拍期望最低售出之價格；若競拍價格低於期望金額，公司將自動拍下此物品並安排下一次競拍
+                    若您銷售的方式是選擇定價，可以在這裡打上您的期望金額，該物品便會依照您的期望金額販售
                   </InfoPopoverPanel>
                 </InfoPopover>
               </DescriptionTerm>
