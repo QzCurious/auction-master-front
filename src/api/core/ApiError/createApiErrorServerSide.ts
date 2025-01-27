@@ -217,6 +217,13 @@ function createApiError(code: string): ApiError {
         message: '照片已達上限',
       }
     }
+    case '1117': {
+      return {
+        code,
+        type: 'toast',
+        message: 'Line 綁定衝突',
+      }
+    }
 
     // 3100 admins
     case '3101': {
