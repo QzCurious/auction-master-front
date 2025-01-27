@@ -1,8 +1,6 @@
-import { LineUserBindingCallback } from '@/api/frontend/LineUserBindingCallback'
-import { HandleApiError } from '@/domain/api/HandleApiError'
 import { getJwt } from '@/domain/auth/getJwt'
 import { redirect } from 'next/navigation'
-import BindSuccessfully from './BindSuccessfully'
+import AutoSubmit from './AutoSubmit'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
@@ -18,11 +16,5 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
     return redirect(`/auth/sign-in?goto=${goto}`)
   }
 
-  const res = await LineUserBindingCallback({ token })
-
-  if (res.error) {
-    return <HandleApiError error={res.error} />
-  }
-
-  return <BindSuccessfully />
+  return <AutoSubmit token={token} />
 }
