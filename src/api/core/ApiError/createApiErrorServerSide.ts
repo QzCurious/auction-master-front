@@ -224,6 +224,13 @@ function createApiError(code: string): ApiError {
         message: 'Line 綁定衝突',
       }
     }
+    case '1118': {
+      return {
+        code,
+        type: 'toast',
+        message: 'Line 綁定連結已過期',
+      }
+    }
 
     // 3100 admins
     case '3101': {
