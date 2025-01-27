@@ -11,6 +11,7 @@ export interface Consignor {
   account: string
   password: string
   nickname: string
+  lineId: string
   commissionBonusRate: number
   name: string
   identification: string
@@ -26,7 +27,7 @@ export interface Consignor {
   status: CONSIGNOR_STATUS['value']
   createdAt: string
   updatedAt: string
-  verification: null | {
+  verification?: {
     id: number
     consignorId: number
     photo: string

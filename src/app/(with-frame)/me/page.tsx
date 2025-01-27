@@ -26,7 +26,7 @@ export default async function Example() {
 
       <div className='mt-10 lg:flex-auto'>
         <div className='flex flex-col gap-y-12'>
-          <AccountInfoForm consignor={consignorRes.data} />
+          <AccountInfoForm consignor={consignorRes.data} configs={configsRes.data} />
           <div className='h-px bg-gray-200'></div>
 
           <ChangePasswordForm />

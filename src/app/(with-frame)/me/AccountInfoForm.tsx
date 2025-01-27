@@ -2,10 +2,12 @@
 
 import { Consignor } from '@/api/frontend/consignor/GetConsignor'
 import { UpdateConsignorAvatar } from '@/api/frontend/consignor/UpdateConsignorAvatar'
+import { Configs } from '@/api/frontend/GetConfigs'
 import { Button } from '@/catalyst-ui/button'
 import { useHandleApiError } from '@/domain/api/HandleApiError'
 import { toPercent } from '@/domain/static/static'
-import { XMarkIcon } from '@heroicons/react/20/solid'
+import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useState, useTransition } from 'react'
 import toast from 'react-hot-toast'
@@ -15,7 +17,13 @@ const Schema = z.object({
   avatarPhoto: z.union([z.string(), z.instanceof(File)]).nullable(),
 })
 
-export default function AccountInfoForm({ consignor }: { consignor: Consignor }) {
+export default function AccountInfoForm({
+  consignor,
+  configs,
+}: {
+  consignor: Consignor
+  configs: Configs
+}) {
   const [isPending, startTransition] = useTransition()
   const [conformingDelete, setConformingDelete] = useState(false)
   const handleApiError = useHandleApiError()
@@ -28,6 +36,34 @@ export default function AccountInfoForm({ consignor }: { consignor: Consignor })
 
       <div className='md:col-span-2'>
         <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
+          {/* {!consignor.lineId && (
+            <div className='sm:col-span-full'>
+              <div className='mb-4 rounded-md bg-blue-50 p-4'>
+                <div className='flex'>
+                  <div className='shrink-0'>
+                    <InformationCircleIcon
+                      aria-hidden='true'
+                      className='size-5 text-blue-400'
+                    />
+                  </div>
+                  <div className='ml-3 flex-1 md:flex md:justify-between'>
+                    <p className='text-sm text-blue-700'>
+                      加入
+                      <a
+                        href={configs.lineURL}
+                        className='text-link mx-1 inline-flex items-center'
+                      >
+                        官方LINE
+                        <ArrowTopRightOnSquareIcon className='ml-0.5 inline-block h-4 w-4' />
+                      </a>
+                      並綁定通知已獲得物品即時更新資訊
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )} */}
+
           <div className='flex items-center gap-x-8 sm:col-span-full'>
             <div className='group relative'>
               <div
@@ -152,6 +188,41 @@ export default function AccountInfoForm({ consignor }: { consignor: Consignor })
             <div className='mt-2'>
               <p className='block text-sm font-medium leading-6 text-gray-700'>
                 {consignor.nickname}
+              </p>
+            </div>
+          </div>
+
+          <div className='sm:col-span-full'>
+            <p className='block text-sm font-medium leading-6 text-gray-900'>
+              LINE 通知
+            </p>
+
+            <div className='mt-2'>
+              <p className='block text-sm font-medium leading-6 text-gray-700'>
+                {consignor.lineId ? (
+                  <span>
+                    <CheckCircleIcon className='size-6 text-green-700' />
+                  </span>
+                ) : (
+                  <p className='flex items-center gap-2'>
+                    <ExclamationTriangleIcon
+                      aria-hidden='true'
+                      className='size-5 text-yellow-400'
+                    />
+                    <span>
+                      請於
+                      <a
+                        href={configs.lineURL}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-link mx-0.5'
+                      >
+                        官方 LINE
+                      </a>
+                      中傳送<span className='font-bold underline'>綁定帳號</span>
+                    </span>
+                  </p>
+                )}
               </p>
             </div>
           </div>
