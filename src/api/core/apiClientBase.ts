@@ -1,4 +1,4 @@
-import ky from 'ky'
+import ky, { KyRequest, KyResponse, NormalizedOptions } from 'ky'
 
 if (!process.env.API_BASE_URL) {
   throw new Error('API_BASE_URL is not set')
@@ -9,27 +9,8 @@ const apiClientBase = ky.extend({
   hooks: {
     afterResponse: [
       async (request, options, response) => {
-        if (response.status >= 400) {
-          console.log(`apiClient: [${request.method}] ${request.url}:`)
-          if (options.body) {
-            console.log(
-              `payload:`,
-              typeof options.body === 'object' && 'entries' in options.body
-                ? options.body.entries()
-                : options.body,
-            )
-          }
-          try {
-            console.log(
-              `response: [${response.status}]:`,
-              await response.clone().json(),
-            )
-          } catch {
-            console.log(
-              `response: [${response.status}]:`,
-              await response.clone().text(),
-            )
-          }
+        if (process.env.API_LOG || response.status >= 400) {
+          await log(request, options, response)
         }
         return response.clone()
       },
@@ -38,3 +19,24 @@ const apiClientBase = ky.extend({
 })
 
 export { apiClientBase }
+
+async function log(
+  request: KyRequest,
+  options: NormalizedOptions,
+  response: KyResponse,
+) {
+  console.log(`apiClient: [${request.method}] ${request.url}:`)
+  if (options.body) {
+    console.log(
+      `payload:`,
+      typeof options.body === 'object' && 'entries' in options.body
+        ? options.body.entries()
+        : options.body,
+    )
+  }
+  try {
+    console.log(`response: [${response.status}]:`, await response.clone().json())
+  } catch {
+    console.log(`response: [${response.status}]:`, await response.clone().text())
+  }
+}
