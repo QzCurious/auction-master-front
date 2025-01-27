@@ -37,7 +37,6 @@ export default function Frame({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {' '}
       <StackedLayout
         navbar={
           <Navbar>
