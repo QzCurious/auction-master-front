@@ -6,7 +6,7 @@ export const CookieConfigs = {
     opts: () => ({
       maxAge: 14 * 24 * 60 * 60, // 14 days
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: 'lax',
       secure: process.env.HOST_BASE_URL?.startsWith('https'),
     }),
   },
@@ -15,7 +15,7 @@ export const CookieConfigs = {
     opts: () => ({
       maxAge: 14 * 24 * 60 * 60, // 14 days
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: 'lax',
       secure: process.env.HOST_BASE_URL?.startsWith('https'),
     }),
   },
