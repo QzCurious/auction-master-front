@@ -192,7 +192,7 @@ export default function AccountInfoForm({
             </div>
           </div>
 
-          <div className='sm:col-span-full'>
+          {/* <div className='sm:col-span-full'>
             <p className='block text-sm font-medium leading-6 text-gray-900'>
               LINE 通知
             </p>
@@ -225,7 +225,7 @@ export default function AccountInfoForm({
                 )}
               </p>
             </div>
-          </div>
+          </div> */}
 
           <div className='sm:col-span-full'>
             <p className='block text-sm font-medium leading-6 text-gray-900'>
