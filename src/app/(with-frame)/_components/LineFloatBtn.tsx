@@ -16,7 +16,7 @@ export default async function LineFloatBtn() {
       rel='noopener noreferrer'
       className='fixed bottom-20 right-4 block size-12 transition-opacity hover:opacity-70 lg:bottom-12'
     >
-      <Image src={img} alt='Contact by LINE' />
+      <Image src={img} alt='Contact by LINE' priority />
     </a>
   )
 }
