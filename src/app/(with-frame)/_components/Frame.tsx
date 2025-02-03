@@ -117,7 +117,7 @@ function Footer() {
       <div className='mx-auto max-w-6xl px-6 pb-8 pt-10 lg:px-8'>
         <div className='flex justify-end gap-14'>
           <div>
-            <h3 className='text-sm/6 font-semibold text-gray-900'>平台規則</h3>
+            <h2 className='text-sm/6 font-semibold text-gray-900'>平台規則</h2>
             <ul role='list' className='mt-6 space-y-4'>
               {navigation.rules.map((item) => (
                 <li key={item.name}>
@@ -132,7 +132,7 @@ function Footer() {
             </ul>
           </div>
           <div className='mt-10 md:mt-0'>
-            <h3 className='text-sm/6 font-semibold text-gray-900'>常見問題</h3>
+            <h2 className='text-sm/6 font-semibold text-gray-900'>常見問題</h2>
             <ul role='list' className='mt-6 space-y-4'>
               {navigation.faq.map((item) => (
                 <li key={item.name}>
