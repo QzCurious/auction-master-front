@@ -274,6 +274,7 @@ function CompanyDirectPurchaseBtn({ item }: { item: Item }) {
   const handleApiError = useHandleApiError()
 
   if (!consignor) return null
+  if (!item.directPurchasePrice) return null
 
   return (
     <>
