@@ -340,29 +340,30 @@ async function Content({ params }: { params: Awaited<PageProps['params']> }) {
                 </p>
               </DescriptionDetails>
 
-              {flowMightOfType('CompanyDirectPurchaseType') && (
-                <>
-                  <DescriptionTerm>
-                    收購金額
-                    <InfoPopover>
-                      <InfoPopoverPanel>
-                        本金額是由本公司直接以該現金價直接收購您的商品
-                      </InfoPopoverPanel>
-                    </InfoPopover>
-                  </DescriptionTerm>
-                  <DescriptionDetails className='text-end'>
-                    {currencySign('JPY')}
-                    {itemRes.data.directPurchasePrice.toLocaleString()}
-                    <p className='whitespace-nowrap text-zinc-500'>
-                      (約 {currencySign('TWD')}
-                      {Math.floor(
-                        itemRes.data.directPurchasePrice * jpyRatesRes.data.buying,
-                      ).toLocaleString()}
-                      )
-                    </p>
-                  </DescriptionDetails>
-                </>
-              )}
+              {flowMightOfType('CompanyDirectPurchaseType') &&
+                !!itemRes.data.directPurchasePrice && (
+                  <>
+                    <DescriptionTerm>
+                      收購金額
+                      <InfoPopover>
+                        <InfoPopoverPanel>
+                          本金額是由本公司直接以該現金價直接收購您的商品
+                        </InfoPopoverPanel>
+                      </InfoPopover>
+                    </DescriptionTerm>
+                    <DescriptionDetails className='text-end'>
+                      {currencySign('JPY')}
+                      {itemRes.data.directPurchasePrice.toLocaleString()}
+                      <p className='whitespace-nowrap text-zinc-500'>
+                        (約 {currencySign('TWD')}
+                        {Math.floor(
+                          itemRes.data.directPurchasePrice * jpyRatesRes.data.buying,
+                        ).toLocaleString()}
+                        )
+                      </p>
+                    </DescriptionDetails>
+                  </>
+                )}
 
               {itemRes.data.type === ITEM_TYPE.enum('AppraisableAuctionItemType') && (
                 <>
