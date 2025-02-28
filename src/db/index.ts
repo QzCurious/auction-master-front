@@ -6,15 +6,14 @@ import 'dotenv/config'
 import { drizzle } from 'drizzle-orm/mysql2'
 
 const getDb = lazyAsyncSingleton(async () => {
-  const kv = await getMysqlKv()
-  if (process.env.NODE_ENV === 'development') {
-    return drizzle(`${process.env.DATABASE_URL}/${kv.dbname}`, {
-      logger: true,
-    })
+  if (process.env.DATABASE_URL) {
+    return drizzle(process.env.DATABASE_URL)
   }
 
+  const kv = await getMysqlKv()
   return drizzle(
     `mysql://${kv.host}/${kv.dbname}?user=${kv.account}&password=${kv.password}`,
+    { logger: process.env.NODE_ENV === 'development' },
   )
 })
 
