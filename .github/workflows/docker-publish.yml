@@ -26,6 +26,7 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
+    environment: ${{ github.ref_name }}
 
     steps:
       - name: Checkout repository
@@ -71,6 +72,14 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            API_BASE_URL=${{ vars.API_BASE_URL }}
+            HOST_BASE_URL=${{ vars.HOST_BASE_URL }}
+            TZ=${{ vars.TZ }}
+            API_LOG=${{ vars.API_LOG }}
+            NEXT_PUBLIC_IS_MAINTENANCE=${{ vars.NEXT_PUBLIC_IS_MAINTENANCE }}
+            CONSUL_URL=${{ vars.CONSUL_URL }}
+            DATABASE_URL=${{ vars.DATABASE_URL }}
   deploy:
     if: github.ref_name == 'main'
     name: Deploy through SSH
