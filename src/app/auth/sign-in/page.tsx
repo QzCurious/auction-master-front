@@ -26,6 +26,13 @@ export default async function Page() {
               <div>
                 <SignInForm />
               </div>
+              <div className='mt-6 rounded-md bg-indigo-50 px-4 py-3 text-sm text-indigo-900'>
+                <p className='font-semibold'>DEMO 帳號</p>
+                <p className='mt-1'>
+                  帳號 <span className='font-semibold'>demo</span>，密碼{' '}
+                  <span className='font-semibold'>demo-consignor</span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
