@@ -1,7 +1,9 @@
 import { GetConfigs } from '@/api/frontend/GetConfigs'
 import { Button } from '@/catalyst-ui/button'
+import { isDemoMode } from '@/config/demo'
 import { getDb } from '@/db'
 import { carousel, carouselGroup } from '@/db/schema'
+import { demoCarousels } from '@/demo/carousels'
 import { HandleApiError } from '@/domain/api/HandleApiError'
 import { getJwt } from '@/domain/auth/getJwt'
 import { toPercent } from '@/domain/static/static'
@@ -18,6 +20,10 @@ import LineFloatBtn from './_components/LineFloatBtn'
 
 const getCarousels = unstable_cache(
   async () => {
+    if (isDemoMode) {
+      return demoCarousels
+    }
+
     const db = await getDb()
     const carousels = await db
       .select({ ...getTableColumns(carousel), group: carouselGroup.name })
