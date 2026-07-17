@@ -78,7 +78,7 @@ jobs:
             TZ=${{ vars.TZ }}
             API_LOG=${{ vars.API_LOG }}
             NEXT_PUBLIC_IS_MAINTENANCE=${{ vars.NEXT_PUBLIC_IS_MAINTENANCE }}
-            CONSUL_URL=${{ vars.CONSUL_URL }}
+            NEXT_PUBLIC_DEMO_MODE=${{ vars.NEXT_PUBLIC_DEMO_MODE }}
             DATABASE_URL=${{ vars.DATABASE_URL }}
   deploy:
     if: github.ref_name == 'main'
