@@ -2,6 +2,8 @@
 
 **Demo：<https://auction-master-front.qzcurious.link/>**
 
+![日拍大師使用者前台](./docs/demo.png)
+
 代競拍平台的使用者前台，對應營運後台 [auction-master-admin-next](https://github.com/QzCurious/auction-master-admin-next)。使用者可以從這裡建立要送拍的物品、追蹤處理進度與競拍結果，並繼續處理成交後的費用、餘額與交易紀錄。
 
 ## 功能
